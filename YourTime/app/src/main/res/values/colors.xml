@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#ffffff</color>
+
+    <color name="colorBackground1">#668964</color>
+
+    <color name="colorTransparency_80percent">#ccffffff</color>
+    <color name="blue">#58ACFA</color>
+    <color name="colortran">#80FFFFFF</color>
+    <color name="colorFb">#3C579E</color>
+    <color name="colorGoogle">#EE4000</color>
+    <color name="colorblue">#02a0e9</color>Back
+    <color name="black">#b3050000</color>
+    <color name="colorEditText">#b3807b7b</color>
+    <color name="lowBlack">#b3454343</color>
+</resources>
