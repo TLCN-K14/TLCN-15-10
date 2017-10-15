@@ -15,4 +15,5 @@
 
     <dimen name="design_bottom_navigation_active_icon_size" tools:override="true">70dp</dimen>
     <dimen name="dimen_18sp">18sp</dimen>
+    <dimen name="txtsize_16sp">16sp</dimen>
 </resources>

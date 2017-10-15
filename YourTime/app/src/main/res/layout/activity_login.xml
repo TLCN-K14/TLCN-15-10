@@ -36,20 +36,14 @@
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 >
-                <TextView
-                    android:id="@+id/tv_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/dimen_18sp"
-                    />
                 <com.facebook.login.widget.LoginButton
-                    android:id="@+id/btn_login_facebook"
+                    android:id="@+id/btn_login_fb"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="30dp"
                     android:layout_marginBottom="30dp"
-                    android:text="@string/com_facebook_loginview_logged_in_using_facebook"/>
+                    style="@style/FacebookLoginButton"/>
 
             </LinearLayout>
             <LinearLayout
