@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/height_top_bartasks_60dp"
             android:background="@color/colorBackground1"
             android:orientation="horizontal">
             <LinearLayout
@@ -18,15 +18,14 @@
                     android:id="@+id/image_user"
                     android:layout_weight="1"
                     android:src="@drawable/image_user1"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="10dp"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/name_user"
                     android:text="Jigsaw Jeff"
-                    android:textSize="18sp"
+                    android:textSize="22sp"
                     android:textColor="@color/colorWhite"
-                    android:textStyle="bold"
 
                     android:gravity="center_vertical"
                     android:layout_weight="3"/>
@@ -47,6 +46,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+                        <include
+                            layout="@layout/header_tasks"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/list_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            >
+                        </android.support.v7.widget.RecyclerView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -55,14 +63,11 @@
                             android:layout_margin="30dp"
                            >
                         </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="500dp"
-                            android:background="@color/colorAccent"
-                            android:layout_margin="30dp"
-                            >
-
-                        </LinearLayout>
+                    <ProgressBar
+                        android:id="@+id/progressBar_Loadmore"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <!-- Your loooooong scrolling content here. -->

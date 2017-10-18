@@ -15,5 +15,10 @@
 
     <dimen name="design_bottom_navigation_active_icon_size" tools:override="true">70dp</dimen>
     <dimen name="dimen_18sp">18sp</dimen>
+    <dimen name="dimen_12sp">12sp</dimen>
     <dimen name="txtsize_16sp">16sp</dimen>
+    <dimen name="height_top_bartasks_60dp">60dp</dimen>
+    <dimen name="height_groupwork_50dp">50dp</dimen>
+    <dimen name="dimen_16sp">16sp</dimen>
+    <dimen name="margin_image_groupwork">10dp</dimen>
 </resources>
