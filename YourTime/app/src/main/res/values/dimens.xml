@@ -21,4 +21,5 @@
     <dimen name="height_groupwork_50dp">50dp</dimen>
     <dimen name="dimen_16sp">16sp</dimen>
     <dimen name="margin_image_groupwork">10dp</dimen>
+    <dimen name="margin_btn_lg_15dp">15dp</dimen>
 </resources>

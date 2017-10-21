@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background3"
+    android:background="@drawable/background"
     >
     <LinearLayout
         android:orientation="vertical"
@@ -13,14 +13,18 @@
         android:layout_marginTop="20dp"
         android:radius="4dp"
         android:background="@drawable/linearlayout_trans_shadow">
-        <android.support.v4.view.ViewPager
-            android:layout_width="250dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:layout_weight="10"
-            android:id="@+id/pagerF">
-        </android.support.v4.view.ViewPager>
+            android:layout_weight="12">
+            <android.support.v4.view.ViewPager
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="30dp"
+                android:layout_gravity="center"
+                android:id="@+id/pagerF">
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -30,7 +34,7 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1">
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginRight="10dp"
@@ -41,13 +45,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="30dp"
                     style="@style/FacebookLoginButton"/>
 
             </LinearLayout>
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
@@ -77,7 +79,7 @@
             android:layout_marginTop="15dp"
             android:layout_weight="1">
             <Button
-                android:id="@+id/btnSignUp"
+                android:id="@+id/btn_sign_up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/create_free_account"
@@ -96,12 +98,13 @@
             android:layout_marginBottom="15dp"
             android:layout_weight="1">
             <Button
+                android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/login"
                 android:textAllCaps="false"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="@dimen/margin_btn_lg_15dp"
+                android:layout_marginRight="@dimen/margin_btn_lg_15dp"
                 android:textColor="@color/black"
                 android:background="@drawable/button_white_shadow"/>
 
