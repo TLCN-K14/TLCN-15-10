@@ -22,4 +22,5 @@
     <dimen name="dimen_16sp">16sp</dimen>
     <dimen name="margin_image_groupwork">10dp</dimen>
     <dimen name="margin_btn_lg_15dp">15dp</dimen>
+    <dimen name="txtsize_header_20sp">20sp</dimen>
 </resources>

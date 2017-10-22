@@ -9,4 +9,7 @@
     <string name="facebook_app_id">1439936209376190</string>
     <string name="fb_login_protocol_scheme">fb1439936209376190</string>
     <string name="google">Google</string>
+    <string name="account_name">Account name</string>
+    <string name="back">back</string>
+    <string name="setting">Settings</string>
 </resources>
