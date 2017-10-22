@@ -8,7 +8,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
@@ -19,7 +19,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="12">
+            android:layout_weight="80">
             <android.support.v4.view.ViewPager
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,12 +44,36 @@
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 >
-                <com.facebook.login.widget.LoginButton
-                    android:id="@+id/btn_login_fb"
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    style="@style/FacebookLoginButton"/>
+                    android:layout_weight="4"
+                    android:background="@color/colorFb"
+                    android:layout_marginRight="1dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_facebook"/>
+                <FrameLayout
+                    android:id="@+id/FrameLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/btn_login_fb"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        style="@style/FacebookLoginButton"
+                        android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/txt_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorFb"
+                        android:text="@string/google"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="center_vertical"/>
+                </FrameLayout>
 
             </LinearLayout>
             <LinearLayout

@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -42,6 +43,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     LoginButton mBtnLogin;
     @InjectView(R.id.btn_login)
     Button mBtnSignIn;
+    @InjectView(R.id.txt_login)
+    TextView mTxtLoginFB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,10 +156,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void initListener(){
         mBtnSignUp.setOnClickListener(this);
         mBtnSignIn.setOnClickListener(this);
+        mBtnLogin.setOnClickListener(this);
+        mTxtLoginFB.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+        if(view==mTxtLoginFB){
+            mBtnLogin.performClick();
+        }
         switch (view.getId()){
             case R.id.btn_login:
                 Intent signIn= new Intent(this, SignInActivity.class);
@@ -169,4 +177,5 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
     }
+
 }
