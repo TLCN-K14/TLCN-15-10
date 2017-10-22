@@ -7,8 +7,9 @@
 
     <color name="colorBackground1">#668964</color>
 
-    <color name="colorTransparency_80percent">#ccffffff</color>
+    <color name="colorTransparency_80percent">#b3ffffff</color>
     <color name="blue">#58ACFA</color>
+    <color name="blue2">#3c9cf5</color>
     <color name="colorNearBlue">#aa58dcfa</color>
     <color name="colortran">#80FFFFFF</color>
     <color name="colorFb">#3C579E</color>
