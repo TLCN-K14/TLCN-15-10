@@ -11,6 +11,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
     buildTypes {
         release {
             minifyEnabled false
@@ -41,5 +43,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.4.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     testCompile 'junit:junit:4.12'
+
 
 }

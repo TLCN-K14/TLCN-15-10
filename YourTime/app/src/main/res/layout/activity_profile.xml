@@ -25,13 +25,14 @@
             android:textSize="@dimen/txtsize_header_20sp"
             android:layout_marginLeft="10dp"
             android:text="@string/setting"/>
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/circle_blue" />
+            android:src="@drawable/ava2"
+           />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,7 +61,8 @@
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/blue2"/>
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"

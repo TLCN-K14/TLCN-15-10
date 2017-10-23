@@ -69,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/colorFb"
-                        android:text="@string/google"
+                        android:text="@string/facebook"
                         android:paddingLeft="10dp"
                         android:textColor="@color/colorWhite"
                         android:gravity="center_vertical"/>

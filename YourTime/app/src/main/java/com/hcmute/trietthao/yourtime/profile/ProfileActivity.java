@@ -4,7 +4,9 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.R;
 
@@ -40,5 +42,11 @@ public class ProfileActivity extends TabActivity {
         tabHost.addTab(accountspec);
         tabHost.addTab(generalspec);
         tabHost.addTab(extrasspec);
+
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            View v = tabHost.getTabWidget().getChildAt(i);
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(getResources().getColor(R.color.colorWhite));
+        }
     }
 }
