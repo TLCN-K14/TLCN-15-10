@@ -20,6 +20,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.profile.ProfileActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -146,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void nextActivity(Profile profile){
         if(profile != null){
-            Intent main = new Intent(LoginActivity.this, UserProfile.class);
+            Intent main = new Intent(LoginActivity.this, ProfileActivity.class);
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
             main.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());

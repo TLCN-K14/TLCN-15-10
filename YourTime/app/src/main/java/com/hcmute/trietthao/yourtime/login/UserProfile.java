@@ -21,10 +21,6 @@ import com.hcmute.trietthao.yourtime.R;
 import java.io.InputStream;
 import java.net.URL;
 
-/**
- * Created by lttha on 10/14/2017.
- */
-
 public class UserProfile extends AppCompatActivity {
     private ShareDialog shareDialog;
     private Button logout;
@@ -86,14 +82,5 @@ public class UserProfile extends AppCompatActivity {
         }
 
     }
-//    public static Drawable LoadImageFromWebOperations(String url) {
-//        try {
-//            InputStream is = (InputStream) new URL(url).getContent();
-//            Drawable d = Drawable.createFromStream(is, "src name");
-//            return d;
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
 
 }

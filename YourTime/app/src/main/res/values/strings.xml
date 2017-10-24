@@ -19,4 +19,8 @@
     <string name="add_todo_edittext">Add a to do ...</string>
     <string name="show_completed_works">SHOW COMPLETED TO-DOS</string>
     <string name="hide_completed_works">HIDE COMPLETED TO-DOS</string>
+    <string name="change_name">Change Name</string>
+    <string name="change_email">Change Email</string>
+    <string name="photo">Photo</string>
+    <string name="change_password">Change Password</string>
 </resources>

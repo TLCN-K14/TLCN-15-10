@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
     <LinearLayout
+        android:id="@+id/ln_account_details"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -26,4 +26,5 @@
     <dimen name="margin_item_15dp">15dp</dimen>
     <dimen name="padding_item_list_10dp">10dp</dimen>
     <dimen name="padding_5dp">5dp</dimen>
+    <dimen name="txt_toolbar_18sp">18sp</dimen>
 </resources>

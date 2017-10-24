@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/blue2">
+        android:background="@color/dodgerblue">
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="wrap_content"
@@ -34,6 +34,7 @@
             android:src="@drawable/ava2"
            />
         <TextView
+            android:id="@+id/txt_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -62,7 +63,7 @@
                     android:id="@android:id/tabs"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/blue2"/>
+                    android:background="@color/dodgerblue"/>
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"
