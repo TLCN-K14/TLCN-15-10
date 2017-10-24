@@ -20,9 +20,10 @@
     <dimen name="height_top_bartasks_60dp">60dp</dimen>
     <dimen name="height_groupwork_50dp">50dp</dimen>
     <dimen name="dimen_16sp">16sp</dimen>
-    <dimen name="margin_image_groupwork">10dp</dimen>
+    <dimen name="margin_image_groupwork">5dp</dimen>
     <dimen name="margin_btn_lg_15dp">15dp</dimen>
     <dimen name="txtsize_header_20sp">20sp</dimen>
     <dimen name="margin_item_15dp">15dp</dimen>
     <dimen name="padding_item_list_10dp">10dp</dimen>
+    <dimen name="padding_5dp">5dp</dimen>
 </resources>

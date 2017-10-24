@@ -36,15 +36,22 @@
         <activity android:name=".login.SignUpActivity"/>
         <activity android:name=".login.SignInActivity"/>
         <activity android:name=".profile.ProfileActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".profile.AccountActivity"/>
+        <activity android:name=".profile.ExtrasActivity"/>
+        <activity android:name=".profile.GeneralActivity"/>
+        <activity android:name=".DetailGroupWork">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".profile.AccountActivity"/>
-        <activity android:name=".profile.ExtrasActivity"/>
-        <activity android:name=".profile.GeneralActivity"/>
     </application>
 
 

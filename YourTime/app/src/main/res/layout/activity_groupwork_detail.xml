@@ -5,23 +5,93 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground1">
-
-    <EditText
-        android:id="@+id/editText2"
+    android:background="@color/colorTear900">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="CALENDAR" />
+        android:layout_height="@dimen/height_top_bartasks_60dp"
+        android:background="@color/colorTear800"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="Name GroupWork"
+                android:id="@+id/profile_info_nametoolbar"
+                android:textColor="@color/colorWhite"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/dimen_18sp"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_invite"
+                    android:layout_margin="@dimen/padding_item_list_10dp"
+                    />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_sort"
+                    android:layout_margin="@dimen/padding_item_list_10dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_groupwork_50dp"
         android:orientation="horizontal"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/border_tear">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_add_medium"
+                android:gravity="center_vertical"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:hint="@string/add_todo_edittext"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="@dimen/txtsize_16sp"
+                android:backgroundTint="@android:color/transparent"
+                >
+
+            </EditText>
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:baselineAligned="false"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_groupwork_50dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/borderwork_white">
         <LinearLayout
             android:layout_width="0dp"
@@ -110,8 +180,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_groupwork_50dp"
         android:orientation="horizontal"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/borderwork_white">
         <LinearLayout
             android:layout_width="0dp"
@@ -119,10 +189,11 @@
             android:layout_weight="3"
             android:orientation="horizontal">
             <CheckBox
+                tools:ignore="MissingPrefix"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:buttonTint="@color/colorGray500"
+                app:buttonTint="@color/colorGray500"
                 android:gravity="center_vertical"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -194,5 +265,32 @@
                 android:src="@drawable/ic_priority_selected"/>
         </LinearLayout>
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_works"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/border_tear"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/dimen_12sp"
+        android:id="@+id/show_hide_completed_works"
+        android:text="@string/show_completed_works"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_works_completed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

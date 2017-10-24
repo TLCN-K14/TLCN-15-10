@@ -5,7 +5,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_top_bartasks_60dp"
-            android:background="@color/colorBackground1"
+            android:background="@color/colorTear800"
             android:orientation="horizontal">
             <LinearLayout
                 android:layout_width="0dp"
@@ -24,19 +24,75 @@
                     android:layout_height="match_parent"
                     android:id="@+id/name_user"
                     android:text="Jigsaw Jeff"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/dimen_18sp"
                     android:textColor="@color/colorWhite"
 
                     android:gravity="center_vertical"
                     android:layout_weight="3"/>
             </LinearLayout>
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/padding_5dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                >
+                <RelativeLayout
+                    android:layout_width="@dimen/height_groupwork_50dp"
+                    android:layout_height="@dimen/height_groupwork_50dp"
+                    android:layout_toStartOf="@+id/rlt_conversation"
+                    android:padding="@dimen/padding_5dp"
+                    >
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="@dimen/padding_item_list_10dp"
+                        android:src="@drawable/ic_notification_none"
+                        android:id="@+id/btn_notification"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/circle_red"
+                        android:textStyle="bold"
+                        android:paddingStart="@dimen/padding_5dp"
+                        android:textColor="@color/colorWhite"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="@dimen/height_groupwork_50dp"
+                    android:layout_height="@dimen/height_groupwork_50dp"
+                    android:layout_toStartOf="@+id/btn_search"
+                    android:padding="@dimen/padding_5dp"
+                    android:id="@+id/rlt_conversation">
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:padding="@dimen/padding_item_list_10dp"
+                        android:src="@drawable/ic_conversation_none"
+                        android:id="@+id/btn_conversation"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/circle_red"
+                        android:textStyle="bold"
+                        android:paddingStart="@dimen/padding_5dp"
+                        android:textColor="@color/colorWhite"/>
+                </RelativeLayout>
 
-            </LinearLayout>
+                <ImageView
+                    android:layout_width="@dimen/height_groupwork_50dp"
+                    android:layout_height="@dimen/height_groupwork_50dp"
+                    android:padding="@dimen/margin_item_15dp"
+                    android:src="@drawable/ic_search"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/btn_search"
+                    android:layout_marginRight="10dp"
+                    />
+            </RelativeLayout>
         </LinearLayout>
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/myScrollingContent"
@@ -47,10 +103,11 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
                         <include
-                            layout="@layout/header_tasks"/>
+                            layout="@layout/header_tasks"
+                            android:id="@+id/header_tasks"/>
 
                         <android.support.v7.widget.RecyclerView
-                            android:id="@+id/list_content"
+                            android:id="@+id/list_groupworks"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             >
@@ -68,6 +125,12 @@
                         android:layout_width="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_height="wrap_content" />
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbox_design"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        />
                 </LinearLayout>
 
                 <!-- Your loooooong scrolling content here. -->

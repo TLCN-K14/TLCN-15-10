@@ -3,6 +3,7 @@ package com.hcmute.trietthao.yourtime;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
+import butterknife.InjectView;
 
 /**
  * Created by lttha on 9/26/2017.
@@ -21,6 +26,7 @@ import java.util.List;
 
 public class TasksFragment extends Fragment {
 
+    TextView txtDayCurrent;
 
     public static TasksFragment newInstance() {
         TasksFragment fragment = new TasksFragment();
@@ -36,8 +42,21 @@ public class TasksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
+        View headerTasksView = view.findViewById(R.id.header_tasks);
+
+        txtDayCurrent = (TextView) headerTasksView.findViewById(R.id.day_current);
+        setTxtDayCurrent();
 
         return view;
+    }
+
+    public void setTxtDayCurrent(){
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        if(day>10)
+            txtDayCurrent.setText(String.valueOf(day));
+        else
+            txtDayCurrent.setText((" "+String.valueOf(day)));
     }
 
 }
