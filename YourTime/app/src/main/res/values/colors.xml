@@ -8,6 +8,7 @@
     <color name="colorBackground1">#668964</color>
 
     <color name="colorTransparency_80percent">#b3ffffff</color>
+    <color name="colorTransparency_0percentt">#00ffffff</color>
     <color name="deepskyblue">#58ACFA</color>
     <color name="dodgerblue">#1E90FF</color>
     <color name="blue">#0000FF</color>
@@ -21,6 +22,7 @@
     <color name="lowBlack">#b3454343</color>
     <color name="colorPink">#F3D0CF</color>
     <color name="colorRed">#fa0903</color>
+    <color name="pink">#fa3b5a</color>
 
     <color name="colorGray500">#9E9E9E</color>
 

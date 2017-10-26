@@ -10,6 +10,6 @@ public class GeneralActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.general_layout);
+        setContentView(R.layout.activity_general);
     }
 }

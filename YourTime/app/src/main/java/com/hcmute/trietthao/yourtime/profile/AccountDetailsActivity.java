@@ -1,29 +1,35 @@
 package com.hcmute.trietthao.yourtime.profile;
 
 
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
+
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
+
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
-
 import com.hcmute.trietthao.yourtime.R;
 
-
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,18 +38,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AccountDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    String mCurrentPhotoPath;
-    static final int REQUEST_TAKE_PHOTO = 1;
     @InjectView(R.id.ln_take_photo)
     LinearLayout mLnTakePhoto;
     @InjectView(R.id.imgv_ava_details)
     CircleImageView mImgPhoto;
+    @InjectView(R.id.ln_change_name)
+    LinearLayout mLnChangeName;
+    @InjectView(R.id.ln_change_pass)
+    LinearLayout mLnChangePass;
+    @InjectView(R.id.ln_change_email)
+    LinearLayout getmLnChangeEmail;
+
+    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private String userChoosenTask;
+    final Context c = this;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.account_details_layout);
+        setContentView(R.layout.activity_account_details);
 
         ButterKnife.inject(this);
         initListener();
@@ -54,61 +68,215 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
-    }
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
+
+        mLnTakePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage();
             }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+        });
+        mLnChangeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
+                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_change_name, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
+                alertDialogBuilderUserInput.setView(mView);
+
+                alertDialogBuilderUserInput
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                // ToDo get user input here
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();
             }
-        }
+        });
+
+        getmLnChangeEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
+                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_change_email, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
+                alertDialogBuilderUserInput.setView(mView);
+                alertDialogBuilderUserInput
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                // ToDo get user input here
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();
+            }
+        });
+
+
+        mLnChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
+                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_password, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
+                alertDialogBuilderUserInput.setView(mView);
+                alertDialogBuilderUserInput
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                // ToDo get user input here
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();
+            }
+        });
+
+
     }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImgPhoto.setImageBitmap(imageBitmap);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+
+                }
+                break;
         }
     }
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
+    private void selectImage() {
+        final CharSequence[] items = { "Take Photo", "Choose from Library",
+                "Cancel" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AccountDetailsActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result=Utility.checkPermission(AccountDetailsActivity.this);
+
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask ="Take Photo";
+                    if(result)
+                        cameraIntent();
+
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask ="Choose from Library";
+                    if(result)
+                        galleryIntent();
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
+    private void galleryIntent()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+    }
+
+    private void cameraIntent()
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+    }
+
+    private void onCaptureImageResult(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mImgPhoto.setImageBitmap(thumbnail);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        mImgPhoto.setImageBitmap(bm);
+    }
     protected void initListener(){
         mLnTakePhoto.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.ln_account_details:
-                dispatchTakePictureIntent();
+                selectImage();
                 break;
         }
 
