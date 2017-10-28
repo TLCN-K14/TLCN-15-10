@@ -98,6 +98,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         };
 
+        mBtnSignInGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signIn();
+            }
+        });
+
         // Facebook
 
         profileTracker = new ProfileTracker() {
@@ -160,7 +167,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onResume();
         //Facebook login
         Profile profile = Profile.getCurrentProfile();
-        nextActivity(profile);
+//        nextActivity(profile);
         hideProgressDialog();
     }
 
@@ -207,6 +214,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mBtnLogin.setOnClickListener(this);
         mTxtLoginFB.setOnClickListener(this);
         mBtnSignInGoogle.setOnClickListener(this);
+        mTxtLoginGoogle.setOnClickListener(this);
     }
 
     @Override
