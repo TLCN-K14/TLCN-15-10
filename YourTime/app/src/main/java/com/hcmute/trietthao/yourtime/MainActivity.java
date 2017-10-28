@@ -11,25 +11,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+
 
 public class MainActivity extends AppCompatActivity{
 
-    @InjectView(R.id.fab)
+    @Bind(R.id.fab)
     FloatingActionButton fab;
-    @InjectView(R.id.navigation)
+    @Bind(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
-    @InjectView(R.id.coordinatorlayout)
+    @Bind(R.id.coordinatorlayout)
     CoordinatorLayout coordinatorLayout;
 
     @Override
@@ -37,7 +34,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, "Text", Snackbar.LENGTH_LONG);
         View view = snackbar.getView();

@@ -18,7 +18,7 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 //        mBtnSignUp.setOnClickListener(new OnCLickListener);
 

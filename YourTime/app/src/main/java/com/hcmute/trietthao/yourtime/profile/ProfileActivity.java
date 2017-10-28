@@ -13,24 +13,23 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.share.widget.ShareDialog;
 import com.hcmute.trietthao.yourtime.R;
 
 import java.io.InputStream;
 import java.net.URL;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ProfileActivity extends TabActivity {
 
     private ShareDialog shareDialog;
-    @InjectView(R.id.img_avatar)
+    @Bind(R.id.img_avatar)
     CircleImageView mImgVAvatar;
-    @InjectView(R.id.txt_user_name)
+    @Bind(R.id.txt_user_name)
     TextView mTxtUserName;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class ProfileActivity extends TabActivity {
         FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_profile);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         TabHost tabHost = getTabHost();
 
@@ -67,12 +66,6 @@ public class ProfileActivity extends TabActivity {
             tv.setTextColor(getResources().getColor(R.color.colorWhite));
         }
 
-//        Profile profile = Profile.getCurrentProfile();
-//
-//
-//        String name = profile.getFirstName();
-//        String surname = profile.getLastName();
-//        String imageUrl = profile.getProfilePictureUri(200,200).toString();
         ShareDialog shareDialog = new ShareDialog(this);
 
         Bundle inBundle = getIntent().getExtras();

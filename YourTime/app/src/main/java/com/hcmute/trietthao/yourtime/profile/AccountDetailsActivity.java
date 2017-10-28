@@ -31,22 +31,22 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    @InjectView(R.id.ln_take_photo)
+    @Bind(R.id.ln_take_photo)
     LinearLayout mLnTakePhoto;
-    @InjectView(R.id.imgv_ava_details)
+    @Bind(R.id.imgv_ava_details)
     CircleImageView mImgPhoto;
-    @InjectView(R.id.ln_change_name)
+    @Bind(R.id.ln_change_name)
     LinearLayout mLnChangeName;
-    @InjectView(R.id.ln_change_pass)
+    @Bind(R.id.ln_change_pass)
     LinearLayout mLnChangePass;
-    @InjectView(R.id.ln_change_email)
+    @Bind(R.id.ln_change_email)
     LinearLayout getmLnChangeEmail;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
@@ -59,7 +59,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         initListener();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

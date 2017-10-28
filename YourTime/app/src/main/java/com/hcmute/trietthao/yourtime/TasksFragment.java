@@ -1,28 +1,14 @@
 package com.hcmute.trietthao.yourtime;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
-import butterknife.InjectView;
-
-/**
- * Created by lttha on 9/26/2017.
- */
 
 public class TasksFragment extends Fragment {
 
