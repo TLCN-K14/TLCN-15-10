@@ -56,6 +56,13 @@
         <activity android:name=".profile.ExtrasActivity"/>
         <activity android:name=".profile.GeneralActivity"/>
         <activity android:name=".DetailGroupWork">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity android:name=".DetailWork">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

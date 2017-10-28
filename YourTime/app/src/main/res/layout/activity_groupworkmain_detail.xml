@@ -33,25 +33,13 @@
                 android:layout_weight="1"
                 android:orientation="horizontal"
                 >
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_invite"
-                    android:layout_margin="@dimen/padding_item_list_10dp"
-                    />
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_sort"
-                    android:layout_margin="@dimen/padding_item_list_10dp"/>
             </LinearLayout>
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
+        android:id="@+id/lnlayout_add_todos"
         android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_groupwork_50dp"
@@ -83,6 +71,13 @@
 
             </EditText>
         </LinearLayout>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_star_white"
+            android:padding="@dimen/padding_5dp"
+            />
 
     </LinearLayout>
     <LinearLayout
@@ -267,30 +262,11 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_works"
+        android:id="@+id/list_groupworks_works"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
-        android:layout_width="170dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/border_tear"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/dimen_12sp"
-        android:id="@+id/txt_show_hide_completed_works"
-        android:text="@string/show_completed_works"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_works_completed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

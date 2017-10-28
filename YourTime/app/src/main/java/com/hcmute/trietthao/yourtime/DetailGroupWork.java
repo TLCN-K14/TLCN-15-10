@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 
 public class DetailGroupWork extends AppCompatActivity implements View.OnClickListener{
 
-    @Bind(R.id.show_hide_completed_works)
+    @Bind(R.id.txt_show_hide_completed_works)
     TextView mTxtShowHideCompletedWorks;
 
     boolean isShowCompletedWorks = false;
@@ -32,7 +32,7 @@ public class DetailGroupWork extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         int i = view.getId();
         switch (i){
-            case R.id.show_hide_completed_works:
+            case R.id.txt_show_hide_completed_works:
                 if(isShowCompletedWorks){
                     mTxtShowHideCompletedWorks.setText(R.string.hide_completed_works);
                     isShowCompletedWorks=false;

@@ -34,4 +34,10 @@
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="new_email">New Email</string>
+
+    <string name="add_a_comment">Add a comment . . .</string>
+    <string name="assign_to">Assign to</string>
+    <string name="set_date_reminder"><![CDATA[Set Date & Reminder]]></string>
+    <string name="add_a_note">Add a note . . .</string>
+    <string name="add_a_picture">Add a picture</string>
 </resources>
