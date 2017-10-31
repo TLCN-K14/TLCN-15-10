@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.login;
+package com.hcmute.trietthao.yourtime.mvp.login.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import com.hcmute.trietthao.yourtime.R;
 
 
-class CustomPagerAdapter extends PagerAdapter {
+public class CustomPagerAdapter extends PagerAdapter {
     Context mContext;
     LayoutInflater mLayoutInflater;
     int[] mResources;

@@ -1,9 +1,9 @@
-package com.hcmute.trietthao.yourtime.login;
+package com.hcmute.trietthao.yourtime.mvp.login.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +20,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -33,7 +34,12 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.profile.ProfileActivity;
+import com.hcmute.trietthao.yourtime.SettingsFragment;
+import com.hcmute.trietthao.yourtime.mvp.login.adapter.*;
+import com.hcmute.trietthao.yourtime.mvp.signIn.view.SignInActivity;
+import com.hcmute.trietthao.yourtime.mvp.signIn.view.UserProfile;
+import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
+import com.hcmute.trietthao.yourtime.mvp.setting.view.SettingActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -57,6 +63,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
+    public final static int FROM_FB=1;
+    public final static int FROM_GG=0;
+    public final static String KEY_FROM = "KEY_FROM";
 
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
@@ -77,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initListener();
@@ -90,14 +100,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this , this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        callbackManager = CallbackManager.Factory.create();
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
-            }
-        };
-
         mBtnSignInGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +107,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        // Facebook
+        mBtnSignInGoogle.setScopes(gso.getScopeArray());
+
+
+        // facebook
+        callbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
+            }
+        };
 
         profileTracker = new ProfileTracker() {
             @Override
@@ -137,6 +148,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
 
 
+        //slide login
         final int[] mResources = {
                 R.drawable.collaborate_login,
                 R.drawable.login2
@@ -167,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onResume();
         //Facebook login
         Profile profile = Profile.getCurrentProfile();
-//        nextActivity(profile);
+        nextActivity(profile);
         hideProgressDialog();
     }
 
@@ -181,6 +193,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //Facebook login
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
+
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
@@ -197,14 +210,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             handleSignInResult(result);
         }
 
+//        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
+//        GoogleSignInAccount acct = result.getSignInAccount();
+//        String personName = acct.getDisplayName();
+//        String personEmail = acct.getEmail();
+//        String personId = acct.getId();
+//        Uri personPhoto = acct.getPhotoUrl();
+//
+//        Log.e("Name::::::::",personName);
+//        Log.e("Email::::::", personEmail);
+
+
     }
 
     private void nextActivity(Profile profile){
+        Log.e("Vao nextActivity:"," ");
         if(profile != null){
-            Intent main = new Intent(LoginActivity.this, ProfileActivity.class);
+            Log.e("Vao start activity:"," ");
+            Intent main = new Intent(LoginActivity.this, UserProfile.class);
+            main.putExtra(KEY_FROM,FROM_FB);
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
             main.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
+            main.putExtra("email", profile.getId());
             startActivity(main);
         }
     }
@@ -234,7 +262,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Intent signUp= new Intent(this, SignUpActivity.class);
                 startActivity(signUp);
                 break;
-            case R.id.btn_sign_in_google:
+            case R.id.txt_login_google:
                 signIn();
                 break;
         }
@@ -268,13 +296,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
+            Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+            main.putExtra(KEY_FROM,FROM_GG);
+            main.putExtra("name", acct.getDisplayName());
+            main.putExtra("email", acct.getEmail());
+            main.putExtra("imageUrl", acct.getPhotoUrl());
+            startActivity(main);
         }
     }
     private void signIn() {
+        Log.e("Vào sign in"," ");
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     private void signOut() {
+        Log.e("Vào sign out"," ");
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override

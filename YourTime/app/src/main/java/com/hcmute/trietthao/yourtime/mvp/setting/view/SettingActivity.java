@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.profile;
+package com.hcmute.trietthao.yourtime.mvp.setting.view;
 
 import android.app.TabActivity;
 import android.content.Intent;
@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.facebook.FacebookSdk;
 import com.facebook.share.widget.ShareDialog;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.profile.AccountActivity;
+import com.hcmute.trietthao.yourtime.profile.ExtrasActivity;
+import com.hcmute.trietthao.yourtime.profile.GeneralActivity;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,7 +27,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ProfileActivity extends TabActivity {
+public class SettingActivity extends TabActivity {
 
     private ShareDialog shareDialog;
     @Bind(R.id.img_avatar)
@@ -35,7 +38,7 @@ public class ProfileActivity extends TabActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_setting);
 
         ButterKnife.bind(this);
 
@@ -75,7 +78,7 @@ public class ProfileActivity extends TabActivity {
 
         mTxtUserName.setText("" + name + " " + surname);
 
-        new ProfileActivity.DownloadImage((ImageView)findViewById(R.id.img_avatar)).execute(imageUrl);
+        new SettingActivity.DownloadImage((ImageView)findViewById(R.id.img_avatar)).execute(imageUrl);
     }
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;

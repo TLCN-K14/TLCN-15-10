@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.login;
+package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +17,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.share.widget.ShareDialog;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,6 +25,9 @@ import java.net.URL;
 public class UserProfile extends AppCompatActivity {
     private ShareDialog shareDialog;
     private Button logout;
+    public final static int FROM_GG=0;
+    public final static int FROM_FB=1;
+    public final static String KEY_FROM = "KEY_FROM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -36,25 +40,33 @@ public class UserProfile extends AppCompatActivity {
         shareDialog = new ShareDialog(this);
 
         Bundle inBundle = getIntent().getExtras();
-        String name = inBundle.get("name").toString();
-        String surname = inBundle.get("surname").toString();
-        String imageUrl = inBundle.get("imageUrl").toString();
+        int from = getIntent().getIntExtra(KEY_FROM, FROM_FB);
+        if(from==FROM_FB) {
+            String name = inBundle.get("name").toString();
+            String surname = inBundle.get("surname").toString();
+            String imageUrl = inBundle.get("imageUrl").toString();
 
         TextView nameView = (TextView) findViewById(R.id.nameAndSurname);
-        nameView.setText("" + name + " " + surname);
+        if (inBundle != null)
+        {
+            nameView.setText("" + name + " " + surname);
+            new UserProfile.DownloadImage((ImageView) findViewById(R.id.profileImage)).execute(imageUrl);
+        }
+
         logout = (Button) findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener(){
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 LoginManager.getInstance().logOut();
                 Intent login = new Intent(UserProfile.this, LoginActivity.class);
                 startActivity(login);
                 finish();
             }
         });
-        new UserProfile.DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(imageUrl);
+
 //        LoadImageFromWebOperations(imageUrl);
-        Log.e("URL::::::", imageUrl);
+            Log.e("URL::::::", imageUrl);
+        }
     }
 
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {

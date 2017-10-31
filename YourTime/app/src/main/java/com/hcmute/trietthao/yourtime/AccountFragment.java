@@ -1,37 +1,37 @@
-package com.hcmute.trietthao.yourtime.profile;
+package com.hcmute.trietthao.yourtime;
+
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.hcmute.trietthao.yourtime.R;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
 
 
-public class AccountActivity extends AppCompatActivity{
+public class AccountFragment extends Fragment {
 
-    @Bind(R.id.ln_sign_out)
     LinearLayout mLnSignOut;
-    @Bind(R.id.ln_account_details)
     LinearLayout mLnDetails;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_account);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View V = inflater.inflate(R.layout.fragment_account, container, false);
 
-        ButterKnife.bind(this);
+        mLnSignOut=(LinearLayout) V.findViewById(R.id.ln_sign_out);
+        mLnDetails=(LinearLayout) V.findViewById(R.id.ln_account_details);
 
         mLnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent details= new Intent(AccountActivity.this, AccountDetailsActivity.class);
+                Intent details= new Intent(getActivity(), AccountDetailsActivity.class);
                 startActivity(details);
 
             }
@@ -39,7 +39,7 @@ public class AccountActivity extends AppCompatActivity{
         mLnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AccountActivity.this);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle("Sign Out");
                 alertDialogBuilder.setMessage("Are you sure you want to sign out?");
                 alertDialogBuilder.setPositiveButton("Yes",
@@ -65,5 +65,7 @@ public class AccountActivity extends AppCompatActivity{
 
             }
         });
+
+        return V;
     }
 }
