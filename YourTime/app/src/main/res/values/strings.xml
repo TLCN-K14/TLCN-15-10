@@ -6,8 +6,8 @@
     <string name="facebook">Facebook</string>
     <string name="create_free_account">Create Free Account</string>
     <string name="login">Login</string>
-    <string name="facebook_app_id">364210504019056</string>
-    <string name="fb_login_protocol_scheme">fb364210504019056</string>
+    <string name="facebook_app_id">753024334881588</string>
+    <string name="fb_login_protocol_scheme">fb753024334881588</string>
     <string name="google">Google</string>
     <string name="account_name">Account name</string>
     <string name="back">back</string>
@@ -61,4 +61,11 @@
     <string name="groupwork_week_empty">On vacation? You have nothing to do for the next 7 days</string>
     <string name="groupwork_all_empty">You have not added any to-dos yet. Go and add somthing bro.</string>
     <string name="groupwork_completed_empty">You have not completed and to-dos yet. Go and check some to-dos on your lists.</string>
+    <string name="choose_your_lists">Choose Your Lists</string>
+    <string name="what_would_you_like">What would you like to use YourTime for? Here\'s a selection for you to get started</string>
+    <string name="travel">Travel</string>
+    <string name="work">Work</string>
+    <string name="family">Family</string>
+    <string name="private_w">Private</string>
+    <string name="continue_w">Continue</string>
 </resources>

@@ -2,7 +2,6 @@ package com.hcmute.trietthao.yourtime.mvp.login.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -41,6 +39,8 @@ import com.hcmute.trietthao.yourtime.mvp.signIn.view.UserProfile;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
 import com.hcmute.trietthao.yourtime.mvp.setting.view.SettingActivity;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         ButterKnife.bind(this);
         initListener();
 
+
         //Google
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -127,25 +128,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        mBtnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Profile profile = Profile.getCurrentProfile();
                 nextActivity(profile);
-                Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onCancel() {
+
             }
 
             @Override
             public void onError(FacebookException e) {
-            }
-        };
-        mBtnLogin.setReadPermissions("user_friends");
-        mBtnLogin.registerCallback(callbackManager, callback);
 
+            }
+        });
 
 
         //slide login

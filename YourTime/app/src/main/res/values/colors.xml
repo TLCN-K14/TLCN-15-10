@@ -17,7 +17,7 @@
     <color name="colorFb">#3C579E</color>
     <color name="colorGoogle">#EE4000</color>
     <color name="colorblue">#02a0e9</color>
-    <color name="black">#b3050000</color>
+    <color name="black">#000000</color>
     <color name="colorEditText">#b3807b7b</color>
     <color name="lowBlack">#b3454343</color>
     <color name="colorPink">#F3D0CF</color>
