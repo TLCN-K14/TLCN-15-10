@@ -2,7 +2,9 @@ package com.hcmute.trietthao.yourtime;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,7 +13,10 @@ import butterknife.ButterKnife;
 
 
 
-public class DetailGroupWork extends AppCompatActivity implements View.OnClickListener{
+public class DetailGroupWorkActivity extends AppCompatActivity implements View.OnClickListener{
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Bind(R.id.txt_show_hide_completed_works)
     TextView mTxtShowHideCompletedWorks;
@@ -23,6 +28,15 @@ public class DetailGroupWork extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupwork_detail);
         ButterKnife.bind(this);
+
+        String extraGroupworkId = getIntent().getStringExtra("EXTRA_GROUPWORK_ID");
+
+        setSupportActionBar(mToolbar);
+        ActionBar ab = getSupportActionBar();
+        if(ab!=null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
 //        showHideCompletedWorks =(TextView) findViewById(R.id.show_hide_completed_works);
         mTxtShowHideCompletedWorks.setOnClickListener(this);

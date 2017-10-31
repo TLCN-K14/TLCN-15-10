@@ -16,7 +16,7 @@
     <color name="colortran">#80FFFFFF</color>
     <color name="colorFb">#3C579E</color>
     <color name="colorGoogle">#EE4000</color>
-    <color name="colorblue">#02a0e9</color>Back
+    <color name="colorblue">#02a0e9</color>
     <color name="black">#b3050000</color>
     <color name="colorEditText">#b3807b7b</color>
     <color name="lowBlack">#b3454343</color>
@@ -40,5 +40,12 @@
 
     <color name="colorLightGreen800">#558B2F</color>
     <color name="colorLightGreen900">#33691E</color>
+
+    <color name="colorBlue">#0099CC</color>
+
+    <color name="colorYellow100">#FFF9C4</color>
+    <color name="colorYellow300">#FFF176</color>
+    <color name="colorYellow500">#FFEB3B</color>
+    <color name="colorYellow900">#F57F17</color>
 
 </resources>

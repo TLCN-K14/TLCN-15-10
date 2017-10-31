@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -27,6 +28,7 @@
                 android:textColor="@color/colorWhite"
                 android:gravity="center_vertical"
                 android:textSize="@dimen/dimen_18sp"/>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -80,185 +82,33 @@
             />
 
     </LinearLayout>
+
     <LinearLayout
-        android:baselineAligned="false"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_groupwork_50dp"
-        android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/borderwork_white">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="horizontal">
-            <CheckBox
-                tools:ignore="MissingPrefix"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                app:buttonTint="@color/colorGray500"
-                android:gravity="center_vertical"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="Tuần sau kiểm tra giữa kỳ"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical|bottom"
-                    android:textSize="@dimen/dimen_16sp"
-                    android:layout_marginTop="5dp"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="T.7 14 Th10"
-                    android:gravity="top"
-                    android:textColor="@color/colorRed"
-                    android:textSize="@dimen/dimen_12sp"
-                    />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_margin="2dp">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:src="@drawable/image_user1"
-                    android:layout_marginEnd="@dimen/padding_5dp"
-                    />
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginTop="@dimen/padding_5dp"
-                        android:src="@drawable/ic_work_have_conversation"/>
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_repeat"
-                        android:layout_marginBottom="@dimen/padding_5dp"/>
-                </LinearLayout>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_priority_selected"/>
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:baselineAligned="false"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_groupwork_50dp"
-        android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/borderwork_white">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:orientation="horizontal">
-            <CheckBox
-                tools:ignore="MissingPrefix"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                app:buttonTint="@color/colorGray500"
-                android:gravity="center_vertical"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="Tuần sau kiểm tra giữa kỳ"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical|bottom"
-                    android:textSize="@dimen/dimen_16sp"
-                    android:layout_marginTop="5dp"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="T.7 14 Th10"
-                    android:gravity="top"
-                    android:textColor="@color/colorRed"
-                    android:textSize="@dimen/dimen_12sp"
-                    />
-            </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_margin="2dp">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:src="@drawable/image_user1"
-                    android:layout_marginEnd="@dimen/padding_5dp"
-                    />
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginTop="@dimen/padding_5dp"
-                        android:src="@drawable/ic_work_have_conversation"/>
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_repeat"
-                        android:layout_marginBottom="@dimen/padding_5dp"/>
-                </LinearLayout>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/ic_priority_selected"/>
-        </LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/lnl_groupempty"
+        android:background="@color/colorTear800"
+        >
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:id="@+id/img_groupempty"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_groupempty"
+            android:gravity="center"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/txtsize_16sp"
+            android:layout_marginBottom="15dp"
+            />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

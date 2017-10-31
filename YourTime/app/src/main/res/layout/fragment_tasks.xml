@@ -86,7 +86,7 @@
                 <ImageView
                     android:layout_width="@dimen/height_groupwork_50dp"
                     android:layout_height="@dimen/height_groupwork_50dp"
-                    android:padding="@dimen/margin_item_15dp"
+                    android:padding="13dp"
                     android:src="@drawable/ic_search"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/btn_search"
@@ -94,47 +94,68 @@
                     />
             </RelativeLayout>
         </LinearLayout>
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/myScrollingContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-                        <include
-                            layout="@layout/header_tasks"
-                            android:id="@+id/header_tasks"/>
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/list_groupworks"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            >
-                        </android.support.v7.widget.RecyclerView>
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/myScrollingContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                    <include
+                        layout="@layout/header_tasks"
+                        android:id="@+id/header_tasks"/>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="500dp"
-                            android:background="@color/colorAccent"
-                            android:layout_margin="30dp"
-                           >
-                        </LinearLayout>
-                    <ProgressBar
-                        android:id="@+id/progressBar_Loadmore"
-                        android:layout_width="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_height="wrap_content" />
-                    <CheckBox
+
+
+                <android.support.v7.widget.RecyclerView
+                        android:id="@+id/list_groupworks"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:button="@drawable/checkbox_design"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        />
+                        android:layout_height="match_parent"
+                        >
+                    </android.support.v7.widget.RecyclerView>
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:id="@+id/lnl_create_groupwork"
+                    android:layout_height="@dimen/height_groupwork_50dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_add_list"
+                        android:layout_margin="3dp"
+                        android:padding="12dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="6"
+                        android:text="@string/create_list"
+                        android:textSize="@dimen/dimen_16sp"
+                        android:textColor="@color/colorBlue"
+                        android:gravity="center_vertical"/>
                 </LinearLayout>
 
-                <!-- Your loooooong scrolling content here. -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="500dp"
+                        android:background="@color/colorAccent"
+                        android:layout_margin="30dp"
+                       >
+                    </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progressBar_Loadmore"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content" />
 
-        </android.support.v4.widget.NestedScrollView>
+            </LinearLayout>
+
+            <!-- Your loooooong scrolling content here. -->
+
+    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

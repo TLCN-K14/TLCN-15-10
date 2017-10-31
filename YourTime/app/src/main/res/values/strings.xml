@@ -40,4 +40,25 @@
     <string name="set_date_reminder"><![CDATA[Set Date & Reminder]]></string>
     <string name="add_a_note">Add a note . . .</string>
     <string name="add_a_picture">Add a picture</string>
+    <string name="create_list">Create list</string>
+    <string name="list_name">List name</string>
+    <string name="pedding">PENDING</string>
+    <string name="invite_people">Invite People</string>
+    <string name="just_now">Just Now</string>
+    <string name="add_a_todo_in">Add a to-do in</string>
+    <string name="add">ADD</string>
+    <string name="cancel">CANCEL</string>
+    <string name="inbox">Inbox</string>
+    <string name="assigned_to_me">Assigned to me</string>
+    <string name="starred">Starred</string>
+    <string name="today">Today</string>
+    <string name="week">Week</string>
+    <string name="all">All</string>
+    <string name="completed">Completed</string>
+    <string name="groupwork_today_empty">Congrats! You have nothing due or overdue for today</string>
+    <string name="groupwork_assigned_empty">There is nothing assigned to you</string>
+    <string name="groupwork_starred_empty">You have no starred to-dos</string>
+    <string name="groupwork_week_empty">On vacation? You have nothing to do for the next 7 days</string>
+    <string name="groupwork_all_empty">You have not added any to-dos yet. Go and add somthing bro.</string>
+    <string name="groupwork_completed_empty">You have not completed and to-dos yet. Go and check some to-dos on your lists.</string>
 </resources>
