@@ -18,6 +18,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 
+import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
+
 import java.io.InputStream;
 import java.net.URL;
 
@@ -53,6 +55,7 @@ public class SettingsFragment extends Fragment {
 
         mImgVAvatar= (CircleImageView) view.findViewById(R.id.img_avatar);
         mTxtUserName=(TextView) view.findViewById(R.id.txt_user_name);
+        LoginActivity.FROM_FB=false;
 
         tabHostSetup();      // Khởi tạo tabhost chính
 
@@ -78,15 +81,16 @@ public class SettingsFragment extends Fragment {
             TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
             tv.setTextColor(getResources().getColor(R.color.colorWhite));
         }
+        if(LoginActivity.FROM_FB){
+            Bundle inBundle = getActivity().getIntent().getExtras();
+            String name = inBundle.get("name").toString();
+            String surname = inBundle.get("surname").toString();
+            String imageUrl = inBundle.get("imageUrl").toString();
 
-        Bundle inBundle = getActivity().getIntent().getExtras();
-        String name = inBundle.get("name").toString();
-        String surname = inBundle.get("surname").toString();
-        String imageUrl = inBundle.get("imageUrl").toString();
+            mTxtUserName.setText("" + name + " " + surname);
 
-        mTxtUserName.setText("" + name + " " + surname);
-
-        new SettingsFragment.DownloadImage((ImageView)container.findViewById(R.id.img_avatar)).execute(imageUrl);
+            new SettingsFragment.DownloadImage((ImageView)container.findViewById(R.id.img_avatar)).execute(imageUrl);
+        }
 
         return view;
     }

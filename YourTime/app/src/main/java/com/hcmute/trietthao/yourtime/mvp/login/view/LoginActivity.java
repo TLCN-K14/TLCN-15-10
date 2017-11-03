@@ -16,6 +16,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
@@ -32,15 +34,16 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.SettingsFragment;
 import com.hcmute.trietthao.yourtime.mvp.login.adapter.*;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.SignInActivity;
-import com.hcmute.trietthao.yourtime.mvp.signIn.view.UserProfile;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
-import com.hcmute.trietthao.yourtime.mvp.setting.view.SettingActivity;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -63,9 +66,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
-    public final static int FROM_FB=1;
-    public final static int FROM_GG=0;
-    public final static String KEY_FROM = "KEY_FROM";
+    public static boolean FROM_FB=false;
+    public static boolean FROM_GG=false;
 
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
@@ -122,17 +124,33 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                nextActivity(newProfile);
+//                nextActivity(newProfile);
             }
         };
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
+        mBtnLogin.setReadPermissions(Arrays.asList("email"));
+
         mBtnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Profile profile = Profile.getCurrentProfile();
-                nextActivity(profile);
+                FROM_FB=true;
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.i("LoginActivity", response.toString());
+                        // Get facebook data from login
+                        nextActivity(object);
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
+                request.setParameters(parameters);
+                request.executeAsync();
+//                Profile profile = Profile.getCurrentProfile();
+//                nextActivity(profile);
 
             }
 
@@ -177,9 +195,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onResume() {
         super.onResume();
-        //Facebook login
-        Profile profile = Profile.getCurrentProfile();
-        nextActivity(profile);
+//        Profile profile = Profile.getCurrentProfile();
+//        nextActivity(profile);
         hideProgressDialog();
     }
 
@@ -210,31 +227,41 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             handleSignInResult(result);
         }
 
-//        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
-//        GoogleSignInAccount acct = result.getSignInAccount();
-//        String personName = acct.getDisplayName();
-//        String personEmail = acct.getEmail();
-//        String personId = acct.getId();
-//        Uri personPhoto = acct.getPhotoUrl();
-//
-//        Log.e("Name::::::::",personName);
-//        Log.e("Email::::::", personEmail);
-
 
     }
 
-    private void nextActivity(Profile profile){
-        Log.e("Vao nextActivity:"," ");
-        if(profile != null){
-            Log.e("Vao start activity:"," ");
-            Intent main = new Intent(LoginActivity.this, UserProfile.class);
-            main.putExtra(KEY_FROM,FROM_FB);
-            main.putExtra("name", profile.getFirstName());
-            main.putExtra("surname", profile.getLastName());
-            main.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
-            main.putExtra("email", profile.getId());
+    private void nextActivity(JSONObject object){
+        if (FROM_FB) {
+            try {
+            String id = object.getString("id");
+            Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                Log.i("profile_pic", profile_pic + "");
+
+                Log.e("Vao start activity:", " ");
+                main.putExtra("imageUrl", profile_pic.toString());
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            if (object.has("first_name"))
+                main.putExtra("name", object.getString("first_name"));
+            if (object.has("last_name"))
+                main.putExtra("surname", object.getString("last_name"));
+            if (object.has("email")){
+                main.putExtra("email", object.getString("email"));
+            }
+
             startActivity(main);
+
+
+        }catch(JSONException e) {
+            Log.d(TAG,"Error parsing JSON");
         }
+    }
+
     }
     protected void initListener(){
         mBtnSignUp.setOnClickListener(this);
@@ -263,6 +290,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(signUp);
                 break;
             case R.id.txt_login_google:
+                FROM_GG=true;
                 signIn();
                 break;
         }
@@ -296,12 +324,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
-            main.putExtra(KEY_FROM,FROM_GG);
-            main.putExtra("name", acct.getDisplayName());
-            main.putExtra("email", acct.getEmail());
-            main.putExtra("imageUrl", acct.getPhotoUrl());
-            startActivity(main);
+            if(FROM_GG){
+                Log.e("Vao from gg intent", "");
+                Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+                main.putExtra("name", acct.getDisplayName());
+                main.putExtra("email", acct.getEmail());
+                main.putExtra("imageUrl", acct.getPhotoUrl());
+                startActivity(main);
+            }
+
         }
     }
     private void signIn() {
@@ -341,6 +372,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             mProgressDialog.hide();
         }
     }
+
 
 
 }

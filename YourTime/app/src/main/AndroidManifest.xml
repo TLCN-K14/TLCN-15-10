@@ -31,11 +31,11 @@
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity android:name=".mvp.login.view.LoginActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".mvp.signIn.view.UserProfile"/>
         <activity android:name=".mvp.signUp.view.SignUpActivity">
@@ -43,7 +43,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".mvp.login.view.LoginActivity" />
         </activity>
-        <activity android:name=".mvp.signIn.view.SignInActivity"/>
+        <activity android:name=".mvp.signIn.view.SignInActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
         <activity android:name=".mvp.setting.view.SettingActivity">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -95,11 +101,11 @@
                 android:value=".profile.AccountActivity" />
         </activity>
         <activity android:name=".mvp.chooseList.view.ChooseListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
 
     </application>

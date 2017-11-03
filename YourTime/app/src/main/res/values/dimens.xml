@@ -30,4 +30,5 @@
     <dimen name="dimen_dialog_16dp">16dp</dimen>
     <dimen name="padding_item_list_15dp">15dp</dimen>
     <dimen name="margin_20dp">20dp</dimen>
+    <dimen name="dimen_editt_15sp">15sp</dimen>
 </resources>

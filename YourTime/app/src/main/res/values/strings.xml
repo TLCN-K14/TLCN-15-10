@@ -68,4 +68,11 @@
     <string name="family">Family</string>
     <string name="private_w">Private</string>
     <string name="continue_w">Continue</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="use_email_and_password">Use email and password...</string>
+    <string name="sign_in">Sign in</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="passwword">Passwword</string>
 </resources>

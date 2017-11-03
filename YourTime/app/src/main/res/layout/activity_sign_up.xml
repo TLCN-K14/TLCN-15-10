@@ -12,7 +12,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="100dp"
         android:radius="4dp"
         android:background="@color/colortran">
         <LinearLayout
@@ -61,15 +61,14 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginLeft="15dp"
-            android:background="@drawable/border_white"
-            android:layout_weight="1">
+            android:background="@drawable/border_white">
             <EditText
                 android:id="@+id/edit_sign_up_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:padding="10dp"
-                android:hint=" Name"
+                android:textSize="@dimen/dimen_editt_15sp"
+                android:padding="15dp"
+                android:hint="@string/name"
                 android:textColorHint="@color/colorEditText"
                 android:background="@drawable/border_white"
                 />
@@ -83,10 +82,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
+                android:inputType="textEmailAddress"
                 android:background="@drawable/border_white"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:textColorHint="@color/colorEditText"
-                android:textSize="15dp" />
+                android:textSize="@dimen/dimen_editt_15sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -96,9 +96,10 @@
                 android:id="@+id/edit_sign_up_passw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:padding="10dp"
-                android:hint=" Passwword"
+                android:textSize="@dimen/dimen_editt_15sp"
+                android:padding="15dp"
+                android:inputType="textPassword"
+                android:hint="@string/passwword"
                 android:textColorHint="@color/colorEditText"
                 android:background="@drawable/border_white"
                 />
@@ -107,14 +108,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_weight="1">
+            android:layout_marginBottom="15dp">
             <Button
-                android:id="@+id/btn_sign_in"
+                android:id="@+id/btn_sign_up"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign in"
-                android:layout_weight="1"
+                android:text="@string/sign_up"
                 android:textAllCaps="false"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
