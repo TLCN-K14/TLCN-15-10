@@ -108,7 +108,6 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(mEditName.getText().toString().matches("")){
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setTitle("Message");
                     alertDialogBuilder.setMessage("You must enter your name before sign up!");
                     alertDialogBuilder.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
@@ -125,7 +124,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                 }else if(mEditEmail.getText().toString().matches("")||!isEmailValid(mEditEmail.getText().toString())){
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setTitle("Message");
                     alertDialogBuilder.setMessage("You must enter your email before sign up!");
                     alertDialogBuilder.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
@@ -142,7 +140,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                 }else if(mEditPass.getText().toString().matches("")){
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setTitle("Message");
                     alertDialogBuilder.setMessage("You must enter password before sign up!");
                     alertDialogBuilder.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {

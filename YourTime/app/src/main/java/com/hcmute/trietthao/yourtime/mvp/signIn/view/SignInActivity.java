@@ -1,6 +1,7 @@
 package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements ISignInView {
 
     @Bind(R.id.btn_sign_in_s)
     Button mBtnSignIn;
@@ -27,20 +30,25 @@ public class SignInActivity extends AppCompatActivity {
     @Bind(R.id.edit_sign_in_pass)
     EditText mEditPassw;
 
+    SignInPresenter signInPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
         ButterKnife.bind(this);
-        Log.e("sign in activity","");
+
+        signInPresenter = new SignInPresenter(getApplicationContext());
 
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mEditEmail.getText().toString().matches("")||!isEmailValid(mEditEmail.getText().toString())){
+
+                String username = mEditEmail.getText().toString();
+                String password = mEditPassw.getText().toString();
+                if(username.matches("")||!isEmailValid(username)){
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignInActivity.this);
-                    alertDialogBuilder.setTitle("Message");
                     alertDialogBuilder.setMessage("You must enter your email before sign in!");
                     alertDialogBuilder.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
@@ -55,9 +63,8 @@ public class SignInActivity extends AppCompatActivity {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
 
-                }else if(mEditPassw.getText().toString().matches("")){
+                }else if(password.matches("")){
                     final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignInActivity.this);
-                    alertDialogBuilder.setTitle("Message");
                     alertDialogBuilder.setMessage("You must enter password before sign in!");
                     alertDialogBuilder.setNegativeButton("Cancel",
                             new DialogInterface.OnClickListener() {
@@ -71,6 +78,9 @@ public class SignInActivity extends AppCompatActivity {
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
+                }else {
+                    signInPresenter.createUserLoginSession("ltthao@gmail.com","123456");
+                    loginSuccess();
                 }
 
             }
@@ -85,4 +95,12 @@ public class SignInActivity extends AppCompatActivity {
         return matcher.matches();
     }
 
+    @Override
+    public void loginSuccess() {
+        Intent main= new Intent(getApplicationContext(), MainActivity.class);
+        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(main);
+        finish();
+    }
 }

@@ -64,6 +64,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/padding_5dp"/>
                 <CheckBox
+                    android:id="@+id/checkb_travel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -95,6 +96,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/padding_5dp"/>
                 <CheckBox
+                    android:id="@+id/checkb_work"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -126,6 +128,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/padding_5dp"/>
                 <CheckBox
+                    android:id="@+id/checkb_family"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -157,6 +160,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/padding_5dp"/>
                 <CheckBox
+                    android:id="@+id/checkb_private"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -173,7 +177,7 @@
             android:layout_marginBottom="@dimen/margin_20dp"
             android:layout_weight="1">
             <Button
-                android:id="@+id/btn_sign_up"
+                android:id="@+id/btn_choose_list_continue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/continue_w"
@@ -181,7 +185,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:textColor="@color/colorWhite"
-                android:background="@drawable/button_blue_shadow"/>
+                android:background="@drawable/button_low_blue_shadown"/>
 
         </LinearLayout>
 

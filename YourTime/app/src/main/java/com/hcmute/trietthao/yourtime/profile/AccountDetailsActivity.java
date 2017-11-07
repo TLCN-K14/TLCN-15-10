@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hcmute.trietthao.yourtime.R;
@@ -47,7 +48,9 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
     @Bind(R.id.ln_change_pass)
     LinearLayout mLnChangePass;
     @Bind(R.id.ln_change_email)
-    LinearLayout getmLnChangeEmail;
+    LinearLayout mLnChangeEmail;
+    @Bind(R.id.imgv_back)
+    ImageView mImgvBack;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
@@ -62,13 +65,19 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
         ButterKnife.bind(this);
         initListener();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        ActionBar ab = getSupportActionBar();
+//        if (ab != null) {
+//            ab.setDisplayHomeAsUpEnabled(true);
+//        }
 
+        mImgvBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         mLnTakePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +113,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
             }
         });
 
-        getmLnChangeEmail.setOnClickListener(new View.OnClickListener() {
+        mLnChangeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);

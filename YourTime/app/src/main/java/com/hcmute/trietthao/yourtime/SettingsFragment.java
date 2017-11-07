@@ -1,17 +1,19 @@
 package com.hcmute.trietthao.yourtime;
 
-import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
@@ -19,12 +21,13 @@ import android.widget.TextView;
 
 
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
+import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
+import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -38,8 +41,11 @@ public class SettingsFragment extends Fragment {
     TabHost mTabHost;
     TabWidget mTabWidget;
     RelativeLayout mRltProfile;
+    LinearLayout mLnSignOut, mLnDetails;
     int CurrentTab = -1;
     public static boolean isListOpen = false;
+
+    SignInPresenter signInPresenter;
 
     public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
@@ -55,6 +61,24 @@ public class SettingsFragment extends Fragment {
 
         mImgVAvatar= (CircleImageView) view.findViewById(R.id.img_avatar);
         mTxtUserName=(TextView) view.findViewById(R.id.txt_user_name);
+
+        mLnDetails=(LinearLayout) view.findViewById(R.id.ln_account_details);
+        mLnSignOut=(LinearLayout) view.findViewById(R.id.ln_sign_out);
+
+        signInPresenter = new SignInPresenter(getActivity().getApplicationContext());
+        if(signInPresenter.checkLogin())
+            getActivity().finish();
+
+        // get user data from session
+        HashMap<String, String> user = signInPresenter.getUserDetails();
+        // get name
+        String userPassw = user.get(SignInPresenter.KEY_PASSW);
+
+        // get email
+        String userEmail = user.get(SignInPresenter.KEY_EMAIL);
+
+        mTxtUserName.setText(userEmail);
+
         LoginActivity.FROM_FB=false;
 
         tabHostSetup();      // Khởi tạo tabhost chính
@@ -91,6 +115,45 @@ public class SettingsFragment extends Fragment {
 
             new SettingsFragment.DownloadImage((ImageView)container.findViewById(R.id.img_avatar)).execute(imageUrl);
         }
+
+        mLnDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent details= new Intent(getActivity(), AccountDetailsActivity.class);
+                startActivity(details);
+
+            }
+        });
+        mLnSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setTitle("Sign Out");
+                alertDialogBuilder.setMessage("Are you sure you want to sign out?");
+                alertDialogBuilder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                signInPresenter.logoutUser();
+                            }
+                        });
+
+                alertDialogBuilder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                arg0.dismiss();
+
+                            }
+                        });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+            }
+        });
 
         return view;
     }
@@ -145,23 +208,18 @@ public class SettingsFragment extends Fragment {
     }
 
     private void hideList(){
-        // tabWidget.getChildAt(CurrentTab).setBackgroundResource(R.color.colorWhite);
         isListOpen = false;
         CurrentTab = 3;
         mTabHost.setCurrentTab(CurrentTab);
     }
-    // Hàm hiện list new hoặc list address hoặc list type
     private void showList(int tab){
         isListOpen = true;
         CurrentTab = tab;
-        // tabWidget.getChildAt(tab).setBackgroundResource(R.color.colorGray);
         mTabHost.setCurrentTab(tab);
     }
-    // Hàm chuyển tab
     private void changeTab(int tab) {
         if (CurrentTab == tab) {
             hideList();
-            //tabWidget.getChildAt(tab).setBackgroundResource(R.color.colorWhite);
         } else {
             showList(tab);
         }
