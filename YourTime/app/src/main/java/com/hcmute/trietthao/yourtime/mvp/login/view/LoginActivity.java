@@ -41,6 +41,7 @@ import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.login.adapter.*;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.SignInActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
+import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     Button mBtnSignUp;
 
     @Bind(R.id.btn_login_fb)
-    LoginButton mBtnLogin;
+    LoginButton mBtnLoginFB;
     @Bind(R.id.btn_login)
     Button mBtnSignIn;
     @Bind(R.id.txt_login)
@@ -134,9 +135,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        mBtnLogin.setReadPermissions(Arrays.asList("email"));
+        mBtnLoginFB.setReadPermissions(Arrays.asList("email"));
 
-        mBtnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        mBtnLoginFB.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 FROM_FB=true;
@@ -153,8 +154,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
                 request.setParameters(parameters);
                 request.executeAsync();
-//                Profile profile = Profile.getCurrentProfile();
-//                nextActivity(profile);
 
             }
 
@@ -224,21 +223,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
         //Facebook login
-        if(isOnline())
-        {
-            callbackManager.onActivityResult(requestCode, responseCode, intent);
-            if (requestCode == RC_SIGN_IN) {
-                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
-                handleSignInResult(result);
-            }
-        }else {
-            Toast.makeText(getApplicationContext(),
-                    "Please connect the internet!",
-                    Toast.LENGTH_LONG).show();
+        callbackManager.onActivityResult(requestCode, responseCode, intent);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
+            handleSignInResult(result);
         }
-
-
-
 
 
     }
@@ -279,7 +268,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void initListener(){
         mBtnSignUp.setOnClickListener(this);
         mBtnSignIn.setOnClickListener(this);
-        mBtnLogin.setOnClickListener(this);
+        mBtnLoginFB.setOnClickListener(this);
         mTxtLoginFB.setOnClickListener(this);
         mBtnSignInGoogle.setOnClickListener(this);
         mTxtLoginGoogle.setOnClickListener(this);
@@ -288,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onClick(View view) {
         if(view==mTxtLoginFB){
-            mBtnLogin.performClick();
+            mBtnLoginFB.performClick();
         }
         if(view==mTxtLoginGoogle){
             mBtnSignInGoogle.performClick();
@@ -305,7 +294,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
             case R.id.txt_login_google:
                 FROM_GG=true;
-                signIn();
+                if(NetworkUtils.isConnected(this))
+                {
+                    signIn();
+                }else {
+                    Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
 
@@ -386,14 +381,5 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             mProgressDialog.hide();
         }
     }
-
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-
 
 }

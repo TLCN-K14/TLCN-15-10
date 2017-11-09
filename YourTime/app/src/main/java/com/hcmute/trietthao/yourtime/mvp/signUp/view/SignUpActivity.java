@@ -30,6 +30,7 @@ import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
 
 import java.io.ByteArrayOutputStream;
@@ -326,7 +327,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
             e.printStackTrace();
         }
 
-        encodedString = encodeTobase64(thumbnail);
+        encodedString = Base64Utils.encodeTobase64(thumbnail);
 
         mImgvAvatar.setImageBitmap(thumbnail);
     }
@@ -343,7 +344,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
             }
         }
 
-        encodedString = encodeTobase64(bm);
+        encodedString = Base64Utils.encodeTobase64(bm);
 
         mImgvAvatar.setImageBitmap(bm);
     }
@@ -353,12 +354,6 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-    public static String encodeTobase64(Bitmap image) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        String encodeImage = Base64.encodeToString(byteArray,Base64.DEFAULT);
-        return encodeImage;
-    }
+
 
 }
