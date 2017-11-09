@@ -7,14 +7,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -26,13 +25,12 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
-import com.hcmute.trietthao.yourtime.mvp.signIn.view.UserProfile;
 import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,7 +46,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements ISignUpView {
     private ShareDialog shareDialog;
 
     @Bind(R.id.imgv_sign_up_avatar)
@@ -62,9 +60,15 @@ public class SignUpActivity extends AppCompatActivity {
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
 
+    String encodedString;
+    public static boolean FROM_SIGNUP=false;
+
+
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
     final Context c = this;
+
+    UserSession userSession;
 
 
     @Override
@@ -74,6 +78,8 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         ButterKnife.bind(this);
+
+        userSession = new UserSession(getApplicationContext());
 
         shareDialog = new ShareDialog(this);
 
@@ -155,8 +161,17 @@ public class SignUpActivity extends AppCompatActivity {
                     alertDialog.show();
                 }
                 else {
-                    Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
-                    startActivity(chooseList);
+                    FROM_SIGNUP=true;
+                    String email=mEditEmail.getText().toString();
+                    String passw=mEditPass.getText().toString();
+                    String name= mEditName.getText().toString();
+//                    Log.e("image...:::",encodedString);
+                    if(mImgvAvatar.isClickable()) {
+                        userSession.createUserSignUpSession(email, passw, name, encodedString);
+                    }else {
+                        userSession.createUserSignUpSession(email, passw,name,"");
+                    }
+                    signUpSuccess();
                 }
             }
         });
@@ -169,6 +184,18 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void signUpSuccess() {
+
+        Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
+        chooseList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        chooseList.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(chooseList);
+        finish();
+
+    }
+
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -299,6 +326,8 @@ public class SignUpActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        encodedString = encodeTobase64(thumbnail);
+
         mImgvAvatar.setImageBitmap(thumbnail);
     }
 
@@ -314,6 +343,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
 
+        encodedString = encodeTobase64(bm);
+
         mImgvAvatar.setImageBitmap(bm);
     }
     public static boolean isEmailValid(String email) {
@@ -321,6 +352,13 @@ public class SignUpActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+    public static String encodeTobase64(Bitmap image) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        String encodeImage = Base64.encodeToString(byteArray,Base64.DEFAULT);
+        return encodeImage;
     }
 
 }

@@ -185,7 +185,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:textColor="@color/colorWhite"
-                android:background="@drawable/button_low_blue_shadown"/>
+                android:background="@drawable/button_blue_shadow"/>
 
         </LinearLayout>
 

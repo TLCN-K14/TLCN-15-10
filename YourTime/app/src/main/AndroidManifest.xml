@@ -3,6 +3,7 @@
     package="com.hcmute.trietthao.yourtime">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -37,7 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.signIn.view.UserProfile"/>
         <activity android:name=".mvp.signUp.view.SignUpActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

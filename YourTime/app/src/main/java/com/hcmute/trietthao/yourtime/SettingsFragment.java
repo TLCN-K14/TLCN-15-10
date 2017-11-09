@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
+import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
 
 import java.io.InputStream;
@@ -45,7 +46,7 @@ public class SettingsFragment extends Fragment {
     int CurrentTab = -1;
     public static boolean isListOpen = false;
 
-    SignInPresenter signInPresenter;
+
 
     public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
@@ -65,19 +66,19 @@ public class SettingsFragment extends Fragment {
         mLnDetails=(LinearLayout) view.findViewById(R.id.ln_account_details);
         mLnSignOut=(LinearLayout) view.findViewById(R.id.ln_sign_out);
 
-        signInPresenter = new SignInPresenter(getActivity().getApplicationContext());
-        if(signInPresenter.checkLogin())
-            getActivity().finish();
 
-        // get user data from session
-        HashMap<String, String> user = signInPresenter.getUserDetails();
-        // get name
-        String userPassw = user.get(SignInPresenter.KEY_PASSW);
+//        if(signInPresenter.checkLogin())
+//            getActivity().finish();
+//
+//        // get user data from session
+//        HashMap<String, String> user = signInPresenter.getUserDetails();
+//        // get name
+//        String userPassw = user.get(SignInPresenter.KEY_PASSW);
+//
+//        // get email
+//        String userEmail = user.get(SignInPresenter.KEY_EMAIL);
 
-        // get email
-        String userEmail = user.get(SignInPresenter.KEY_EMAIL);
-
-        mTxtUserName.setText(userEmail);
+//        mTxtUserName.setText(userEmail);
 
         LoginActivity.FROM_FB=false;
 
@@ -135,7 +136,7 @@ public class SettingsFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-                                signInPresenter.logoutUser();
+//                                signInPresenter.logoutUser();
                             }
                         });
 

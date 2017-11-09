@@ -1,7 +1,10 @@
 package com.hcmute.trietthao.yourtime.mvp.login.view;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -220,12 +224,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
         //Facebook login
-        callbackManager.onActivityResult(requestCode, responseCode, intent);
-
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
-            handleSignInResult(result);
+        if(isOnline())
+        {
+            callbackManager.onActivityResult(requestCode, responseCode, intent);
+            if (requestCode == RC_SIGN_IN) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
+                handleSignInResult(result);
+            }
+        }else {
+            Toast.makeText(getApplicationContext(),
+                    "Please connect the internet!",
+                    Toast.LENGTH_LONG).show();
         }
+
+
+
 
 
     }
@@ -286,6 +299,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(signIn);
                 break;
             case R.id.btn_sign_up:
+                SignUpActivity.FROM_SIGNUP=true;
                 Intent signUp= new Intent(this, SignUpActivity.class);
                 startActivity(signUp);
                 break;
@@ -371,6 +385,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 

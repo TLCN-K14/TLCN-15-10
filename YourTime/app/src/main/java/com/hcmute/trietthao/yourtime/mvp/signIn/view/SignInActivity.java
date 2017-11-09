@@ -2,6 +2,7 @@ package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
+import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +33,7 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
     @Bind(R.id.edit_sign_in_pass)
     EditText mEditPassw;
 
-    SignInPresenter signInPresenter;
+    UserSession userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,8 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
 
         ButterKnife.bind(this);
 
-        signInPresenter = new SignInPresenter(getApplicationContext());
+        userSession = new UserSession(getApplicationContext());
+
 
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +83,21 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 }else {
-                    signInPresenter.createUserLoginSession("ltthao@gmail.com","123456");
-                    loginSuccess();
+                    if(username.equals("ltthao@gmail.com") && password.equals("1234")){
+
+                        userSession.createUserSignInSession("ltthao@gmail.com",
+                                "1234");
+                        loginSuccess();
+
+                    }else{
+
+                        // username / password doesn't match&
+                        Toast.makeText(getApplicationContext(),
+                                "Username/Password is incorrect",
+                                Toast.LENGTH_LONG).show();
+
+                    }
+
                 }
 
             }
@@ -102,5 +119,15 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
         main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(main);
         finish();
+    }
+
+    @Override
+    public void errorEmailInvalid() {
+
+    }
+
+    @Override
+    public void errorEmptyInput() {
+
     }
 }

@@ -2,8 +2,8 @@ package com.hcmute.trietthao.yourtime;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
+import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
+
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class TasksFragment extends Fragment implements View.OnClickListener {
@@ -26,11 +31,17 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     TextView txtTodayCountAll, txtTodayCountOverDue;
     TextView txtWeekCountAll, txtWeekCountOverDue;
     TextView txtAllCountAll, txtAllCountOverDue;
+    TextView txtNameUser;
+    CircleImageView imgUser;
 
     LinearLayout lnlInbox, lnlAssignedToMe, lnlStarred, lnlToday, lnlWeek, lnlAll, lnlCompleted;
 
     @Bind(R.id.lnl_create_groupwork)
     LinearLayout lnlCreateGroupWork;
+
+    UserSession userSession;
+
+
 
 
     public static TasksFragment newInstance() {
@@ -51,13 +62,45 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this,view);
 
+        SignUpActivity.FROM_SIGNUP=false;
+
         txtDayCurrent = headerTasksView.findViewById(R.id.day_current);
+        txtNameUser=view.findViewById(R.id.name_user);
+        imgUser=view.findViewById(R.id.image_user);
+        Log.e("vào taskfragment:::::","");
 
         lnlCreateGroupWork.setOnClickListener(this);
 
         setupHeaderTask(headerTasksView);
 
         setTxtDayCurrent();
+
+        if(SignUpActivity.FROM_SIGNUP){
+            Log.e("from sign up:::::","");
+            userSession= new UserSession(getActivity().getApplicationContext());
+
+            if(userSession.checkLogin())
+                getActivity().finish();
+
+            // get user data from session
+            HashMap<String, String> user = userSession.getUserDetails();
+            // get name
+            String userName = user.get(userSession.KEY_NAME);
+
+            // get email
+            String userEmail = user.get(userSession.KEY_EMAIL);
+            if(userSession.KEY_AVATAR.length()>0) {
+                String image = user.get(userSession.KEY_AVATAR);
+            }else {
+                imgUser.setImageResource(R.drawable.null_avatar);
+            }
+
+            txtNameUser.setText(userName);
+            Log.e("name user::",userName);
+            Log.e("useremail::", userEmail);
+
+        }
+
 
         return view;
     }
