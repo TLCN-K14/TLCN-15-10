@@ -93,7 +93,6 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
             // get email
             String userEmail = user.get(preferManager.KEY_EMAIL);
-
             txtNameUser.setText(userName);
             Log.e("name user::",userName);
             Log.e("useremail::", userEmail);

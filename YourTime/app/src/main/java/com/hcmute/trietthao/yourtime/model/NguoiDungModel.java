@@ -38,7 +38,6 @@ public class NguoiDungModel implements Serializable {
         this.userName = userName;
         this.passW = passW;
     }
-
     public String getAnhDaiDien() {
         return anhDaiDien;
     }
