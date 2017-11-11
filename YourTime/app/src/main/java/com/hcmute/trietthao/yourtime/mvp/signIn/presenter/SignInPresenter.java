@@ -2,9 +2,6 @@ package com.hcmute.trietthao.yourtime.mvp.signIn.presenter;
 
 
 
-import android.app.Application;
-import android.widget.Toast;
-
 import com.hcmute.trietthao.yourtime.base.BasePresenter;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.ISignInView;
@@ -49,7 +46,7 @@ public class SignInPresenter extends BasePresenter implements ISignInPresenter {
         }
         if(nguoiDungModel.getUserName().equals(email) || nguoiDungModel.getPassW().equals(passw))
         {  // Kiểm tra email và pass có trùng khớp với tài khoản hiện tại
-            mDBNguoiDungServer.getNguoiDung(email);
+            mDBNguoiDungServer.getUser(email);
         }
 
     }

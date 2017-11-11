@@ -20,14 +20,14 @@ import retrofit2.http.Query;
 public interface Service { //Định nghĩa các REST API (Api Services) cho Retrofit
    // Hàm  get user by email and passw
     @GET("/getuser")
-    Call<ArrayList<NguoiDungModel>> getNguoiDung(@Query("email") String email);
+    Call<ArrayList<NguoiDungModel>> getUserByEmail(@Query("email") String email);
     @GET("/getalluser")
-    Call<ArrayList<NguoiDungModel>> getListNguoiDung();
+    Call<ArrayList<NguoiDungModel>> getListUser();
 
     @FormUrlEncoded
     @POST("/insertuser")
-    Call<InsertUserResponse> insertNguoiDung(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
-                                             @Field("username") String username, @Field("passw") String passw);
+    Call<InsertUserResponse> insertUser(@Field("idnguoidung") int idnguoidung, @Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
+                                        @Field("username") String username, @Field("passw") String passw);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private ProgressDialog mProgressDialog;
     public static boolean FROM_FB=false;
     public static boolean FROM_GG=false;
+    private int LOGIN_REQ = 1,LOGIN_REQ2 = 2,LOGIN_REQ3;
 
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
@@ -282,12 +283,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         switch (view.getId()){
             case R.id.btn_login:
                 Intent signIn= new Intent(this, SignInActivity.class);
-                startActivity(signIn);
+                startActivityForResult(signIn, LOGIN_REQ);
                 break;
             case R.id.btn_sign_up:
                 SignUpActivity.FROM_SIGNUP=true;
                 Intent signUp= new Intent(this, SignUpActivity.class);
-                startActivity(signUp);
+                startActivityForResult(signUp, LOGIN_REQ2);
                 break;
             case R.id.txt_login_google:
                 FROM_GG=true;

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
 import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
 
 import java.io.InputStream;
@@ -45,6 +46,7 @@ public class SettingsFragment extends Fragment {
     LinearLayout mLnSignOut, mLnDetails;
     int CurrentTab = -1;
     public static boolean isListOpen = false;
+    PreferManager preferManager;
 
 
 
@@ -67,18 +69,18 @@ public class SettingsFragment extends Fragment {
         mLnSignOut=(LinearLayout) view.findViewById(R.id.ln_sign_out);
 
 
-//        if(signInPresenter.checkLogin())
-//            getActivity().finish();
-//
-//        // get user data from session
-//        HashMap<String, String> user = signInPresenter.getUserDetails();
-//        // get name
-//        String userPassw = user.get(SignInPresenter.KEY_PASSW);
-//
-//        // get email
-//        String userEmail = user.get(SignInPresenter.KEY_EMAIL);
+        preferManager=new PreferManager(getActivity().getApplicationContext());
 
-//        mTxtUserName.setText(userEmail);
+
+        // get user data from session
+        HashMap<String, String> user = preferManager.getUserDetails();
+        // get name
+        String userEmail = user.get(PreferManager.KEY_EMAIL);
+
+        // get email
+        String userName = user.get(PreferManager.KEY_NAME);
+
+        mTxtUserName.setText(userName);
 
         LoginActivity.FROM_FB=false;
 
@@ -136,7 +138,7 @@ public class SettingsFragment extends Fragment {
 
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-//                                signInPresenter.logoutUser();
+                                preferManager.logoutUser();
                             }
                         });
 

@@ -29,12 +29,13 @@ public class DBNguoiDungServer {
 
 
     // Hàm insert user chỗ đăng ký
-    public void insertNguoiDung(String name,String anhdaidien, String username, String pass){
+    public void insertUser(int id, String name, String avatar, String username, String pass){
         mService = APIUtils.getService();
-        Call<InsertUserResponse> call = mService.insertNguoiDung(name,anhdaidien,username,pass);
+        Call<InsertUserResponse> call = mService.insertUser(id,name,avatar,username,pass);
         Log.e("Response",call.request().url().toString());
+        Log.e("Response id:::::",String.valueOf(id));
         Log.e("Response name:::::",name);
-        Log.e("Response anh:::::",anhdaidien);
+        Log.e("Response anh:::::",avatar);
         Log.e("Response username:::::",username);
         Log.e("Response pass:::::",pass);
         call.enqueue(new Callback<InsertUserResponse>() {
@@ -57,9 +58,9 @@ public class DBNguoiDungServer {
         });
     }
     // Hàm lấy list user
-    public void getListNguoiDung(){
+    public void getListUser(){
         mService = APIUtils.getService();
-        Call<ArrayList<NguoiDungModel>> call = mService.getListNguoiDung();
+        Call<ArrayList<NguoiDungModel>> call = mService.getListUser();
         Log.e("Response",call.request().url().toString());
         call.enqueue(new Callback<ArrayList<NguoiDungModel>>() {
             @Override
@@ -76,9 +77,9 @@ public class DBNguoiDungServer {
     }
 
     // ==== Login ==== //
-    public void getNguoiDung(String mail){
+    public void getUser(String mail){
         mService = APIUtils.getService();
-        Call<ArrayList<NguoiDungModel>> call = mService.getNguoiDung(mail);
+        Call<ArrayList<NguoiDungModel>> call = mService.getUserByEmail(mail);
         Log.e("Response",call.request().url().toString());
         call.enqueue(new Callback<ArrayList<NguoiDungModel>>() {
             @Override

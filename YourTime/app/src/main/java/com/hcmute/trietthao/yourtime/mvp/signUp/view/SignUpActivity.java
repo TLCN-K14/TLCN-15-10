@@ -35,6 +35,7 @@ import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +50,8 @@ import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 
 
 public class SignUpActivity extends AppCompatActivity implements ISignUpView, DBNguoiDungServer.userListener {
@@ -122,13 +125,15 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 email=mEditEmail.getText().toString();
                 pass=mEditPass.getText().toString();
                 name= mEditName.getText().toString();
+                id= getIntCurrentDateTime();
 
                 if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0&& isEmailValid(email)){
 
-                    dbNguoiDungServer.getListNguoiDung();
+                    dbNguoiDungServer.getListUser();
 
                 }
                 else
@@ -173,9 +178,11 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             Toast.makeText(this,"Tài khoản đã tồn tại!!!", Toast.LENGTH_LONG).show();
         else {  // Nếu email chưa tồn tại thì tạo tài khoản và trả dữ liệu về trang trước
             FROM_SIGNUP = true;
-            dbNguoiDungServer.insertNguoiDung(name, encodedString, email, pass);
+            dbNguoiDungServer.insertUser(id,name, encodedString, email, pass);
             Intent data = new Intent();
             data.putExtra("email", email);
+            data.putExtra("name", name);
+            data.putExtra("id",id);
             data.putExtra("pass", pass);
             setResult(RESULT_OK, data);
 
@@ -192,6 +199,8 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
+                    Log.e("email prefer::::",email);
+
                     preferManager.createUserSignInSession(id,email,name);
 
                     Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
