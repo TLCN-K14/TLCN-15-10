@@ -89,11 +89,6 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
             // get email
             String userEmail = user.get(preferManager.KEY_EMAIL);
-            if(preferManager.KEY_AVATAR.length()>0) {
-                String image = user.get(preferManager.KEY_AVATAR);
-            }else {
-                imgUser.setImageResource(R.drawable.null_avatar);
-            }
 
             txtNameUser.setText(userName);
             Log.e("name user::",userName);

@@ -1,6 +1,7 @@
 package com.hcmute.trietthao.yourtime.service;
 
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,8 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     Call<ArrayList<NguoiDungModel>> getListNguoiDung();
 
     @POST("/insertuser")
-    Call<ArrayList<NguoiDungModel>> insertNguoiDung(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
-                                                    @Field("username") String username, @Field("passw") String passw);
+    Call<InsertUserResponse> insertNguoiDung(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
+                                             @Field("username") String username, @Field("passw") String passw);
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")
 //    Call<ArrayList<ReviewWhere>> getReview_ByItem(@Query("itemid") int itemid);
