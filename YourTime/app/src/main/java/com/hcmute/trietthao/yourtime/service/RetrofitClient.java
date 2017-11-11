@@ -3,9 +3,6 @@ package com.hcmute.trietthao.yourtime.service;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by xuant on 13/05/2017.
- */
 
 public class RetrofitClient {
     private static Retrofit retrofit = null;

@@ -2,11 +2,9 @@ package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +13,7 @@ import android.widget.Toast;
 import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
-import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +24,7 @@ import butterknife.ButterKnife;
 
 public class SignInActivity extends AppCompatActivity implements ISignInView {
 
+
     @Bind(R.id.btn_sign_in_s)
     Button mBtnSignIn;
     @Bind(R.id.edit_sign_in_email)
@@ -33,7 +32,8 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
     @Bind(R.id.edit_sign_in_pass)
     EditText mEditPassw;
 
-    UserSession userSession;
+    PreferManager preferManager;
+    SignInPresenter signInPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
 
         ButterKnife.bind(this);
 
-        userSession = new UserSession(getApplicationContext());
+        preferManager = new PreferManager(getApplicationContext());
 
 
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
@@ -51,41 +51,12 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
 
                 String username = mEditEmail.getText().toString();
                 String password = mEditPassw.getText().toString();
-                if(username.matches("")||!isEmailValid(username)){
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignInActivity.this);
-                    alertDialogBuilder.setMessage("You must enter your email before sign in!");
-                    alertDialogBuilder.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    arg0.dismiss();
-
-                                }
-                            });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-
-                }else if(password.matches("")){
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignInActivity.this);
-                    alertDialogBuilder.setMessage("You must enter password before sign in!");
-                    alertDialogBuilder.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    arg0.dismiss();
-
-                                }
-                            });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                }else {
+                if(username.length()>0&& password.length()>0)
+                {
+                    signInPresenter.login(username,password);
                     if(username.equals("ltthao@gmail.com") && password.equals("1234")){
 
-                        userSession.createUserSignInSession("ltthao@gmail.com",
+                        preferManager.createUserSignInSession("ltthao@gmail.com",
                                 "1234");
                         loginSuccess();
 
@@ -97,6 +68,9 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
                                 Toast.LENGTH_LONG).show();
 
                     }
+
+                } else {
+                    Toast.makeText(getApplication(),"You must enter your email and password before sign in!",Toast.LENGTH_LONG).show();
 
                 }
 

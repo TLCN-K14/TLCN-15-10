@@ -10,16 +10,17 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -27,11 +28,13 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
-import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +51,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class SignUpActivity extends AppCompatActivity implements ISignUpView {
+public class SignUpActivity extends AppCompatActivity implements ISignUpView, DBNguoiDungServer.getUserListener {
     private ShareDialog shareDialog;
 
     @Bind(R.id.imgv_sign_up_avatar)
@@ -69,7 +73,9 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
     private String userChoosenTask;
     final Context c = this;
 
-    UserSession userSession;
+    PreferManager preferManager;
+    String  pass="",avatar="",email="",name="";
+    DBNguoiDungServer dbNguoiDungServer;
 
 
     @Override
@@ -80,7 +86,9 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
 
         ButterKnife.bind(this);
 
-        userSession = new UserSession(getApplicationContext());
+        dbNguoiDungServer=new DBNguoiDungServer(this);
+
+        preferManager = new PreferManager(getApplicationContext());
 
         shareDialog = new ShareDialog(this);
 
@@ -113,67 +121,17 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mEditName.getText().toString().matches("")){
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setMessage("You must enter your name before sign up!");
-                    alertDialogBuilder.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
+                email=mEditEmail.getText().toString();
+                pass=mEditPass.getText().toString();
+                name= mEditName.getText().toString();
 
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    arg0.dismiss();
+                if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0){
 
-                                }
-                            });
+                    dbNguoiDungServer.getListNguoiDung();
 
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-
-                }else if(mEditEmail.getText().toString().matches("")||!isEmailValid(mEditEmail.getText().toString())){
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setMessage("You must enter your email before sign up!");
-                    alertDialogBuilder.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    arg0.dismiss();
-
-                                }
-                            });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-
-                }else if(mEditPass.getText().toString().matches("")){
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SignUpActivity.this);
-                    alertDialogBuilder.setMessage("You must enter password before sign up!");
-                    alertDialogBuilder.setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface arg0, int arg1) {
-                                    arg0.dismiss();
-
-                                }
-                            });
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
                 }
-                else {
-                    FROM_SIGNUP=true;
-                    String email=mEditEmail.getText().toString();
-                    String passw=mEditPass.getText().toString();
-                    String name= mEditName.getText().toString();
-//                    Log.e("image...:::",encodedString);
-                    if(mImgvAvatar.isClickable()) {
-                        userSession.createUserSignUpSession(email, passw, name, encodedString);
-                    }else {
-                        userSession.createUserSignUpSession(email, passw,name,"");
-                    }
-                    signUpSuccess();
-                }
+                else
+                    Toast.makeText(getApplication(),"Nhập đầy đủ thông tin!!!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -190,10 +148,49 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView {
     public void signUpSuccess() {
 
         Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
-        chooseList.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        chooseList.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(chooseList);
         finish();
+
+    }
+
+    @Override
+    public void getUser(ArrayList<NguoiDungModel> userArrayList) {
+        boolean isSame = false;
+        // Kiểm tra email có tồn tại hay chưa
+        if(userArrayList!=null)
+        {
+            for(int i=0;i<userArrayList.size();i++)
+            {
+                if(userArrayList.get(i).getUserName().equals(email))
+                {
+                    isSame=true;  // Khi email tồn tại thì xuất thông báo
+                    break;
+                }
+            }
+        }
+        if(isSame)
+            Toast.makeText(this,"Tài khoản đã tồn tại!!!", Toast.LENGTH_LONG).show();
+        else
+        {  // Nếu email chưa tồn tại thì tạo tài khoản và trả dữ liệu về trang trước
+            FROM_SIGNUP=true;
+            dbNguoiDungServer.insertNguoiDung(email,avatar,name,pass);
+            Intent data = new Intent();
+            data.putExtra("email",email);
+            data.putExtra("pass",pass);
+            setResult(RESULT_OK,data);
+            Toast.makeText(this,"Đăng ký thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    signUpSuccess();
+                    if(mImgvAvatar.isClickable()) {
+                        preferManager.createUserSignUpSession(email,encodedString, name, pass );
+                    }else {
+                        preferManager.createUserSignUpSession(email, pass,name,null);
+                    }
+                }
+            }, 1500);
+        }
 
     }
 

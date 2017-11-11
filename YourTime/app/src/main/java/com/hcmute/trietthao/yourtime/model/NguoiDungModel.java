@@ -39,6 +39,14 @@ public class NguoiDungModel implements Serializable {
         this.passW = passW;
     }
 
+    public String getAnhDaiDien() {
+        return anhDaiDien;
+    }
+
+    public void setAnhDaiDien(String anhDaiDien) {
+        this.anhDaiDien = anhDaiDien;
+    }
+
     public Integer getIdNguoiDung() {
         return idNguoiDung;
     }
@@ -53,14 +61,6 @@ public class NguoiDungModel implements Serializable {
 
     public void setTenNguoiDung(String tenNguoiDung) {
         this.tenNguoiDung = tenNguoiDung;
-    }
-
-    public String getAnhDaiDien() {
-        return anhDaiDien;
-    }
-
-    public void setAnhDaiDien(String anhDaiDien) {
-        this.anhDaiDien = anhDaiDien;
     }
 
     public String getUserName() {

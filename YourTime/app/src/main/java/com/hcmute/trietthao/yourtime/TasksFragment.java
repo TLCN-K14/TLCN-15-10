@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
-import com.hcmute.trietthao.yourtime.sharedPreferences.UserSession;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.lnl_create_groupwork)
     LinearLayout lnlCreateGroupWork;
 
-    UserSession userSession;
+    PreferManager preferManager;
 
 
 
@@ -77,20 +77,20 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
         if(SignUpActivity.FROM_SIGNUP){
             Log.e("from sign up:::::","");
-            userSession= new UserSession(getActivity().getApplicationContext());
+            preferManager = new PreferManager(getActivity().getApplicationContext());
 
-            if(userSession.checkLogin())
+            if(preferManager.checkLogin())
                 getActivity().finish();
 
             // get user data from session
-            HashMap<String, String> user = userSession.getUserDetails();
+            HashMap<String, String> user = preferManager.getUserDetails();
             // get name
-            String userName = user.get(userSession.KEY_NAME);
+            String userName = user.get(preferManager.KEY_NAME);
 
             // get email
-            String userEmail = user.get(userSession.KEY_EMAIL);
-            if(userSession.KEY_AVATAR.length()>0) {
-                String image = user.get(userSession.KEY_AVATAR);
+            String userEmail = user.get(preferManager.KEY_EMAIL);
+            if(preferManager.KEY_AVATAR.length()>0) {
+                String image = user.get(preferManager.KEY_AVATAR);
             }else {
                 imgUser.setImageResource(R.drawable.null_avatar);
             }

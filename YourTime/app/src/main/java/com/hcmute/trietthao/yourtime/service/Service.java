@@ -1,13 +1,29 @@
 package com.hcmute.trietthao.yourtime.service;
 
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
+
 /**
  * Created by xuant on 13/05/2017.
  */
 
 public interface Service { //Định nghĩa các REST API (Api Services) cho Retrofit
-   // Hàm  lấy item where
-//    @GET("/getitemwhere")
-//    Call<ArrayList<ItemWhere>> getItemWhere(@Query("categoryid") int categoryID, @Query("typeid") int typeID, @Query("districtid") int districtID, @Query("cityid") int cityid, @Query("streetid") int streetid);
+   // Hàm  get user by email and passw
+    @GET("/getuser")
+    Call<ArrayList<NguoiDungModel>> getNguoiDung(@Query("email") String email);
+    @GET("/getalluser")
+    Call<ArrayList<NguoiDungModel>> getListNguoiDung();
+
+    @POST("/insertuser")
+    Call<ArrayList<NguoiDungModel>> insertNguoiDung(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
+                                                    @Field("username") String username, @Field("passw") String passw);
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")
 //    Call<ArrayList<ReviewWhere>> getReview_ByItem(@Query("itemid") int itemid);
