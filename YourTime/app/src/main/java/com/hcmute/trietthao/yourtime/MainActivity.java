@@ -13,12 +13,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity{
     ScreenUtils screenUtils;
 
     View mBottomSheetCreateWorkView;
+    PreferManager preferManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,15 @@ public class MainActivity extends AppCompatActivity{
         ButterKnife.bind(this);
 
         setupBottomSheetView();
+        preferManager = new PreferManager(getApplicationContext());
+        Toast.makeText(getApplicationContext(),
+                "User Login Status: " + preferManager.isLoggedIn(),
+                Toast.LENGTH_LONG).show();
+
+
+        if(preferManager.checkLogin())
+            finish();
+
 
         mBottomNavigationView .setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
