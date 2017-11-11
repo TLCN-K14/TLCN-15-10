@@ -21,6 +21,10 @@ public class BinhLuanModel implements Serializable {
     @Expose
     private Integer idNguoiTao;
 
+    @SerializedName("idNguoiNhan")
+    @Expose
+    private Integer idNguoiNhan;
+
     @SerializedName("ngayTao")
     @Expose
     private Date ngayTao;
@@ -33,10 +37,17 @@ public class BinhLuanModel implements Serializable {
     @Expose
     private String trangThai;
 
-    public BinhLuanModel(Integer idBinhLuan, Integer idCongViec, Integer idNguoiTao, Date ngayTao, String noiDung, String trangThai) {
+
+    public BinhLuanModel() {
+
+    }
+
+    public BinhLuanModel(Integer idBinhLuan, Integer idCongViec, Integer idNguoiTao,
+                         Integer idNguoiNhan, Date ngayTao, String noiDung, String trangThai) {
         this.idBinhLuan = idBinhLuan;
         this.idCongViec = idCongViec;
         this.idNguoiTao = idNguoiTao;
+        this.idNguoiNhan = idNguoiNhan;
         this.ngayTao = ngayTao;
         this.noiDung = noiDung;
         this.trangThai = trangThai;
@@ -64,6 +75,14 @@ public class BinhLuanModel implements Serializable {
 
     public void setIdNguoiTao(Integer idNguoiTao) {
         this.idNguoiTao = idNguoiTao;
+    }
+
+    public Integer getIdNguoiNhan() {
+        return idNguoiNhan;
+    }
+
+    public void setIdNguoiNhan(Integer idNguoiNhan) {
+        this.idNguoiNhan = idNguoiNhan;
     }
 
     public Date getNgayTao() {

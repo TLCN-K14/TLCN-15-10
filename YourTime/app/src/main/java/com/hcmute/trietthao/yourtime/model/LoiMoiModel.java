@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class LoiMoiModel implements Serializable {
     @SerializedName("idLoiMoi")
@@ -34,6 +33,10 @@ public class LoiMoiModel implements Serializable {
         this.idNguoiDuocMoi = idNguoiDuocMoi;
         this.idNhom = idNhom;
         this.trangThai = trangThai;
+    }
+
+    public LoiMoiModel() {
+
     }
 
     public Integer getIdLoiMoi() {

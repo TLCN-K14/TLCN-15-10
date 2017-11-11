@@ -35,6 +35,10 @@ public class ThongBaoModel implements Serializable {
         this.trangThai = trangThai;
     }
 
+    public ThongBaoModel() {
+
+    }
+
     public Integer getIdThongBao() {
         return idThongBao;
     }

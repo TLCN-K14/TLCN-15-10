@@ -15,19 +15,28 @@ public class NguoiDungModel implements Serializable {
     @Expose
     private String tenNguoiDung;
 
+    @SerializedName("anhDaiDien")
+    @Expose
+    private String anhDaiDien;
+
     @SerializedName("userName")
     @Expose
     private String userName;
 
-    @SerializedName("passWord")
+    @SerializedName("passW")
     @Expose
-    private String passWord;
+    private String passW;
 
-    public NguoiDungModel(Integer idNguoiDung, String tenNguoiDung, String userName, String passWord) {
+    public NguoiDungModel() {
+
+    }
+
+    public NguoiDungModel(Integer idNguoiDung, String tenNguoiDung, String anhDaiDien, String userName, String passW) {
         this.idNguoiDung = idNguoiDung;
         this.tenNguoiDung = tenNguoiDung;
+        this.anhDaiDien = anhDaiDien;
         this.userName = userName;
-        this.passWord = passWord;
+        this.passW = passW;
     }
 
     public Integer getIdNguoiDung() {
@@ -46,6 +55,14 @@ public class NguoiDungModel implements Serializable {
         this.tenNguoiDung = tenNguoiDung;
     }
 
+    public String getAnhDaiDien() {
+        return anhDaiDien;
+    }
+
+    public void setAnhDaiDien(String anhDaiDien) {
+        this.anhDaiDien = anhDaiDien;
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -54,11 +71,11 @@ public class NguoiDungModel implements Serializable {
         this.userName = userName;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassW() {
+        return passW;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassW(String passW) {
+        this.passW = passW;
     }
 }

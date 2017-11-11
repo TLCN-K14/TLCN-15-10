@@ -22,6 +22,7 @@ public class UserSession {
     // Shared preferences file name
     public static final String PREFER_NAME = "Reg";
     public static final String IS_USER_LOGIN = "IsUserLoggedIn";
+    public static final String KEY_ID = "Id";
     public static final String KEY_NAME = "Name";
     public static final String KEY_EMAIL = "Email";
     public static final String KEY_PASSWORD = "Password";
@@ -76,6 +77,7 @@ public class UserSession {
 
         //Use hashmap to store user credentials
         HashMap<String, String> user = new HashMap<String, String>();
+        user.put(KEY_ID, pref.getString(KEY_ID, null));
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         user.put(KEY_AVATAR, pref.getString(KEY_AVATAR,null));

@@ -25,6 +25,10 @@ public class LoaiNhacNhoModel implements Serializable {
         this.thoiGianLapLai = thoiGianLapLai;
     }
 
+    public LoaiNhacNhoModel() {
+
+    }
+
     public Integer getIdNhacNho() {
         return idNhacNho;
     }

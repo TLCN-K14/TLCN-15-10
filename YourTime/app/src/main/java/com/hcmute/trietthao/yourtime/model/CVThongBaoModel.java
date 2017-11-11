@@ -28,12 +28,17 @@ public class CVThongBaoModel implements Serializable {
     @Expose
     private String trangThai;
 
-    public CVThongBaoModel(Integer idCongViec, Date thoiGianBatDau, Date thoiGianKetThuc, Date idNguoiThucHien, String trangThai) {
+    public CVThongBaoModel(Integer idCongViec, Date thoiGianBatDau,
+                           Date thoiGianKetThuc, Date idNguoiThucHien, String trangThai) {
         this.idCongViec = idCongViec;
         this.thoiGianBatDau = thoiGianBatDau;
         this.thoiGianKetThuc = thoiGianKetThuc;
         this.idNguoiThucHien = idNguoiThucHien;
         this.trangThai = trangThai;
+    }
+
+    public CVThongBaoModel() {
+
     }
 
     public Integer getIdCongViec() {

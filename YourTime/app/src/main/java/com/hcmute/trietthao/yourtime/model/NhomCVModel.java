@@ -25,6 +25,10 @@ public class NhomCVModel implements Serializable {
         this.laNhomCaNhan = laNhomCaNhan;
     }
 
+    public NhomCVModel() {
+
+    }
+
     public Integer getIdNhom() {
         return idNhom;
     }
@@ -48,4 +52,6 @@ public class NhomCVModel implements Serializable {
     public void setLaNhomCaNhan(boolean laNhomCaNhan) {
         this.laNhomCaNhan = laNhomCaNhan;
     }
+
+
 }

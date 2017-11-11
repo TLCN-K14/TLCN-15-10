@@ -25,6 +25,10 @@ public class NhomCVNguoiDungModel implements Serializable {
         this.vaiTro = vaiTro;
     }
 
+    public NhomCVNguoiDungModel() {
+
+    }
+
     public Integer getIdNhom() {
         return idNhom;
     }

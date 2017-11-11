@@ -43,15 +43,21 @@ public class CongViecModel {
     @Expose
     private Integer idNhacNho;
 
-    @SerializedName("idNguoiGiaoCV")
+    @SerializedName("idNguoiTaoCV")
     @Expose
-    private Integer idNguoiGiaoCV;
+    private Integer idNguoiTaoCV;
 
-    @SerializedName("idNguoiduocGiaoCV")
+    @SerializedName("idNguoiDuocGiaoCV")
     @Expose
-    private Integer idNguoiduocGiaoCV;
+    private Integer idNguoiDuocGiaoCV;
 
-    public CongViecModel(Integer idCongViec, String tenCongViec, Date thoiGianBatDau, Date thoiGianKetThuc, String ghiChu, String fileDinhKem, boolean coUuTien, Integer idNhom, Integer idNhacNho, Integer idNguoiGiaoCV, Integer idNguoiduocGiaoCV) {
+    public CongViecModel() {
+
+    }
+
+    public CongViecModel(Integer idCongViec, String tenCongViec, Date thoiGianBatDau,
+                         Date thoiGianKetThuc, String ghiChu, String fileDinhKem, boolean coUuTien,
+                         Integer idNhom, Integer idNhacNho, Integer idNguoiTaoCV, Integer idNguoiDuocGiaoCV) {
         this.idCongViec = idCongViec;
         this.tenCongViec = tenCongViec;
         this.thoiGianBatDau = thoiGianBatDau;
@@ -61,9 +67,11 @@ public class CongViecModel {
         this.coUuTien = coUuTien;
         this.idNhom = idNhom;
         this.idNhacNho = idNhacNho;
-        this.idNguoiGiaoCV = idNguoiGiaoCV;
-        this.idNguoiduocGiaoCV = idNguoiduocGiaoCV;
+        this.idNguoiTaoCV = idNguoiTaoCV;
+        this.idNguoiDuocGiaoCV = idNguoiDuocGiaoCV;
     }
+
+
 
     public Integer getIdCongViec() {
         return idCongViec;
@@ -137,19 +145,19 @@ public class CongViecModel {
         this.idNhacNho = idNhacNho;
     }
 
-    public Integer getIdNguoiGiaoCV() {
-        return idNguoiGiaoCV;
+    public Integer getIdNguoiTaoCV() {
+        return idNguoiTaoCV;
     }
 
-    public void setIdNguoiGiaoCV(Integer idNguoiGiaoCV) {
-        this.idNguoiGiaoCV = idNguoiGiaoCV;
+    public void setIdNguoiTaoCV(Integer idNguoiTaoCV) {
+        this.idNguoiTaoCV = idNguoiTaoCV;
     }
 
-    public Integer getIdNguoiduocGiaoCV() {
-        return idNguoiduocGiaoCV;
+    public Integer getIdNguoiDuocGiaoCV() {
+        return idNguoiDuocGiaoCV;
     }
 
-    public void setIdNguoiduocGiaoCV(Integer idNguoiduocGiaoCV) {
-        this.idNguoiduocGiaoCV = idNguoiduocGiaoCV;
+    public void setIdNguoiDuocGiaoCV(Integer idNguoiDuocGiaoCV) {
+        this.idNguoiDuocGiaoCV = idNguoiDuocGiaoCV;
     }
 }
