@@ -56,7 +56,7 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
                     signInPresenter.login(username,password);
                     if(username.equals("ltthao@gmail.com") && password.equals("1234")){
 
-                        preferManager.createUserSignInSession("ltthao@gmail.com",
+                        preferManager.createUserSignInSession(1,"ltthao@gmail.com",
                                 "1234");
                         loginSuccess();
 

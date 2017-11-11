@@ -51,7 +51,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class SignUpActivity extends AppCompatActivity implements ISignUpView, DBNguoiDungServer.getUserListener {
+public class SignUpActivity extends AppCompatActivity implements ISignUpView, DBNguoiDungServer.userListener {
     private ShareDialog shareDialog;
 
     @Bind(R.id.imgv_sign_up_avatar)
@@ -65,7 +65,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
 
-    String encodedString;
+    String encodedString="";
     public static boolean FROM_SIGNUP=false;
 
 
@@ -74,7 +74,8 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     final Context c = this;
 
     PreferManager preferManager;
-    String  pass="",avatar="",email="",name="";
+    String  pass="",email="",name="";
+    int id;
     DBNguoiDungServer dbNguoiDungServer;
 
 
@@ -125,7 +126,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
                 pass=mEditPass.getText().toString();
                 name= mEditName.getText().toString();
 
-                if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0){
+                if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0&& isEmailValid(email)){
 
                     dbNguoiDungServer.getListNguoiDung();
 
@@ -146,22 +147,22 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
 
     @Override
     public void signUpSuccess() {
-
         Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
         startActivity(chooseList);
         finish();
 
     }
 
+
     @Override
-    public void getUser(ArrayList<NguoiDungModel> userArrayList) {
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
         boolean isSame = false;
         // Kiểm tra email có tồn tại hay chưa
-        if(userArrayList!=null)
+        if(listUser!=null)
         {
-            for(int i=0;i<userArrayList.size();i++)
+            for(int i=0;i<listUser.size();i++)
             {
-                if(userArrayList.get(i).getUserName().equals(email))
+                if(listUser.get(i).getUserName().equals(email))
                 {
                     isSame=true;  // Khi email tồn tại thì xuất thông báo
                     break;
@@ -170,27 +171,43 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         }
         if(isSame)
             Toast.makeText(this,"Tài khoản đã tồn tại!!!", Toast.LENGTH_LONG).show();
-        else
-        {  // Nếu email chưa tồn tại thì tạo tài khoản và trả dữ liệu về trang trước
-            FROM_SIGNUP=true;
-            dbNguoiDungServer.insertNguoiDung(email,avatar,name,pass);
+        else {  // Nếu email chưa tồn tại thì tạo tài khoản và trả dữ liệu về trang trước
+            FROM_SIGNUP = true;
+            dbNguoiDungServer.insertNguoiDung(name, encodedString, email, pass);
             Intent data = new Intent();
-            data.putExtra("email",email);
-            data.putExtra("pass",pass);
-            setResult(RESULT_OK,data);
+            data.putExtra("email", email);
+            data.putExtra("pass", pass);
+            setResult(RESULT_OK, data);
+
+        }
+
+    }
+
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+        Log.e("Response","thành công!!!!!");
+        if(isSuccess)
+        {
             Toast.makeText(this,"Đăng ký thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    signUpSuccess();
-                    if(mImgvAvatar.isClickable()) {
-                        preferManager.createUserSignUpSession(email,encodedString, name, pass );
-                    }else {
-                        preferManager.createUserSignUpSession(email, pass,name,null);
-                    }
+                    preferManager.createUserSignInSession(id,email,name);
+
+                    Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
+                    startActivity(chooseList);
+                    finish();
+
                 }
             }, 1500);
+        }else {
+            Toast.makeText(this,"Đăng ký thất bại!", Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
 
     }
 

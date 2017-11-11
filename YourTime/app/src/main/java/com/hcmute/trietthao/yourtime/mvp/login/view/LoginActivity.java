@@ -1,10 +1,7 @@
 package com.hcmute.trietthao.yourtime.mvp.login.view;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +22,6 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -295,7 +291,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 break;
             case R.id.txt_login_google:
                 FROM_GG=true;
-                if(NetworkUtils.isConnected(this))
+                if(NetworkUtils.isNetWorkConnected(this))
                 {
                     signIn();
                 }else {
@@ -304,7 +300,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 break;
             case R.id.btn_login_fb:
-                if(!NetworkUtils.isConnected(this))
+                if(!NetworkUtils.isNetWorkConnected(this))
                 {
                     Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
                 }

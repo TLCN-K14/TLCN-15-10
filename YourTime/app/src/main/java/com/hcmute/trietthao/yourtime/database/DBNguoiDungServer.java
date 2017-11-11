@@ -3,7 +3,6 @@ package com.hcmute.trietthao.yourtime.database;
 import android.util.Log;
 
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
-import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 import com.hcmute.trietthao.yourtime.service.Service;
 import com.hcmute.trietthao.yourtime.service.utils.APIUtils;

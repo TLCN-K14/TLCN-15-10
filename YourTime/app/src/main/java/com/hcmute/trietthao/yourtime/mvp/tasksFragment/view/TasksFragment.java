@@ -25,6 +25,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class TasksFragment extends Fragment implements View.OnClickListener {
 
@@ -78,13 +80,17 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
         setupHeaderTask(headerTasksView);
 
         setTxtDayCurrent();
+        preferManager = new PreferManager(getActivity().getApplicationContext());
+        Toast.makeText(getApplicationContext(),
+                "User Login Status: " + preferManager.isLoggedIn(),
+                Toast.LENGTH_LONG).show();
+
+
+        if(preferManager.checkLogin())
+            getActivity().finish();
 
         if(SignUpActivity.FROM_SIGNUP){
             Log.e("from sign up:::::","");
-            preferManager = new PreferManager(getActivity().getApplicationContext());
-
-            if(preferManager.checkLogin())
-                getActivity().finish();
 
             // get user data from session
             HashMap<String, String> user = preferManager.getUserDetails();

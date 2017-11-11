@@ -49,8 +49,10 @@ public class PreferManager implements DBNguoiDungServer.userListener {
 
     public boolean checkLogin(){
         // Check login status
+        if(!this.isLoggedIn()){
+
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, SignInActivity.class);
+            Intent i = new Intent(_context, LoginActivity.class);
 
             // Closing all the Activities from stack
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -62,7 +64,10 @@ public class PreferManager implements DBNguoiDungServer.userListener {
             _context.startActivity(i);
 
             return true;
+        }
+        return false;
     }
+
 
 
     public HashMap<String, String> getUserDetails(){
@@ -77,7 +82,7 @@ public class PreferManager implements DBNguoiDungServer.userListener {
         return user;
     }
 
-    public Boolean isLogin(){
+    public Boolean isLoggedIn(){
         return !KEY_EMAIL.equals("Email");
     }
     public void logoutUser(){
@@ -98,7 +103,7 @@ public class PreferManager implements DBNguoiDungServer.userListener {
         // Staring Login Activity
         _context.startActivity(i);
     }
-    public NguoiDungModel getListUser(){
+    public NguoiDungModel getUserPrefer(){
         return nguoiDungModel;
 
     }

@@ -47,7 +47,7 @@ public class SignInPresenter extends BasePresenter implements ISignInPresenter {
             getView().errorEmptyInput();
             return;
         }
-        if(nguoiDungModel.getUserName().equals(email) || nguoiDungModel.getPassWord().equals(passw))
+        if(nguoiDungModel.getUserName().equals(email) || nguoiDungModel.getPassW().equals(passw))
         {  // Kiểm tra email và pass có trùng khớp với tài khoản hiện tại
             mDBNguoiDungServer.getNguoiDung(email);
         }

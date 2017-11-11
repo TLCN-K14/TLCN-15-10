@@ -7,5 +7,4 @@ import java.util.ArrayList;
 
 public interface ISignUpView  {
     void signUpSuccess();
-    void getUser(ArrayList<NguoiDungModel> userArrayList);
 }

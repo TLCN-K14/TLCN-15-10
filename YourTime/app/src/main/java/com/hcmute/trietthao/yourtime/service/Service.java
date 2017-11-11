@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -23,6 +24,7 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     @GET("/getalluser")
     Call<ArrayList<NguoiDungModel>> getListNguoiDung();
 
+    @FormUrlEncoded
     @POST("/insertuser")
     Call<InsertUserResponse> insertNguoiDung(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
                                              @Field("username") String username, @Field("passw") String passw);
