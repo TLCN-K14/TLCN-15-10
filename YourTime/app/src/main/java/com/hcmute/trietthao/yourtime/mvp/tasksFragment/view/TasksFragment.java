@@ -3,7 +3,6 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,15 @@ import com.hcmute.trietthao.yourtime.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.DetailGroupWorkMainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
-import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 
 
 public class TasksFragment extends Fragment implements View.OnClickListener {
@@ -68,43 +65,19 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
 
         ButterKnife.bind(this,view);
 
-        SignUpActivity.FROM_SIGNUP=false;
+        preferManager = new PreferManager(getActivity().getApplicationContext());
 
         txtDayCurrent = headerTasksView.findViewById(R.id.day_current);
         txtNameUser=view.findViewById(R.id.name_user);
         imgUser=view.findViewById(R.id.image_user);
-        Log.e("vào taskfragment:::::","");
 
         lnlCreateGroupWork.setOnClickListener(this);
 
         setupHeaderTask(headerTasksView);
 
         setTxtDayCurrent();
-        preferManager = new PreferManager(getActivity().getApplicationContext());
-        Toast.makeText(getApplicationContext(),
-                "User Login Status: " + preferManager.isLoggedIn(),
-                Toast.LENGTH_LONG).show();
 
-
-        if(preferManager.checkLogin())
-            getActivity().finish();
-
-        if(SignUpActivity.FROM_SIGNUP){
-            Log.e("from sign up:::::","");
-
-            // get user data from session
-            HashMap<String, String> user = preferManager.getUserDetails();
-            // get name
-            String userName = user.get(preferManager.KEY_NAME);
-
-            // get email
-            String userEmail = user.get(preferManager.KEY_EMAIL);
-            txtNameUser.setText(userName);
-            Log.e("name user::",userName);
-            Log.e("useremail::", userEmail);
-
-        }
-
+        Toast.makeText(getActivity(),""+getIntCurrentDateTime().toString(), Toast.LENGTH_LONG).show();
 
         return view;
     }
@@ -121,7 +94,6 @@ public class TasksFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(getActivity(),"resume r ne!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
