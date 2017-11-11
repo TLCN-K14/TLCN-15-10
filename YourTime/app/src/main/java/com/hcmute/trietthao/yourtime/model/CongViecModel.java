@@ -4,6 +4,7 @@ package com.hcmute.trietthao.yourtime.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CongViecModel {
@@ -50,6 +51,17 @@ public class CongViecModel {
     @SerializedName("idNguoiDuocGiaoCV")
     @Expose
     private Integer idNguoiDuocGiaoCV;
+
+
+    ArrayList<BinhLuanModel> binhLuanModels;
+
+    public ArrayList<BinhLuanModel> getBinhLuanModels() {
+        return binhLuanModels;
+    }
+
+    public void setBinhLuanModels(ArrayList<BinhLuanModel> binhLuanModels) {
+        this.binhLuanModels = binhLuanModels;
+    }
 
     public CongViecModel() {
 

@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime;
+package com.hcmute.trietthao.yourtime.mvp.tasksFragment.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hcmute.trietthao.yourtime.DetailGroupWorkActivity;
+import com.hcmute.trietthao.yourtime.DetailGroupWorkMainActivity;
+import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 

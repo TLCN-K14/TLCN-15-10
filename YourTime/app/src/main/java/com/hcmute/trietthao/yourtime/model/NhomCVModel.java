@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class NhomCVModel implements Serializable {
     @SerializedName("idNhom")
@@ -19,10 +20,32 @@ public class NhomCVModel implements Serializable {
     @Expose
     private boolean laNhomCaNhan;
 
+    ArrayList<CongViecModel> congViecModels;
+
+    ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels;
+
+
+    public ArrayList<CongViecModel> getCongViecModels() {
+        return congViecModels;
+    }
+
+    public void setCongViecModels(ArrayList<CongViecModel> congViecModels) {
+        this.congViecModels = congViecModels;
+    }
+
+    public ArrayList<NhomCVNguoiDungModel> getNhomCVNguoiDungModels() {
+        return nhomCVNguoiDungModels;
+    }
+
+    public void setNhomCVNguoiDungModels(ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels) {
+        this.nhomCVNguoiDungModels = nhomCVNguoiDungModels;
+    }
+
     public NhomCVModel(Integer idNhom, String tenNhom, boolean laNhomCaNhan) {
         this.idNhom = idNhom;
         this.tenNhom = tenNhom;
         this.laNhomCaNhan = laNhomCaNhan;
+
     }
 
     public NhomCVModel() {
