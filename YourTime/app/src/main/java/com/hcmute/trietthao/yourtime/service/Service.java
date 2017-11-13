@@ -1,6 +1,8 @@
 package com.hcmute.trietthao.yourtime.service;
 
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.model.NhomCVModel;
+import com.hcmute.trietthao.yourtime.model.modelOffline.NhomCVMO;
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 
 
@@ -20,7 +22,7 @@ import retrofit2.http.Query;
 public interface Service { //Định nghĩa các REST API (Api Services) cho Retrofit
    // Hàm  get user by email and passw
     @GET("/getuser")
-    Call<ArrayList<NguoiDungModel>> getUserByEmail(@Query("email") String email);
+    Call<ArrayList<NguoiDungModel>> getUserByEmail(@Query("username") String username);
     @GET("/getalluser")
     Call<ArrayList<NguoiDungModel>> getListUser();
 
@@ -28,6 +30,9 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     @POST("/insertuser")
     Call<InsertUserResponse> insertUser(@Field("idnguoidung") int idnguoidung, @Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
                                         @Field("username") String username, @Field("passw") String passw);
+
+    @POST("/insertuser")
+    Call<ArrayList<NhomCVModel>> insertWorkGroup(@Field("tennhom") String tennhom, @Field("lanhomcanhan") boolean lanhomcanhan);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

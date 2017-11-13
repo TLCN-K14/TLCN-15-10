@@ -6,4 +6,6 @@ import java.util.HashMap;
 
 
 public interface ISignUpPresenter {
+    void checkSignUp(int id, String name, String avatar, String userName, String passW);
+    void getListUserP();
 }

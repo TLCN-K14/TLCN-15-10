@@ -1,10 +1,10 @@
 package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,9 +12,12 @@ import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,7 +25,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class SignInActivity extends AppCompatActivity implements ISignInView {
+public class SignInActivity extends AppCompatActivity implements ISignInView, View.OnClickListener,DBNguoiDungServer.userListener {
 
 
     @Bind(R.id.btn_sign_in_s)
@@ -33,7 +36,11 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
     EditText mEditPassw;
 
     PreferManager preferManager;
+    DBNguoiDungServer dbNguoiDungServer;
+    NguoiDungModel nguoiDungModel;
     SignInPresenter signInPresenter;
+    String email="",pass="", name="";
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,39 +50,10 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
         ButterKnife.bind(this);
 
         preferManager = new PreferManager(getApplicationContext());
+        signInPresenter=new SignInPresenter(this);
+        dbNguoiDungServer= new DBNguoiDungServer(this);
 
-
-        mBtnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String username = mEditEmail.getText().toString();
-                String password = mEditPassw.getText().toString();
-                if(username.length()>0&& password.length()>0)
-                {
-                    signInPresenter.login(username,password);
-                    if(username.equals("ltthao@gmail.com") && password.equals("1234")){
-
-                        preferManager.createUserSignInSession(1,"ltthao@gmail.com",
-                                "1234");
-                        loginSuccess();
-
-                    }else{
-
-                        // username / password doesn't match&
-                        Toast.makeText(getApplicationContext(),
-                                "Username/Password is incorrect",
-                                Toast.LENGTH_LONG).show();
-
-                    }
-
-                } else {
-                    Toast.makeText(getApplication(),"You must enter your email and password before sign in!",Toast.LENGTH_LONG).show();
-
-                }
-
-            }
-        });
+        mBtnSignIn.setOnClickListener(this);
 
 
     }
@@ -88,20 +66,59 @@ public class SignInActivity extends AppCompatActivity implements ISignInView {
 
     @Override
     public void loginSuccess() {
-        Intent main= new Intent(getApplicationContext(), MainActivity.class);
-        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(main);
-        finish();
-    }
-
-    @Override
-    public void errorEmailInvalid() {
+        dbNguoiDungServer.getUser(email); // tren day goi ham. cai chinh thuc. hien la ben duoi' ham no override
 
     }
 
     @Override
-    public void errorEmptyInput() {
+    public void loginFail() {
+        Toast.makeText(this,"Đăng nhập thất bại!", Toast.LENGTH_LONG).show();
 
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_sign_in_s:
+                email = mEditEmail.getText().toString();
+                pass= mEditPassw.getText().toString();
+                if(email.length()>0&& pass.length()>0 && isEmailValid(email))
+                {
+                    signInPresenter.checkLogin(email,pass);
+
+                } else {
+                    Toast.makeText(SignInActivity.this,"Bạn cần nhập đầy đủ email và password!", Toast.LENGTH_LONG).show();
+
+                }
+                break;
+        }
+
+    }
+
+    @Override
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+
+    }
+
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
+        final NguoiDungModel currentUser= user;
+        Toast.makeText(this,"Đăng nhập thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Log.e("email prefer::::",email);
+                // tu` tu` chi v ??
+                preferManager.createUserSignInSession(currentUser.getIdNguoiDung(),currentUser.getTenNguoiDung(),currentUser.getUserName());
+                finish();
+
+            }
+        }, 1000);
+    }
+
 }

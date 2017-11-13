@@ -20,21 +20,25 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
 import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements DBNguoiDungServer.userListener {
 
 
     CircleImageView mImgVAvatar;
@@ -48,6 +52,10 @@ public class SettingsFragment extends Fragment {
     public static boolean isListOpen = false;
     PreferManager preferManager;
 
+    DBNguoiDungServer dbNguoiDungServer;
+    HashMap<String, String> user;
+    public static NguoiDungModel userCurrent=null;
+
 
 
     public static SettingsFragment newInstance() {
@@ -59,30 +67,31 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        mTabHost = (TabHost) view.findViewById(R.id.tabhost);
-        mRltProfile=(RelativeLayout) view.findViewById(R.id.rlt_profile);
+        mTabHost = view.findViewById(R.id.tabhost);
+        mRltProfile=view.findViewById(R.id.rlt_profile);
 
-        mImgVAvatar= (CircleImageView) view.findViewById(R.id.img_avatar);
-        mTxtUserName=(TextView) view.findViewById(R.id.txt_user_name);
+        mImgVAvatar=view.findViewById(R.id.img_avatar);
+        mTxtUserName=view.findViewById(R.id.txt_user_name);
 
-        mLnDetails=(LinearLayout) view.findViewById(R.id.ln_account_details);
-        mLnSignOut=(LinearLayout) view.findViewById(R.id.ln_sign_out);
+        mLnDetails=view.findViewById(R.id.ln_account_details);
+        mLnSignOut=view.findViewById(R.id.ln_sign_out);
 
 
         preferManager=new PreferManager(getActivity().getApplicationContext());
-
+        dbNguoiDungServer=new DBNguoiDungServer(this);
 
         // get user data from session
         HashMap<String, String> user = preferManager.getUserDetails();
-        // get name
-        String userEmail = user.get(PreferManager.KEY_EMAIL);
-
+        dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
         // get email
-        String userName = user.get(PreferManager.KEY_NAME);
+//        String userEmail = user.get(PreferManager.KEY_EMAIL);
+//
+//        // get name
+        String name = user.get(PreferManager.KEY_NAME);
+//        Log.e("name:::::::::::::",PreferManager.KEY_NAME);
+//
+        mTxtUserName.setText(name);
 
-        mTxtUserName.setText(userName);
-
-        LoginActivity.FROM_FB=false;
 
         tabHostSetup();      // Khởi tạo tabhost chính
 
@@ -107,16 +116,6 @@ public class SettingsFragment extends Fragment {
         for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
             TextView tv = (TextView) mTabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title); //Unselected Tabs
             tv.setTextColor(getResources().getColor(R.color.colorWhite));
-        }
-        if(LoginActivity.FROM_FB){
-            Bundle inBundle = getActivity().getIntent().getExtras();
-            String name = inBundle.get("name").toString();
-            String surname = inBundle.get("surname").toString();
-            String imageUrl = inBundle.get("imageUrl").toString();
-
-            mTxtUserName.setText("" + name + " " + surname);
-
-            new SettingsFragment.DownloadImage((ImageView)container.findViewById(R.id.img_avatar)).execute(imageUrl);
         }
 
         mLnDetails.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +160,31 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+        String url = "http://192.168.43.219:8000/getimg?nameimg=";
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com//getimg?nameimg=";
+        userCurrent = listUser.get(0);
+        if(userCurrent.getAnhDaiDien()!=null)
+        {
+            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
+                    .error(R.drawable.null_avatar)
+                    .into(mImgVAvatar);
+        }
+        mTxtUserName.setText(userCurrent.getTenNguoiDung());
+        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
+
+    }
+
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
+
+    }
 
 
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {

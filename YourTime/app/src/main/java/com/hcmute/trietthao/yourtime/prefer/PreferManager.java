@@ -22,7 +22,7 @@ public class PreferManager implements DBNguoiDungServer.userListener {
     int PRIVATE_MODE = 0;
 
     DBNguoiDungServer dbNguoiDungServer;
-    NguoiDungModel nguoiDungModel;
+    public static NguoiDungModel nguoiDungModel;
 
     // Shared preferences file name
     public static final String PREFER_NAME = "Reg";
@@ -54,14 +54,6 @@ public class PreferManager implements DBNguoiDungServer.userListener {
 
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(_context, LoginActivity.class);
-
-            // Closing all the Activities from stack
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
             _context.startActivity(i);
 
             return true;
@@ -122,6 +114,9 @@ public class PreferManager implements DBNguoiDungServer.userListener {
     @Override
     public void getUser(NguoiDungModel user) {
         nguoiDungModel=user;
+    }
+    public void setUser(NguoiDungModel user) {
+        this.nguoiDungModel=user;
     }
     public int getID(){
         return Integer.parseInt(KEY_ID);

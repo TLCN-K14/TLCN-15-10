@@ -3,6 +3,9 @@ package com.hcmute.trietthao.yourtime.mvp.login.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,19 +28,24 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.Task;
+import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.mvp.login.adapter.*;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.SignInActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 
 import org.json.JSONException;
@@ -64,13 +72,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private ProfileTracker profileTracker;
 
     private static final String TAG = "LoginActivity";
-    private static final int RC_SIGN_IN = 9001;
+    private static final int RC_SIGN_IN = 4;
 
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
-    public static boolean FROM_FB=false;
-    public static boolean FROM_GG=false;
-    private int LOGIN_REQ = 1,LOGIN_REQ2 = 2,LOGIN_REQ3;
+    private int LOGIN_REQ = 1,LOGIN_REQ2 = 2, LOGIN_REQ3=3;
 
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
@@ -87,6 +93,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Bind(R.id.txt_login_google)
     TextView mTxtLoginGoogle;
 
+    PreferManager preferManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +103,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initListener();
+        preferManager= new PreferManager(this);
 
 
         //Google
-
+        // y/c người dùng cung câp tt cho bạn
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+        // Kết nối vs gg API client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this , this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -138,7 +148,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mBtnLoginFB.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                FROM_FB=true;
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
                     @Override
@@ -149,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
+                parameters.putString("fields", "id, first_name, last_name, email,picture, birthday, location"); // Parámetros que pedimos a facebook
                 request.setParameters(parameters);
                 request.executeAsync();
 
@@ -221,18 +230,29 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
         //Facebook login
-        callbackManager.onActivityResult(requestCode, responseCode, intent);
         if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
-            handleSignInResult(result);
+            if(responseCode==RESULT_OK) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(intent);
+                handleSignInResult(result);
+            }
         }
 
+        if(requestCode==LOGIN_REQ){
+
+            if( preferManager.checkLogin())
+                finish();
+        }
+        if(requestCode==LOGIN_REQ2){
+            if( preferManager.checkLogin())
+                finish();
+        }if(requestCode==LOGIN_REQ3) {
+            callbackManager.onActivityResult(requestCode, responseCode, intent);
+        }
 
     }
 
     private void nextActivity(JSONObject object){
-        if (FROM_FB) {
-            try {
+        try {
             String id = object.getString("id");
             Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
             try {
@@ -260,7 +280,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }catch(JSONException e) {
             Log.d(TAG,"Error parsing JSON");
         }
-    }
 
     }
     protected void initListener(){
@@ -286,15 +305,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivityForResult(signIn, LOGIN_REQ);
                 break;
             case R.id.btn_sign_up:
-                SignUpActivity.FROM_SIGNUP=true;
                 Intent signUp= new Intent(this, SignUpActivity.class);
                 startActivityForResult(signUp, LOGIN_REQ2);
                 break;
             case R.id.txt_login_google:
-                FROM_GG=true;
                 if(NetworkUtils.isNetWorkConnected(this))
                 {
-                    signIn();
+                    if(!mGoogleApiClient.isConnected())
+                        signIn();
+                    else
+                        signOut();
                 }else {
                     Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
                 }
@@ -330,19 +350,28 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             });
         }
+
     }
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            if(FROM_GG){
-                Log.e("Vao from gg intent", "");
+            Log.e("Vao from gg intent", "");
+            try {
                 Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
-                main.putExtra("name", acct.getDisplayName());
-                main.putExtra("email", acct.getEmail());
-                main.putExtra("imageUrl", acct.getPhotoUrl());
+                String name, email, gender, dpUrl = "";
+                name = acct.getDisplayName();
+                email = acct.getEmail();
+                dpUrl = acct.getPhotoUrl().toString();
+                main.putExtra("gg_name", name);
+                main.putExtra("gg_email", email);
+                main.putExtra("gg_url", dpUrl);
+
                 startActivity(main);
+
+            } catch (Exception e) {
+                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -353,15 +382,30 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     private void signOut() {
-        Log.e("Vào sign out"," ");
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
+        mGoogleApiClient.connect();
+        mGoogleApiClient.registerConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
 
-                    }
-                });
+                if(mGoogleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            if (status.isSuccess()) {
+                                Log.d(TAG, "User Logged out");
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+                Log.d(TAG, "Google API Client Connection Suspended");
+            }
+        });
     }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {

@@ -2,28 +2,34 @@ package com.hcmute.trietthao.yourtime.mvp.signIn.presenter;
 
 
 
+import android.content.Context;
+import android.util.Log;
+
 import com.hcmute.trietthao.yourtime.base.BasePresenter;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.ISignInView;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
-import java.util.List;
-
-public class SignInPresenter extends BasePresenter implements ISignInPresenter {
-    private List<Object> mList;
-    DBNguoiDungServer mDBNguoiDungServer;
-    NguoiDungModel nguoiDungModel;
 
 
-    public ISignInView getView() {
-        return (ISignInView) getIView();
+public class SignInPresenter extends BasePresenter implements ISignInPresenter, DBNguoiDungServer.userListener {
+
+    DBNguoiDungServer dbNguoiDungServer;
+    NguoiDungModel nguoiDungModel=null;
+    ISignInView isignInView;
+    String email="", passw="";
+
+
+
+    public SignInPresenter(ISignInView iSignInView) {
+        this.isignInView=iSignInView;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mList = new ArrayList<>();
     }
 
     @Override
@@ -31,30 +37,38 @@ public class SignInPresenter extends BasePresenter implements ISignInPresenter {
         super.onDestroy();
     }
 
-    public List<Object> getListUser() {
-        return mList;
+
+
+    @Override
+    public void checkLogin(String email, String passw) {
+        dbNguoiDungServer=new DBNguoiDungServer(this);
+        this.email=email;
+        this.passw=passw;
+        dbNguoiDungServer.getListUser(); // ok.override của retrofit mún chạy đx phải   có hàm sử dụng nó ra chứ. chạy lại đi
+
     }
 
 
     @Override
-    public void login(String email, String passw) {
-        nguoiDungModel= new NguoiDungModel();
-        if (!isViewAttached()) return;
-        if (email == null || email.length() == 0 || passw == null || passw.length() == 0) {
-            getView().errorEmptyInput();
-            return;
-        }
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+        Log.e("Vao getlistUser::::"," ");
+        nguoiDungModel=listUser.get(0);
         if(nguoiDungModel.getUserName().equals(email) || nguoiDungModel.getPassW().equals(passw))
-        {  // Kiểm tra email và pass có trùng khớp với tài khoản hiện tại
-            mDBNguoiDungServer.getUser(email);
+        {
+            isignInView.loginSuccess();
+        }else {
+            isignInView.loginFail();
         }
 
     }
 
     @Override
-    public void getUser() {
-        if (!isViewAttached()) return;
+    public void getResultInsert(Boolean isSuccess) {
 
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
 
     }
 }

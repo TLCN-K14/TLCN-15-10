@@ -32,6 +32,7 @@ import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
+import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
@@ -69,7 +70,6 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     Button mBtnSignUp;
 
     String encodedString="";
-    public static boolean FROM_SIGNUP=false;
 
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
@@ -80,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     String  pass="",email="",name="";
     int id;
     DBNguoiDungServer dbNguoiDungServer;
+    SignUpPresenter signUpPresenter;
 
 
     @Override
@@ -93,35 +94,11 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         dbNguoiDungServer=new DBNguoiDungServer(this);
 
         preferManager = new PreferManager(getApplicationContext());
+        signUpPresenter=new SignUpPresenter(this);
 
         shareDialog = new ShareDialog(this);
 
-        Bundle inBundle = getIntent().getExtras();
-        if(LoginActivity.FROM_FB){
-            String name = inBundle.get("name").toString();
-            String surname = inBundle.get("surname").toString();
-            String email =inBundle.get("email").toString();
-            String imageUrl = inBundle.get("imageUrl").toString();
-            mEditName.setText("" + name + " " + surname);
-            mEditEmail.setText(email);
-            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
 
-        }
-        if (LoginActivity.FROM_GG){
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(getIntent());
-//                GoogleSignInAccount acct = result.getSignInAccount();
-            String personName = inBundle.get("name").toString();
-            String personEmail = inBundle.get("email").toString();
-//                String personId = inBundle.get("imageUrl").toString();
-//                Uri personPhoto = inBundle.getPhotoUrl();
-
-            mEditName.setText(personName);
-            mEditEmail.setText(personEmail);
-            //new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(personPhoto);
-
-            Log.e("Name::::::::",personName);
-            Log.e("Email::::::", personEmail);
-        }
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,8 +109,8 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
                 id= getIntCurrentDateTime();
 
                 if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0&& isEmailValid(email)){
-
-                    dbNguoiDungServer.getListUser();
+                    signUpPresenter.checkSignUp(id,name,encodedString,email,pass);
+                    signUpPresenter.getListUserP();
 
                 }
                 else
@@ -149,74 +126,105 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         });
 
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this,"vào on activity result:::",Toast.LENGTH_LONG).show();
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+        if(requestCode==2){
+            if(resultCode==RESULT_OK){
+
+            }
+        }
+        if(requestCode==4){
+            if(resultCode==RESULT_OK){
+                Bundle inBundle = getIntent().getExtras();
+                String personName = inBundle.get("gg_name").toString();
+                String personEmail = inBundle.get("gg_email").toString();
+                String personId = inBundle.get("gg_url").toString();
+
+                mEditName.setText(personName);
+                mEditEmail.setText(personEmail);
+                new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(personId);
+
+                Log.e("Name::::::::",personName);
+                Log.e("Email::::::", personEmail);
+            }
+        }
+        if(requestCode==3) {
+            Log.e("facebookk::::::","");
+            Bundle inBundle = getIntent().getExtras();
+            String namefb = inBundle.get("name").toString();
+            String surnamefb = inBundle.get("surname").toString();
+            String emailfb =inBundle.get("email").toString();
+            String imageUrl = inBundle.get("imageUrl").toString();
+            mEditName.setText("" + namefb + " " + surnamefb);
+            mEditEmail.setText(emailfb);
+            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
+        }
+    }
 
     @Override
     public void signUpSuccess() {
-        Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
-        startActivity(chooseList);
-        finish();
+        dbNguoiDungServer.getUser(email);
+
+    }
+
+    @Override
+    public void signUpFail() {
+        Toast.makeText(this,"Đăng ký thất bại!", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(this,message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getIntentData() {
+
+        Intent data = new Intent();
+        data.putExtra("email", email);
+        data.putExtra("name", name);
+        data.putExtra("id",id);
+        data.putExtra("pass", pass);
+        setResult(RESULT_OK, data);
 
     }
 
 
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
-        boolean isSame = false;
-        // Kiểm tra email có tồn tại hay chưa
-        if(listUser!=null)
-        {
-            for(int i=0;i<listUser.size();i++)
-            {
-                if(listUser.get(i).getUserName().equals(email))
-                {
-                    isSame=true;  // Khi email tồn tại thì xuất thông báo
-                    break;
-                }
-            }
-        }
-        if(isSame)
-            Toast.makeText(this,"Tài khoản đã tồn tại!!!", Toast.LENGTH_LONG).show();
-        else {  // Nếu email chưa tồn tại thì tạo tài khoản và trả dữ liệu về trang trước
-            FROM_SIGNUP = true;
-            dbNguoiDungServer.insertUser(id,name, encodedString, email, pass);
-            Intent data = new Intent();
-            data.putExtra("email", email);
-            data.putExtra("name", name);
-            data.putExtra("id",id);
-            data.putExtra("pass", pass);
-            setResult(RESULT_OK, data);
-
-        }
 
     }
 
     @Override
     public void getResultInsert(Boolean isSuccess) {
-        Log.e("Response","thành công!!!!!");
-        if(isSuccess)
-        {
-            Toast.makeText(this,"Đăng ký thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    Log.e("email prefer::::",email);
-
-                    preferManager.createUserSignInSession(id,email,name);
-
-                    Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
-                    startActivity(chooseList);
-                    finish();
-
-                }
-            }, 1500);
-        }else {
-            Toast.makeText(this,"Đăng ký thất bại!", Toast.LENGTH_LONG).show();
-        }
 
     }
 
     @Override
     public void getUser(NguoiDungModel user) {
+        Toast.makeText(this,"Đăng ký thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Log.e("email prefer::::",email);
+
+                preferManager.createUserSignInSession(id,name,email);
+
+                Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
+                startActivity(chooseList);
+                finish();
+
+            }
+        }, 1000);
 
     }
 
@@ -318,17 +326,6 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
-    }
 
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");

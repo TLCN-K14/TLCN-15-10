@@ -20,10 +20,13 @@ import android.widget.Toast;
 
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -32,7 +35,7 @@ import butterknife.ButterKnife;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener {
 
     @Bind(R.id.fab_create_work)
     FloatingActionButton mFabCreateWork;
@@ -44,8 +47,9 @@ public class MainActivity extends AppCompatActivity{
     View mBottomSheetCreateWorkView;
     PreferManager preferManager;
 
-    private int PROFILE_REQ =1;
     DBNguoiDungServer dbNguoiDungServer;
+    HashMap<String, String> user;
+    public static NguoiDungModel userCurrent=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,19 +145,23 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String email ="";
-        String name = "";
-        String id="";
-        if(resultCode==RESULT_OK) {
-            if(requestCode==PROFILE_REQ) {
-                // Sau khi đăng nhập xong thì chuyển tới
-                email = data.getStringExtra("email");
-                name = data.getStringExtra("name");
-                id=data.getStringExtra("id");
-                preferManager.createUserSignInSession(Integer.parseInt(id),name,email);
-                dbNguoiDungServer.getUser(email);
+        if(requestCode==1){
+            if(resultCode==RESULT_OK){
+                // Cập nhập lại user với thông tin mới
+                dbNguoiDungServer = new DBNguoiDungServer(this);
+                preferManager = new PreferManager(getBaseContext());
+                user = preferManager.getUserDetails();
+                dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
             }
-
+        }
+        if(requestCode==2){
+            if(resultCode==RESULT_OK){
+                // Cập nhập lại user với thông tin mới
+                dbNguoiDungServer = new DBNguoiDungServer(this);
+                preferManager = new PreferManager(getBaseContext());
+                user = preferManager.getUserDetails();
+                dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
+            }
         }
     }
 
@@ -162,19 +170,30 @@ public class MainActivity extends AppCompatActivity{
         super.onDestroy();
         ButterKnife.unbind(this);
     }
-    public void CheckLogin()
-    {
-        if(preferManager.isLoggedIn())
-        {  // nếu có đăng nhập hiển thị thanh logout và get lại user theo session email
-            HashMap<String, String> user = preferManager.getUserDetails();
-            dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
-        }
-        else
-        {
-            Intent login=new Intent(this, LoginActivity.class);
-            startActivity(login);
-        }
+
+    @Override
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+        String url = "http://192.168.43.219:8000/getimg?nameimg=";
+        String url_imgitem="https://foody-trietv2.herokuapp.com/getimg?nameimg=";
+        userCurrent = listUser.get(0);
+//        if(userCurrent.getImg()!=null)
+//        {
+//            Picasso.with(this).load(url_imgitem+userCurrent.getImg()+".png")
+//                    .error(R.drawable.fdi1)
+//                    .into(avatar_user);
+//        }
+//        name_user.setText(userCurrent.getUsername());
+//        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getImg()+".png");
 
     }
 
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
+
+    }
 }
