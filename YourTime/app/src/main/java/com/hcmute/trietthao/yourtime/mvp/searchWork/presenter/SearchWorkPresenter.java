@@ -77,10 +77,13 @@ public class SearchWorkPresenter implements ISearchWorkPresenter,WorkListener,Gr
             mListNhomCV.get(i).setCongViecModels(listCVTemp);
         }
         iSearchWork.hideLoading();
-        if(flag)
+        if(flag && !keysearch.equals(""))
             iSearchWork.getListGroupWorkEmpty();
         else
+        {
+            flag = true;
             iSearchWork.getListGroupWorkSucess();
+        }
 
     }
 
