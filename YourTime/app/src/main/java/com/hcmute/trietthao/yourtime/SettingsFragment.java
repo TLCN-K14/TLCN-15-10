@@ -157,6 +157,7 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
             }
         });
 
+
         return view;
     }
 

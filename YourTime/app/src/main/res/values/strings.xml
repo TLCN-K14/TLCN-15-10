@@ -76,4 +76,5 @@
     <string name="name">Name</string>
     <string name="passwword">Passwword</string>
     <string name="fail_connect">It look like you are not connect to the internet. Please check your connection, and try again</string>
+    <string name="save">Save</string>
 </resources>

@@ -14,13 +14,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
-        android:id="@+id/userInputDialog"
+        android:id="@+id/input_dialog_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/new_email"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         />
     <EditText
+        android:id="@+id/input_dialog_curentpass"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

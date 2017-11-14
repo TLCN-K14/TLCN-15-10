@@ -19,24 +19,34 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.SettingsFragment;
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AccountDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class AccountDetailsActivity extends AppCompatActivity implements  View.OnClickListener, DBNguoiDungServer.userListener {
 
 
     @Bind(R.id.ln_take_photo)
@@ -51,10 +61,21 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
     LinearLayout mLnChangeEmail;
     @Bind(R.id.imgv_back)
     ImageView mImgvBack;
+    @Bind(R.id.txt_details_name)
+    TextView mTxtDetailsName;
+    @Bind(R.id.txt_details_email)
+    TextView mTxtDetailsEmail;
+    @Bind(R.id.txt_details_save)
+    TextView mTxtDetailsSave;
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
     final Context c = this;
+    DBNguoiDungServer dbNguoiDungServer;
+    PreferManager preferManager;
+    NguoiDungModel currentUser;
+    String passwChange;
+
 
 
     @Override
@@ -63,108 +84,25 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_account_details);
 
         ButterKnife.bind(this);
-        initListener();
+        preferManager= new PreferManager(getApplicationContext());
+        dbNguoiDungServer=new DBNguoiDungServer(this);
+        currentUser= new NguoiDungModel();
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        ActionBar ab = getSupportActionBar();
-//        if (ab != null) {
-//            ab.setDisplayHomeAsUpEnabled(true);
-//        }
-
-        mImgvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        mLnTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectImage();
-            }
-        });
-        mLnChangeName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
-                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_change_name, null);
-                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
-                alertDialogBuilderUserInput.setView(mView);
-
-                alertDialogBuilderUserInput
-                        .setCancelable(false)
-                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogBox, int id) {
-                                // ToDo get user input here
-                            }
-                        })
-
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogBox, int id) {
-                                        dialogBox.cancel();
-                                    }
-                                });
-
-                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
-                alertDialogAndroid.show();
-            }
-        });
-
-        mLnChangeEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
-                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_change_email, null);
-                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
-                alertDialogBuilderUserInput.setView(mView);
-                alertDialogBuilderUserInput
-                        .setCancelable(false)
-                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogBox, int id) {
-                                // ToDo get user input here
-                            }
-                        })
-
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogBox, int id) {
-                                        dialogBox.cancel();
-                                    }
-                                });
-                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
-                alertDialogAndroid.show();
-            }
-        });
+        HashMap<String, String> user = preferManager.getUserDetails();
+        dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
 
 
-        mLnChangePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
-                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_password, null);
-                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
-                alertDialogBuilderUserInput.setView(mView);
-                alertDialogBuilderUserInput
-                        .setCancelable(false)
-                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogBox, int id) {
-                                // ToDo get user input here
-                            }
-                        })
+//        if(!currentUser.getTenNguoiDung().equals(mTxtDetailsName.getText().toString())||
+//                !currentUser.getUserName().equals(mTxtDetailsEmail.getText().toString())||
+//                !currentUser.getPassW().equals(passwChange))
+//            mTxtDetailsSave.setVisibility(View.VISIBLE);
 
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialogBox, int id) {
-                                        dialogBox.cancel();
-                                    }
-                                });
-                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
-                alertDialogAndroid.show();
-            }
-        });
+        mImgvBack.setOnClickListener(this);
+        mLnTakePhoto.setOnClickListener(this);
+        mLnChangeName.setOnClickListener(this);
+        mLnChangeEmail.setOnClickListener(this);
+        mLnChangePass.setOnClickListener(this);
+        mTxtDetailsSave.setOnClickListener(this);
 
 
     }
@@ -276,18 +214,145 @@ public class AccountDetailsActivity extends AppCompatActivity implements View.On
 
         mImgPhoto.setImageBitmap(bm);
     }
-    protected void initListener(){
-        mLnTakePhoto.setOnClickListener(this);
-    }
 
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.ln_account_details:
+            case R.id.imgv_back:
+                finish();
+                break;
+            case R.id.ln_take_photo:
                 selectImage();
                 break;
+            case R.id.ln_change_name:
+                LayoutInflater layoutInflaterAndroid = LayoutInflater.from(c);
+                View mView = layoutInflaterAndroid.inflate(R.layout.dialog_change_name, null);
+                AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(c);
+                alertDialogBuilderUserInput.setView(mView);
+                final EditText valueView = (EditText) mView.findViewById(R.id.userInputDialog);
+
+                alertDialogBuilderUserInput
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                String name = valueView.getText().toString();
+                                mTxtDetailsName.setText(name);
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+
+                AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
+                alertDialogAndroid.show();
+                break;
+            case R.id.ln_change_email:
+                LayoutInflater layoutInflaterEmail = LayoutInflater.from(c);
+                View  mViewEmail = layoutInflaterEmail.inflate(R.layout.dialog_change_email, null);
+                AlertDialog.Builder alertDialogBuilderEmail = new AlertDialog.Builder(c);
+                alertDialogBuilderEmail.setView(mViewEmail);
+                final EditText editEmailDialog = (EditText) mViewEmail.findViewById(R.id.input_dialog_email);
+                final EditText editPassDialog = (EditText) mViewEmail.findViewById(R.id.input_dialog_curentpass);
+                Log.e("mật khẩu hiện tại::::",currentUser.getPassW());
+                alertDialogBuilderEmail
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                if(currentUser.getPassW().equals(editPassDialog.getText().toString())){
+                                    mTxtDetailsEmail.setText(editEmailDialog.getText().toString());
+                                }else {
+                                    Toast.makeText(AccountDetailsActivity.this, "Wrong password. Please enter!",Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+                AlertDialog alertDialogEmail = alertDialogBuilderEmail.create();
+                alertDialogEmail.show();
+                break;
+            case R.id.ln_change_pass:
+                LayoutInflater layoutInflaterPass = LayoutInflater.from(c);
+                View mViewPass = layoutInflaterPass.inflate(R.layout.dialog_password, null);
+                AlertDialog.Builder alertDialogBuilderPass = new AlertDialog.Builder(c);
+                alertDialogBuilderPass.setView(mViewPass);
+                final EditText editCurrentpass = (EditText) mViewPass.findViewById(R.id.input_curent_pass);
+                final EditText editNewPass = (EditText) mViewPass.findViewById(R.id.input_new_pass);
+                final EditText editConfirmPass = (EditText) mViewPass.findViewById(R.id.input_confirm_pass);
+                alertDialogBuilderPass
+                        .setCancelable(false)
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+                                if(currentUser.getPassW().equals(editCurrentpass.getText().toString())){
+                                    if(editNewPass.getText().toString().equals(editConfirmPass.getText().toString())){
+                                        passwChange=editNewPass.getText().toString();
+                                    }else
+                                        Toast.makeText(AccountDetailsActivity.this, "Confirm password do not match!",Toast.LENGTH_LONG).show();
+                                }else
+                                    Toast.makeText(AccountDetailsActivity.this, "Your current password incorrect!",Toast.LENGTH_LONG).show();
+                            }
+                        })
+
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialogBox, int id) {
+                                        dialogBox.cancel();
+                                    }
+                                });
+                AlertDialog alertDialogPass = alertDialogBuilderPass.create();
+                alertDialogPass.show();
+                break;
+            case R.id.txt_details_save:
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AccountDetailsActivity.this);
+                alertDialogBuilder.setMessage("Save the changes!");
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogBox, int id) {
+
+                            }
+                        })
+
+                        .setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    arg0.dismiss();}
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                break;
+
+
+
         }
+
+    }
+
+    @Override
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+
+    }
+
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
+        currentUser=user;
 
     }
 }
