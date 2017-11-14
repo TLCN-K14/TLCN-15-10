@@ -48,21 +48,6 @@ public class PreferManager implements DBNguoiDungServer.userListener {
         editor.commit();
     }
 
-    public boolean checkLogin(){
-        // Check login status
-        if(!this.isLoggedIn()){
-
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
-            _context.startActivity(i);
-
-            return true;
-        }
-        return false;
-    }
-
-
-
     public HashMap<String, String> getUserDetails(){
 
         //Use hashmap to store user credentials

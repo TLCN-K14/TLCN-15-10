@@ -12,11 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
@@ -24,7 +22,6 @@ import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +29,6 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener {
@@ -50,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     DBNguoiDungServer dbNguoiDungServer;
     HashMap<String, String> user;
     public static NguoiDungModel userCurrent=null;
+    private int MAIN_REQ = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +59,17 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
         setupBottomSheetView();
         preferManager = new PreferManager(getApplicationContext());
-        Toast.makeText(getApplicationContext(),
-                "User Login Status: " + preferManager.isLoggedIn(),
-                Toast.LENGTH_LONG).show();
+        dbNguoiDungServer=new DBNguoiDungServer(this);
         Log.e("email:::::::::",preferManager.KEY_EMAIL);
-        if(preferManager.checkLogin())
-            finish();
+        if(preferManager.isLoggedIn()) {
+            HashMap<String, String> user = preferManager.getUserDetails();
+            dbNguoiDungServer.getUser(user.get(preferManager.KEY_EMAIL));
+        }
+        else
+        {
+            Intent login= new Intent(MainActivity.this, LoginActivity.class);
+            startActivityForResult(login,MAIN_REQ);
+        }
 
 
         mBottomNavigationView .setOnNavigationItemSelectedListener

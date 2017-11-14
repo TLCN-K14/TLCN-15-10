@@ -2,14 +2,10 @@ package com.hcmute.trietthao.yourtime.mvp.signIn.presenter;
 
 
 
-import android.content.Context;
-import android.util.Log;
-
 import com.hcmute.trietthao.yourtime.base.BasePresenter;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.ISignInView;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
-import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
 
@@ -51,7 +47,6 @@ public class SignInPresenter extends BasePresenter implements ISignInPresenter, 
 
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
-        Log.e("Vao getlistUser::::"," ");
         nguoiDungModel=listUser.get(0);
         if(nguoiDungModel.getUserName().equals(email) || nguoiDungModel.getPassW().equals(passw))
         {

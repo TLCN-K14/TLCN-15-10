@@ -113,7 +113,6 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
         handler.postDelayed(new Runnable() {
             public void run() {
                 Log.e("email prefer::::",email);
-                // tu` tu` chi v ??
                 preferManager.createUserSignInSession(currentUser.getIdNguoiDung(),currentUser.getTenNguoiDung(),currentUser.getUserName());
                 finish();
 

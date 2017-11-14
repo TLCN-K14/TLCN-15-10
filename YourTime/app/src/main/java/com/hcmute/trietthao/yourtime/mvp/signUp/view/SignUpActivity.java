@@ -156,16 +156,16 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
                 Log.e("Email::::::", personEmail);
             }
         }
-        if(requestCode==3) {
-            Log.e("facebookk::::::","");
-            Bundle inBundle = getIntent().getExtras();
-            String namefb = inBundle.get("name").toString();
-            String surnamefb = inBundle.get("surname").toString();
-            String emailfb =inBundle.get("email").toString();
-            String imageUrl = inBundle.get("imageUrl").toString();
-            mEditName.setText("" + namefb + " " + surnamefb);
-            mEditEmail.setText(emailfb);
-            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
+        else {
+//            Log.e("facebookk::::::","");
+//            Bundle inBundle = getIntent().getExtras();
+//            String namefb = inBundle.get("name").toString();
+//            String surnamefb = inBundle.get("surname").toString();
+//            String emailfb =inBundle.get("email").toString();
+//            String imageUrl = inBundle.get("imageUrl").toString();
+//            mEditName.setText("" + namefb + " " + surnamefb);
+//            mEditEmail.setText(emailfb);
+//            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
         }
     }
 

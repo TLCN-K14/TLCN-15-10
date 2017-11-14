@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         initListener();
-        preferManager= new PreferManager(this);
+        preferManager= new PreferManager(getApplicationContext());
 
 
         //Google
@@ -238,17 +238,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         if(requestCode==LOGIN_REQ){
-
-            if( preferManager.checkLogin())
+            if(preferManager.isLoggedIn())
                 finish();
         }
         if(requestCode==LOGIN_REQ2){
-            if( preferManager.checkLogin())
+            if( preferManager.isLoggedIn())
                 finish();
-        }if(requestCode==LOGIN_REQ3) {
+        }else {
             callbackManager.onActivityResult(requestCode, responseCode, intent);
         }
-
     }
 
     private void nextActivity(JSONObject object){
