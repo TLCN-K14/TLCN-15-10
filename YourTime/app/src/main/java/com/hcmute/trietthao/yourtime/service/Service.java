@@ -1,10 +1,13 @@
 package com.hcmute.trietthao.yourtime.service;
 
+import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
-import com.hcmute.trietthao.yourtime.model.modelOffline.NhomCVMO;
-import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 
+
+import com.hcmute.trietthao.yourtime.response.InsertGroupWorkResponse;
+
+import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,20 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @POST("/insertuser")
     Call<ArrayList<NhomCVModel>> insertWorkGroup(@Field("tennhom") String tennhom, @Field("lanhomcanhan") boolean lanhomcanhan);
+
+    @FormUrlEncoded
+    @POST("/insertgroupwork")
+    Call<InsertGroupWorkResponse> insertGroupWork(@Field("idnhom") Integer idnhom, @Field("tennhom") String tennhom,
+                                                  @Field("lanhomcanhan") boolean lanhomcanhan);
+
+    @GET("/getlistgroupwork")
+    Call<ArrayList<NhomCVModel>> getListGroupWork(@Query("idnguoidung") Integer idnguoidung);
+
+    @GET("/getlistallwork")
+    Call<ArrayList<CongViecModel>> getListAllWork(@Query("idnguoidung") Integer idnguoidung);
+
+    @GET("/getlistallworksearch")
+    Call<ArrayList<CongViecModel>> getListAllWorkSearch(@Query("idnguoidung") Integer idnguoidung,@Query("keysearch") String keysearch);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

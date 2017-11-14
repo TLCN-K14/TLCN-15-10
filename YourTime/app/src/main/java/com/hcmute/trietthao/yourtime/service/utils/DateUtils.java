@@ -1,5 +1,6 @@
 package com.hcmute.trietthao.yourtime.service.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,42 @@ public class DateUtils {
     public static Integer getIntCurrentDateTime() {
         String timeStamp = new SimpleDateFormat("MMddHHmmss").format(Calendar.getInstance().getTime());
         return Integer.valueOf(timeStamp);
+    }
+
+    public static Date converStringToDateTime(String input) throws ParseException {
+        String defaultTimezone = TimeZone.getDefault().getID();
+        Date date = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(input.replaceAll("Z$", "+0000"));
+        SimpleDateFormat dt = new SimpleDateFormat("EE dd MM");
+        return date;
+    }
+
+    public static String getDisplayDate(Date date){
+        String s="";
+        switch (date.getDay()){
+            case 1: s+="T.2 "; break;
+            case 2: s+="T.3 "; break;
+            case 3: s+="T.4 "; break;
+            case 4: s+="T.5 "; break;
+            case 5: s+="T.6 "; break;
+            case 6: s+="T.7 "; break;
+            case 7: s+="C.N "; break;
+        }
+        return s+date.getDate()+" Th"+String.valueOf(date.getMonth()+1);
+    }
+
+    public static boolean isDateInCurrentWeek(Date date) {
+        Calendar currentCalendar = Calendar.getInstance();
+        int week = currentCalendar.get(Calendar.WEEK_OF_YEAR);
+        int year = currentCalendar.get(Calendar.YEAR);
+        Calendar targetCalendar = Calendar.getInstance();
+        targetCalendar.setTime(date);
+        int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
+        int targetYear = targetCalendar.get(Calendar.YEAR);
+        return week == targetWeek && year == targetYear;
+    }
+
+    public static boolean isToday(Date date) {
+        return isSameDay(date, Calendar.getInstance().getTime());
     }
 
     public static Date convertTimeZone(Date date, TimeZone fromTZ, TimeZone toTZ) {

@@ -6,11 +6,14 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.view;
 
 public interface ITasksView {
 
+    void showLoading();
+
+    void hideLoading();
+
     void getAllGroupWorkSuccess();
 
-    void getAllGroupWorkFailure(String error);
+    void getListAllWorkSucess();
 
-    void getGroupWorkDetailsSuccess();
+    void getAllGroupWorkFailure();
 
-    void getGroupWorkDetailsFailure();
 }

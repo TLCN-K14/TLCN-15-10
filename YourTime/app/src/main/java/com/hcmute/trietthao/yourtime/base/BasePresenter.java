@@ -1,6 +1,5 @@
 package com.hcmute.trietthao.yourtime.base;
 
-
 public abstract class BasePresenter {
     private IView mView;
 
@@ -11,7 +10,6 @@ public abstract class BasePresenter {
     public void detachView() {
         mView = null;
     }
-
 
     public boolean isViewAttached() {
         return mView != null;

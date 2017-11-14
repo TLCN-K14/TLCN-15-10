@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CongViecModel {
     @SerializedName("idCongViec")
@@ -18,11 +17,11 @@ public class CongViecModel {
 
     @SerializedName("thoiGianBatDau")
     @Expose
-    private Date thoiGianBatDau;
+    private String thoiGianBatDau;
 
     @SerializedName("thoiGianKetThuc")
     @Expose
-    private Date thoiGianKetThuc;
+    private String thoiGianKetThuc;
 
     @SerializedName("ghiChu")
     @Expose
@@ -34,7 +33,7 @@ public class CongViecModel {
 
     @SerializedName("coUuTien")
     @Expose
-    private boolean coUuTien;
+    private Integer coUuTien;
 
     @SerializedName("idNhom")
     @Expose
@@ -52,6 +51,17 @@ public class CongViecModel {
     @Expose
     private Integer idNguoiDuocGiaoCV;
 
+    @SerializedName("trangThai")
+    @Expose
+    private String trangThai;
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
 
     ArrayList<BinhLuanModel> binhLuanModels;
 
@@ -67,8 +77,8 @@ public class CongViecModel {
 
     }
 
-    public CongViecModel(Integer idCongViec, String tenCongViec, Date thoiGianBatDau,
-                         Date thoiGianKetThuc, String ghiChu, String fileDinhKem, boolean coUuTien,
+    public CongViecModel(Integer idCongViec, String tenCongViec, String thoiGianBatDau,
+                         String thoiGianKetThuc, String ghiChu, String fileDinhKem, Integer coUuTien,
                          Integer idNhom, Integer idNhacNho, Integer idNguoiTaoCV, Integer idNguoiDuocGiaoCV) {
         this.idCongViec = idCongViec;
         this.tenCongViec = tenCongViec;
@@ -101,19 +111,19 @@ public class CongViecModel {
         this.tenCongViec = tenCongViec;
     }
 
-    public Date getThoiGianBatDau() {
+    public String getThoiGianBatDau() {
         return thoiGianBatDau;
     }
 
-    public void setThoiGianBatDau(Date thoiGianBatDau) {
+    public void setThoiGianBatDau(String thoiGianBatDau) {
         this.thoiGianBatDau = thoiGianBatDau;
     }
 
-    public Date getThoiGianKetThuc() {
+    public String getThoiGianKetThuc() {
         return thoiGianKetThuc;
     }
 
-    public void setThoiGianKetThuc(Date thoiGianKetThuc) {
+    public void setThoiGianKetThuc(String thoiGianKetThuc) {
         this.thoiGianKetThuc = thoiGianKetThuc;
     }
 
@@ -133,11 +143,11 @@ public class CongViecModel {
         this.fileDinhKem = fileDinhKem;
     }
 
-    public boolean isCoUuTien() {
+    public Integer getCoUuTien() {
         return coUuTien;
     }
 
-    public void setCoUuTien(boolean coUuTien) {
+    public void setCoUuTien(Integer coUuTien) {
         this.coUuTien = coUuTien;
     }
 

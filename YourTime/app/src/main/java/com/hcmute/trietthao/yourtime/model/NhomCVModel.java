@@ -4,10 +4,9 @@ package com.hcmute.trietthao.yourtime.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class NhomCVModel implements Serializable {
+public class NhomCVModel {
     @SerializedName("idNhom")
     @Expose
     private Integer idNhom;
@@ -18,13 +17,36 @@ public class NhomCVModel implements Serializable {
 
     @SerializedName("laNhomCaNhan")
     @Expose
-    private boolean laNhomCaNhan;
+    private Integer laNhomCaNhan;
 
-    ArrayList<CongViecModel> congViecModels;
+    @SerializedName("soCV")
+    @Expose
+    private Integer soCV;
 
-    ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels;
+    @SerializedName("soCVQuaHan")
+    @Expose
+    private Integer soCVQuaHan;
 
+    public Integer getSoCV() {
+        return soCV;
+    }
 
+    public void setSoCV(Integer soCV) {
+        this.soCV = soCV;
+    }
+
+    public Integer getSoCVQuaHan() {
+        return soCVQuaHan;
+    }
+
+    public void setSoCVQuaHan(Integer soCVQuaHan) {
+        this.soCVQuaHan = soCVQuaHan;
+    }
+        ArrayList<CongViecModel> congViecModels;
+//
+//    ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels;
+//
+//
     public ArrayList<CongViecModel> getCongViecModels() {
         return congViecModels;
     }
@@ -32,16 +54,16 @@ public class NhomCVModel implements Serializable {
     public void setCongViecModels(ArrayList<CongViecModel> congViecModels) {
         this.congViecModels = congViecModels;
     }
+//
+//    public ArrayList<NhomCVNguoiDungModel> getNhomCVNguoiDungModels() {
+//        return nhomCVNguoiDungModels;
+//    }
+//
+//    public void setNhomCVNguoiDungModels(ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels) {
+//        this.nhomCVNguoiDungModels = nhomCVNguoiDungModels;
+//    }
 
-    public ArrayList<NhomCVNguoiDungModel> getNhomCVNguoiDungModels() {
-        return nhomCVNguoiDungModels;
-    }
-
-    public void setNhomCVNguoiDungModels(ArrayList<NhomCVNguoiDungModel> nhomCVNguoiDungModels) {
-        this.nhomCVNguoiDungModels = nhomCVNguoiDungModels;
-    }
-
-    public NhomCVModel(Integer idNhom, String tenNhom, boolean laNhomCaNhan) {
+    public NhomCVModel(Integer idNhom, String tenNhom, Integer laNhomCaNhan) {
         this.idNhom = idNhom;
         this.tenNhom = tenNhom;
         this.laNhomCaNhan = laNhomCaNhan;
@@ -68,13 +90,11 @@ public class NhomCVModel implements Serializable {
         this.tenNhom = tenNhom;
     }
 
-    public boolean isLaNhomCaNhan() {
+    public Integer getLaNhomCaNhan() {
         return laNhomCaNhan;
     }
 
-    public void setLaNhomCaNhan(boolean laNhomCaNhan) {
+    public void setLaNhomCaNhan(Integer laNhomCaNhan) {
         this.laNhomCaNhan = laNhomCaNhan;
     }
-
-
 }

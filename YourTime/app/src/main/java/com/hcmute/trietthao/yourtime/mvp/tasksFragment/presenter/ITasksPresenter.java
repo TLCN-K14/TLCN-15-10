@@ -5,7 +5,8 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter;
  */
 
 public interface ITasksPresenter {
-    void getAllGroupWork();
+    void getAllGroupWorkOnline(int idnguoidung);
 
-    void getGroupWorkDetails(String id);
+    void getAllWorkOnline(int idnguoidung);
+
 }

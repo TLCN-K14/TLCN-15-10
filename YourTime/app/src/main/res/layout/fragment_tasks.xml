@@ -97,6 +97,7 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
+        android:fillViewport="true"
         android:layout_height="match_parent">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,7 +108,11 @@
                         android:id="@+id/header_tasks"/>
 
 
-
+                <ProgressBar
+                    android:id="@+id/progressBar_Loadmore"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_height="wrap_content" />
                 <android.support.v7.widget.RecyclerView
                         android:id="@+id/list_groupworks"
                         android:layout_width="match_parent"
@@ -138,18 +143,8 @@
                         android:gravity="center_vertical"/>
                 </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="500dp"
-                        android:background="@color/colorAccent"
-                        android:layout_margin="30dp"
-                       >
-                    </LinearLayout>
-                <ProgressBar
-                    android:id="@+id/progressBar_Loadmore"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_height="wrap_content" />
+
+
 
             </LinearLayout>
 

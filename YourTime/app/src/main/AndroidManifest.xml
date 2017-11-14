@@ -80,6 +80,13 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity android:name=".mvp.searchWork.view.SearchWorkActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
 
         <activity android:name=".profile.AccountDetailsActivity">
 

@@ -5,9 +5,10 @@ import android.util.Log;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 import com.hcmute.trietthao.yourtime.service.Service;
-import com.hcmute.trietthao.yourtime.service.utils.APIUtils;
+import com.hcmute.trietthao.yourtime.service.utils.ApiUtils;
 
 import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +31,7 @@ public class DBNguoiDungServer {
 
     // Hàm insert user chỗ đăng ký
     public void insertUser(int id, String name, String avatar, String username, String pass){
-        mService = APIUtils.getService();
+        mService = ApiUtils.getService();
         Call<InsertUserResponse> call = mService.insertUser(id,name,avatar,username,pass);
         Log.e("Response",call.request().url().toString());
         Log.e("Response id:::::",String.valueOf(id));
@@ -59,7 +60,7 @@ public class DBNguoiDungServer {
     }
     // Hàm lấy list user
     public void getListUser(){
-        mService = APIUtils.getService();
+        mService = ApiUtils.getService();
         Call<ArrayList<NguoiDungModel>> call = mService.getListUser();
         Log.e("Response",call.request().url().toString());
         call.enqueue(new Callback<ArrayList<NguoiDungModel>>() {
@@ -78,7 +79,7 @@ public class DBNguoiDungServer {
 
     // ==== Login ==== //
     public void getUser(String mail){
-        mService = APIUtils.getService();
+        mService = ApiUtils.getService();
         Call<ArrayList<NguoiDungModel>> call = mService.getUserByEmail(mail);
         Log.e("Response",call.request().url().toString());
         call.enqueue(new Callback<ArrayList<NguoiDungModel>>() {
