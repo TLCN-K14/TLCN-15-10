@@ -18,12 +18,12 @@ import android.widget.Toast;
 import com.hcmute.trietthao.yourtime.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.DetailGroupWorkMainActivity;
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.mvp.searchWork.view.SearchWorkActivity;
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
 import com.hcmute.trietthao.yourtime.database.GroupWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.searchWork.view.SearchWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAdapter;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter.TasksPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.converStringToDateTime;
-import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isDateInCurrentWeek;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isToday;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
@@ -270,17 +269,6 @@ public class TasksFragment extends Fragment implements
     @Override
     public void getListAllWorkSucess() {
         mListCV = mTasksPresenter.getListAllWorkOnline();
-
-
-        try {
-            Toast.makeText(getActivity(), "Date of work:" +getDisplayDate(converStringToDateTime(mListCV.get(0).getThoiGianBatDau())) ,
-                    Toast.LENGTH_LONG).show();
-        } catch (ParseException e) {
-            Toast.makeText(getActivity(), "Lỗi:"+e.getMessage() ,
-                    Toast.LENGTH_LONG).show();
-        }
-        Log.e("Time","---"+mListCV.get(0).getThoiGianBatDau());
-
 
         setupCountWork();
     }

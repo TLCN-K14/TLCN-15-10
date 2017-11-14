@@ -9,12 +9,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
+import com.hcmute.trietthao.yourtime.mvp.searchWork.adapter.ItemSearchAdapter;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchWorkPresenter;
 
 import java.util.ArrayList;
@@ -39,8 +41,13 @@ public class SearchWorkActivity extends AppCompatActivity implements View.OnClic
     @Bind(R.id.progressBar_Loadmore)
     ProgressBar pbLoading;
 
+    @Bind(R.id.list_groupworks_works_search)
+    ExpandableListView elListSearch;
+
     SearchWorkPresenter mSearchWorkPresenter;
     ArrayList<NhomCVModel> mListNhomCv;
+
+    ItemSearchAdapter itemSearchAdapter;
 
 
     @Override
@@ -105,8 +112,21 @@ public class SearchWorkActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void getListGroupWorkSucess() {
         mListNhomCv = formatList(mSearchWorkPresenter.getListSearchOnline());
-        Toast.makeText(getApplication(), ""+mListNhomCv.size(),
+        itemSearchAdapter = new ItemSearchAdapter(getApplication(),mListNhomCv);
+        elListSearch.setAdapter(itemSearchAdapter);
+
+        Toast.makeText(getApplication(), "^^^^^^^"+mListNhomCv.get(0).getCongViecModels().get(0).getTenCongViec(),
                 Toast.LENGTH_LONG).show();
+
+        for(int i=0;i<mListNhomCv.size();i++)
+            elListSearch.expandGroup(i);
+
+        elListSearch.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,int  groupPosition, long id) {
+                return true;
+            }
+        });
     }
 
     public ArrayList<NhomCVModel> formatList(ArrayList<NhomCVModel> nhomCVModelArrayList){

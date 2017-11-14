@@ -22,7 +22,13 @@ public class DateUtils {
         return date;
     }
 
-    public static String getDisplayDate(Date date){
+    public static String getDisplayDate(String input){
+        Date date = null;
+        try {
+            date = converStringToDateTime(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         String s="";
         switch (date.getDay()){
             case 1: s+="T.2 "; break;
