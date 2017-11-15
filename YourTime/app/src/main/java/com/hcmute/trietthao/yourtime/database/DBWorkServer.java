@@ -3,6 +3,7 @@ package com.hcmute.trietthao.yourtime.database;
 import android.util.Log;
 
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.response.UpdateWorkResponse;
 import com.hcmute.trietthao.yourtime.service.Service;
 import com.hcmute.trietthao.yourtime.service.utils.ApiUtils;
 
@@ -19,10 +20,14 @@ import retrofit2.Response;
 public class DBWorkServer {
 
     Service mService;
-    WorkListener workListener;
+    GetWorkListener getWorkListener;
+    PostWorkListener postWorkListener;
 
-    public DBWorkServer(WorkListener workListener ) {
-        this.workListener = workListener;
+    public DBWorkServer(GetWorkListener getWorkListener) {
+        this.getWorkListener = getWorkListener;
+    }
+    public DBWorkServer(PostWorkListener postWorkListener ) {
+        this.postWorkListener = postWorkListener;
     }
 
     // Hàm lấy list user
@@ -36,7 +41,7 @@ public class DBWorkServer {
             public void onResponse(Call<ArrayList<CongViecModel>> call, Response<ArrayList<CongViecModel>> response) {
                 if(response.isSuccessful()){
                     Log.e("Response","Lấy list work thành công"+response.message());
-                    workListener.getListAllWork(response.body());
+                    getWorkListener.getListAllWork(response.body());
                 }else
                     Log.e("Response","Lấy list work thất bại ");
             }
@@ -57,13 +62,35 @@ public class DBWorkServer {
             public void onResponse(Call<ArrayList<CongViecModel>> call, Response<ArrayList<CongViecModel>> response) {
                 if(response.isSuccessful()){
                     Log.e("Response","Lấy list work search thành công"+response.message());
-                    workListener.getListAllWork(response.body());
+                    getWorkListener.getListAllWork(response.body());
                 }else
                     Log.e("Response","Lấy list work search thất bại ");
             }
             @Override
             public void onFailure(Call<ArrayList<CongViecModel>> call, Throwable t) {
                 Log.e("Response","Lấy list work search thất bại "+t.getMessage());
+            }
+        });
+    }
+
+    public void updateStatusWork(final String trangthai,Integer idcongviec,String thoigianbatdau){
+        mService = ApiUtils.getService();
+        Call<UpdateWorkResponse> call = mService.updateStatusWork(trangthai,idcongviec,thoigianbatdau);
+        call.enqueue(new Callback<UpdateWorkResponse>() {
+            @Override
+            public void onResponse(Call<UpdateWorkResponse> call, Response<UpdateWorkResponse> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Update status work thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Update status work thất bại ");
+                }
+            }
+            @Override
+            public void onFailure(Call<UpdateWorkResponse> call, Throwable t) {
+                Log.e("Response","Update status work thất bại "+t.getMessage());
             }
         });
     }

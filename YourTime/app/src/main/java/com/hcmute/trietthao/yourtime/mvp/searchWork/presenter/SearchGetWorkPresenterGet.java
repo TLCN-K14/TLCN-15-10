@@ -2,8 +2,8 @@ package com.hcmute.trietthao.yourtime.mvp.searchWork.presenter;
 
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
-import com.hcmute.trietthao.yourtime.database.GroupWorkListener;
-import com.hcmute.trietthao.yourtime.database.WorkListener;
+import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
+import com.hcmute.trietthao.yourtime.database.GetWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.view.ISearchWork;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by lxtri on 11/14/2017.
  */
 
-public class SearchWorkPresenter implements ISearchWorkPresenter,WorkListener,GroupWorkListener{
+public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkListener,GetGroupWorkListener {
 
     ISearchWork iSearchWork;
     ArrayList<NhomCVModel> mListNhomCV;
@@ -24,7 +24,7 @@ public class SearchWorkPresenter implements ISearchWorkPresenter,WorkListener,Gr
     int idnguoidung; String keysearch;
     boolean flag= true;
 
-    public SearchWorkPresenter(ISearchWork iSearchWork){ this.iSearchWork=iSearchWork;}
+    public SearchGetWorkPresenterGet(ISearchWork iSearchWork){ this.iSearchWork=iSearchWork;}
 
     public ArrayList<NhomCVModel> getListSearchOnline(){ return mListNhomCV;}
 
@@ -86,11 +86,5 @@ public class SearchWorkPresenter implements ISearchWorkPresenter,WorkListener,Gr
         }
 
     }
-
-    @Override
-    public void getResultInsertGroupWork(Boolean isSuccess) {
-
-    }
-
 
 }

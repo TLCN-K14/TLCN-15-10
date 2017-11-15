@@ -9,7 +9,7 @@
     <LinearLayout
         android:baselineAligned="false"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_groupwork_50dp"
+        android:layout_height="@dimen/height_item_work"
         android:orientation="horizontal"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="2.5"
             android:orientation="horizontal">
             <CheckBox
                 tools:ignore="MissingPrefix"
@@ -64,12 +64,13 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
+                    android:padding="3dp"
                     android:id="@+id/item_work_assigned"
                     android:src="@drawable/image_user1"
                     android:layout_marginEnd="@dimen/padding_5dp"
@@ -100,6 +101,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/item_work_priority"
                 android:layout_weight="1"
+                android:paddingBottom="5dp"
                 android:src="@drawable/ic_priority_selected"/>
         </LinearLayout>
     </LinearLayout>

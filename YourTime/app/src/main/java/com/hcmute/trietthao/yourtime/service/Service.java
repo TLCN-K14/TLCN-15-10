@@ -8,6 +8,7 @@ import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.response.InsertGroupWorkResponse;
 
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
+import com.hcmute.trietthao.yourtime.response.UpdateWorkResponse;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,11 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @GET("/getlistallworksearch")
     Call<ArrayList<CongViecModel>> getListAllWorkSearch(@Query("idnguoidung") Integer idnguoidung,@Query("keysearch") String keysearch);
+
+     @FormUrlEncoded
+     @POST("/updatestatuswork")
+     Call<UpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
+                                            @Field("idcongviec") Integer idcongviec, @Field("thoigianbatdau") String thoigianbatdau);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

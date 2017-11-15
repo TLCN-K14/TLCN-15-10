@@ -22,6 +22,18 @@ public class DateUtils {
         return date;
     }
 
+    public static String getDateTimeToInsertUpdate(String input) throws ParseException {
+        Date date = converStringToDateTime(input);
+        String dateFormat = "yyyy-MM-dd HH:mm:ss";
+        return formatDate(date, dateFormat);
+    }
+
+    public static String getDateDisplay(String input) throws ParseException {
+        Date date = converStringToDateTime(input);
+        String dateFormat = "dd";
+        return formatDate(date, dateFormat);
+    }
+
     public static String getDisplayDate(String input){
         Date date = null;
         try {
@@ -29,7 +41,7 @@ public class DateUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String s="";
+        String s=" ,";
         switch (date.getDay()){
             case 1: s+="T.2 "; break;
             case 2: s+="T.3 "; break;
@@ -39,7 +51,10 @@ public class DateUtils {
             case 6: s+="T.7 "; break;
             case 7: s+="C.N "; break;
         }
-        return s+date.getDate()+" Th"+String.valueOf(date.getMonth()+1);
+        String dateFormat1 = "HH:mm";
+        String dateFormat2 = "dd";
+        String dateFormat3 = "MM";
+        return formatDate(date, dateFormat1)+s+formatDate(date, dateFormat2)+" Th"+formatDate(date, dateFormat3);
     }
 
     public static boolean isDateInCurrentWeek(Date date) {

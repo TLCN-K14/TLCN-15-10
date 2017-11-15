@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by lxtri on 11/13/2017.
  */
 
-public interface WorkListener {
+public interface GetWorkListener {
     void  getListAllWork(final ArrayList<CongViecModel> congViecModelArrayList);
 
 }

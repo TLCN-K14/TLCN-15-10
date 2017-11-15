@@ -31,6 +31,7 @@
     <color name="colorGray600">#757575</color>
     <color name="colorGray800">#424242</color>
 
+    <color name="colorGreen800">#00897B</color>
     <color name="colorGreen">#03fa2c</color>
     <color name="colorGreen2">#8BC454</color>
     <color name="colorNearGreen">#b96efa03</color>
@@ -50,5 +51,6 @@
 
 
     <color name="colorBlue100">#BBDEFB</color>
+    <color name="colorScreenBackground2">#2F6251</color>
 
 </resources>

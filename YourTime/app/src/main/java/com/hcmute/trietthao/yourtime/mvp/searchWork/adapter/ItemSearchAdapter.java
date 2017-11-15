@@ -1,6 +1,7 @@
 package com.hcmute.trietthao.yourtime.mvp.searchWork.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.R;
+import com.hcmute.trietthao.yourtime.database.DBWorkServer;
+import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 
@@ -25,14 +29,16 @@ import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDa
 
 
 
-public class ItemSearchAdapter extends BaseExpandableListAdapter{
+public class ItemSearchAdapter extends BaseExpandableListAdapter implements PostWorkListener{
 
     Context context;
     ArrayList<NhomCVModel> mListNhomCV;
+    DBWorkServer dbWorkServer;
 
     public ItemSearchAdapter(Context context, ArrayList<NhomCVModel> mListNhomCV){
         this.context = context;
         this.mListNhomCV = mListNhomCV;
+
     }
 
     @Override
@@ -82,8 +88,11 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter{
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean b, View converView, ViewGroup viewGroup) {
-        CongViecModel congViecModel = mListNhomCV.get(groupPosition).getCongViecModels().get(childPosition);
+    public View getChildView(final int groupPosition,final int childPosition, boolean b, View converView, ViewGroup viewGroup) {
+
+        dbWorkServer = new DBWorkServer(this);
+
+        final CongViecModel congViecModel = mListNhomCV.get(groupPosition).getCongViecModels().get(childPosition);
         Log.e("ItemSearchAdapter","getChildView  "+congViecModel.getTenCongViec());
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         converView = inflater.inflate(R.layout.item_work,null);
@@ -93,7 +102,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter{
         ImageView ivConversationWork = (ImageView) converView.findViewById(R.id.item_work_conversation);
         ImageView ivRepeatWork = (ImageView) converView.findViewById(R.id.item_work_repeat);
         ImageView ivAssignedWork = (ImageView) converView.findViewById(R.id.item_work_assigned);
-        ImageView ivPriorityWork = (ImageView) converView.findViewById(R.id.item_work_priority);
+        final ImageView ivPriorityWork = (ImageView) converView.findViewById(R.id.item_work_priority);
 
         tvNameWork.setText(congViecModel.getTenCongViec());
         tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
@@ -112,6 +121,41 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter{
 //        if(congViecModel.getIdNguoiDuocGiaoCV()!=null)
 //            Picasso.with(context).load(imageResource).fit().centerInside().into(holder.imgItem);
 //        else
+
+        ivPriorityWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(congViecModel.getCoUuTien()==1){
+                    ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
+
+                }
+                else{
+                    ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
+                }
+            }
+        });
+
+        cbTickWork.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if ( isChecked )
+                {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            removeItem(groupPosition,childPosition);
+                            //dbWorkServer.updateStatusWork("done",congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau());
+
+                        }
+                    }, 1000);
+                }
+
+            }
+        });
+
             ivAssignedWork.setVisibility(View.INVISIBLE);
 
         if(congViecModel.getIdNhacNho()==null)
@@ -125,8 +169,20 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter{
 
     }
 
+    public void removeItem(int groupPosition, int childPosition){
+        mListNhomCV.get(groupPosition).getCongViecModels().remove(childPosition);
+        if(mListNhomCV.get(groupPosition).getCongViecModels().size()==0)
+            mListNhomCV.remove(groupPosition);
+        notifyDataSetChanged();
+    }
+
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+
     }
 }

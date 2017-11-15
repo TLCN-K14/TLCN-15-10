@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -17,13 +18,16 @@ import android.widget.Toast;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.adapter.ItemSearchAdapter;
-import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchWorkPresenter;
+import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchGetWorkPresenterGet;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.converStringToDateTime;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
 
 
@@ -44,7 +48,7 @@ public class SearchWorkActivity extends AppCompatActivity implements View.OnClic
     @Bind(R.id.list_groupworks_works_search)
     ExpandableListView elListSearch;
 
-    SearchWorkPresenter mSearchWorkPresenter;
+    SearchGetWorkPresenterGet mSearchWorkPresenter;
     ArrayList<NhomCVModel> mListNhomCv;
 
     ItemSearchAdapter itemSearchAdapter;
@@ -56,7 +60,7 @@ public class SearchWorkActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_searchwork);
         ButterKnife.bind(this);
 
-        mSearchWorkPresenter = new SearchWorkPresenter(this);
+        mSearchWorkPresenter = new SearchGetWorkPresenterGet(this);
         mListNhomCv = new ArrayList<>();
 
         setSupportActionBar(mToolbar);
@@ -115,8 +119,15 @@ public class SearchWorkActivity extends AppCompatActivity implements View.OnClic
         itemSearchAdapter = new ItemSearchAdapter(getApplication(),mListNhomCv);
         elListSearch.setAdapter(itemSearchAdapter);
 
-        Toast.makeText(getApplication(), "^^^^^^^"+mListNhomCv.get(0).getCongViecModels().get(0).getTenCongViec(),
-                Toast.LENGTH_LONG).show();
+        try {
+            Toast.makeText(getApplication(), ""+converStringToDateTime(
+                    mListNhomCv.get(0).getCongViecModels().get(0).getThoiGianBatDau()),
+                    Toast.LENGTH_LONG).show();
+            Log.e("Time---",""+getDateTimeToInsertUpdate(
+                    mListNhomCv.get(0).getCongViecModels().get(0).getThoiGianKetThuc()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         for(int i=0;i<mListNhomCv.size();i++)
             elListSearch.expandGroup(i);

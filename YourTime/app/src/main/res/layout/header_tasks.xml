@@ -220,9 +220,9 @@
                     android:layout_height="wrap_content"
                     android:text="&#160;"
                     android:id="@+id/day_current"
-                    android:textSize="@dimen/dimen_12sp"
+                    android:textSize="11sp"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="13dp"
+                    android:layout_marginTop="10dp"
                     android:textStyle="bold"
                     android:textColor="@color/colorGreen2"/>
             </RelativeLayout>

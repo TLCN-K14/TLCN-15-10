@@ -20,10 +20,10 @@ import retrofit2.Response;
 public class DBGroupWorkServer {
 
     Service mService;
-    GroupWorkListener groupWorkListener;
+    GetGroupWorkListener getGroupWorkListener;
 
-    public DBGroupWorkServer(GroupWorkListener groupWorkListener ) {
-        this.groupWorkListener = groupWorkListener;
+    public DBGroupWorkServer(GetGroupWorkListener getGroupWorkListener) {
+        this.getGroupWorkListener = getGroupWorkListener;
     }
 
     public void insertGroupWork(Integer idnhom,String tennhom, boolean lanhomcanhan){
@@ -34,12 +34,10 @@ public class DBGroupWorkServer {
             public void onResponse(Call<InsertGroupWorkResponse> call, Response<InsertGroupWorkResponse> response) {
                 if(response.isSuccessful()) {
                     Log.e("Response",""+response.message());
-                    groupWorkListener.getResultInsertGroupWork(true);
                 }
                 else
                 {
                     Log.e("Response. Lỗi: ",response.message());
-                    groupWorkListener.getResultInsertGroupWork(false);
                 }
             }
             @Override
@@ -59,7 +57,7 @@ public class DBGroupWorkServer {
             public void onResponse(Call<ArrayList<NhomCVModel>> call, Response<ArrayList<NhomCVModel>> response) {
                 if(response.isSuccessful()){
                     Log.e("Response","Lấy list groupwork thành công"+response.message());
-                    groupWorkListener.getListGroupWork(response.body());
+                    getGroupWorkListener.getListGroupWork(response.body());
                 }else
                     Log.e("Response","Lấy list groupwork thất bại ");
             }

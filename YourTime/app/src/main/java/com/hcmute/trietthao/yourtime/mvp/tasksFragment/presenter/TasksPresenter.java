@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
-import com.hcmute.trietthao.yourtime.database.GroupWorkListener;
-import com.hcmute.trietthao.yourtime.database.WorkListener;
+import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
+import com.hcmute.trietthao.yourtime.database.GetWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * Created by lxtri on 11/11/2017.
  */
 
-public class TasksPresenter  implements ITasksPresenter,GroupWorkListener,WorkListener{
+public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener {
 
     ITasksView iTasksView;
     private Service mService;
@@ -60,11 +60,6 @@ public class TasksPresenter  implements ITasksPresenter,GroupWorkListener,WorkLi
                 iTasksView.hideLoading();
             }
         }, 1000);
-    }
-
-    @Override
-    public void getResultInsertGroupWork(Boolean isSuccess) {
-
     }
 
     @Override

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorTear900">
+    android:background="@drawable/screen_background2">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -58,6 +58,7 @@
                 android:id="@+id/list_groupworks_works_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 >
             </ExpandableListView>
             <ProgressBar
@@ -69,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
                 android:indeterminateTintMode="src_atop"
-                android:indeterminateTint="@color/colorWhite"/>
+                android:indeterminateTint="@color/blue"/>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 

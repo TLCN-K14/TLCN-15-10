@@ -8,8 +8,7 @@ import java.util.ArrayList;
  * Created by lxtri on 11/13/2017.
  */
 
-public interface GroupWorkListener {
+public interface GetGroupWorkListener {
     void  getListGroupWork(final ArrayList<NhomCVModel> listGroupWork);
 
-    void  getResultInsertGroupWork(Boolean isSuccess);
 }

@@ -15,11 +15,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.DetailGroupWorkActivity;
-import com.hcmute.trietthao.yourtime.DetailGroupWorkMainActivity;
+import com.hcmute.trietthao.yourtime.mvp.detaiGroupWork.view.DetailGroupWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.detaiGroupWorkMain.view.DetailGroupWorkMainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
-import com.hcmute.trietthao.yourtime.database.GroupWorkListener;
+import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
@@ -43,7 +43,7 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 
 public class TasksFragment extends Fragment implements
-        View.OnClickListener,GroupWorkListener,ITasksView {
+        View.OnClickListener,GetGroupWorkListener,ITasksView {
 
     TextView txtDayCurrent;
     TextView txtInboxCountCompleted,txtInboxCountAll, txtInboxCountOverDue;
@@ -241,11 +241,6 @@ public class TasksFragment extends Fragment implements
     public void getListGroupWork(ArrayList<NhomCVModel> listGroupWork) {
         Log.e("TasksFragment","--So phan tu groupwork"+listGroupWork.size());
 
-
-    }
-
-    @Override
-    public void getResultInsertGroupWork(Boolean isSuccess) {
 
     }
 
