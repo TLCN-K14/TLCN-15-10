@@ -37,10 +37,8 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
 
     PreferManager preferManager;
     DBNguoiDungServer dbNguoiDungServer;
-    NguoiDungModel nguoiDungModel;
     SignInPresenter signInPresenter;
-    String email="",pass="", name="";
-    int id;
+    String email="",pass="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
