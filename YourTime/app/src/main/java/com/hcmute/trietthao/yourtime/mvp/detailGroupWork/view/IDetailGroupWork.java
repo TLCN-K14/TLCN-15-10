@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.mvp.detaiGroupWork.view;
+package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view;
 
 /**
  * Created by lxtri on 11/15/2017.

@@ -6,7 +6,7 @@ import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
 import com.hcmute.trietthao.yourtime.database.GetWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
-import com.hcmute.trietthao.yourtime.mvp.searchWork.view.ISearchWork;
+import com.hcmute.trietthao.yourtime.mvp.searchWork.view.ISearchWorkView;
 
 import java.util.ArrayList;
 
@@ -14,9 +14,9 @@ import java.util.ArrayList;
  * Created by lxtri on 11/14/2017.
  */
 
-public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkListener,GetGroupWorkListener {
+public class SearchGetWorkPresenter implements ISearchWorkPresenter,GetWorkListener,GetGroupWorkListener {
 
-    ISearchWork iSearchWork;
+    ISearchWorkView iSearchWorkView;
     ArrayList<NhomCVModel> mListNhomCV;
     ArrayList<CongViecModel> mListCV;
     DBWorkServer dbWorkServer;
@@ -24,7 +24,7 @@ public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkLi
     int idnguoidung; String keysearch;
     boolean flag= true;
 
-    public SearchGetWorkPresenterGet(ISearchWork iSearchWork){ this.iSearchWork=iSearchWork;}
+    public SearchGetWorkPresenter(ISearchWorkView iSearchWorkView){ this.iSearchWorkView = iSearchWorkView;}
 
     public ArrayList<NhomCVModel> getListSearchOnline(){ return mListNhomCV;}
 
@@ -34,7 +34,7 @@ public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkLi
         mListNhomCV = new ArrayList<NhomCVModel>();
         mListCV = new ArrayList<CongViecModel>();
 
-        iSearchWork.showLoading();
+        iSearchWorkView.showLoading();
 
         dbGroupWorkServer = new DBGroupWorkServer(this);
         dbGroupWorkServer.getListGroupWork(idnguoidung);
@@ -52,7 +52,8 @@ public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkLi
     @Override
     public void getListGroupWork(ArrayList<NhomCVModel> listGroupWork) {
         if(listGroupWork==null){
-            iSearchWork.getListGroupWorkFail();
+            iSearchWorkView.hideLoading();
+            iSearchWorkView.getListGroupWorkFail();
         }else{
             NhomCVModel inbox = new NhomCVModel();
             inbox.setTenNhom("Inbox");
@@ -76,13 +77,13 @@ public class SearchGetWorkPresenterGet implements ISearchWorkPresenter,GetWorkLi
             }
             mListNhomCV.get(i).setCongViecModels(listCVTemp);
         }
-        iSearchWork.hideLoading();
+        iSearchWorkView.hideLoading();
         if(flag && !keysearch.equals(""))
-            iSearchWork.getListGroupWorkEmpty();
+            iSearchWorkView.getListGroupWorkEmpty();
         else
         {
             flag = true;
-            iSearchWork.getListGroupWorkSucess();
+            iSearchWorkView.getListGroupWorkSucess();
         }
 
     }

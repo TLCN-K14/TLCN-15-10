@@ -52,7 +52,7 @@
         </activity>
         <activity android:name=".profile.ExtrasActivity"/>
         <activity android:name=".profile.GeneralActivity"/>
-        <activity android:name=".mvp.detaiGroupWork.view.DetailGroupWorkActivity">
+        <activity android:name=".mvp.detailGroupWork.view.DetailGroupWorkActivity">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
                 <!--<category android:name="android.intent.category.LAUNCHER" />-->
@@ -67,7 +67,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".mvp.detaiGroupWorkMain.view.DetailGroupWorkMainActivity"
+            android:name=".mvp.detailGroupWorkMain.view.DetailGroupWorkMainActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -80,7 +80,7 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <activity android:name=".mvp.searchWork.view.SearchWorkActivity"
+        <activity android:name=".mvp.searchWork.view.SearchWorkViewActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

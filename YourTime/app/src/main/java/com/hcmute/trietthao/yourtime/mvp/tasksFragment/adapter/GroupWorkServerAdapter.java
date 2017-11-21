@@ -2,15 +2,16 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
 
 import java.util.ArrayList;
 
@@ -24,10 +25,12 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
 
     private ArrayList<NhomCVModel> nhomCVModelList;
     private Activity activity;
+    private IOnItemGroupWorkTasksListener itemEventListener;
     /**Contructor*/
-    public GroupWorkServerAdapter(Activity activity,ArrayList<NhomCVModel> nhomCVModelList) {
+    public GroupWorkServerAdapter(Activity activity,ArrayList<NhomCVModel> nhomCVModelList, IOnItemGroupWorkTasksListener itemEventListener) {
         this.activity = activity;
         this.nhomCVModelList = nhomCVModelList;
+        this.itemEventListener = itemEventListener;
     }
     /** Create ViewHolder*/
     public class GroupWorkServerViewHolder extends  RecyclerView.ViewHolder {
@@ -35,10 +38,13 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
         private TextView tvGroupWork;
         private TextView tvGroupWorkAll;
         private TextView tvGroupWorkOverDue;
+        private LinearLayout lnlGroup;
 
         public GroupWorkServerViewHolder(View itemView) {
             super(itemView);
+
             ivGroupWork = (ImageView) itemView.findViewById(R.id.item_groupwork_image);
+            lnlGroup = (LinearLayout) itemView.findViewById(R.id.lnlayout_item_group);
             tvGroupWork = (TextView) itemView.findViewById(R.id.item_groupwork_namegroup);
             tvGroupWorkAll = (TextView) itemView.findViewById(R.id.item_groupwork_all);
             tvGroupWorkOverDue = (TextView) itemView.findViewById(R.id.item_groupwork_overdue);
@@ -55,7 +61,8 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
     @Override
     public void onBindViewHolder(GroupWorkServerViewHolder holder, int position) {
         /** Set Value*/
-        NhomCVModel nhomCVModel= nhomCVModelList.get(position);
+
+        final NhomCVModel nhomCVModel= nhomCVModelList.get(position);
         if(nhomCVModel.getLaNhomCaNhan()==1)
             holder.ivGroupWork.setImageResource(R.drawable.ic_groupnormal);
         else
@@ -70,12 +77,22 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
         else
             holder.tvGroupWorkOverDue.setVisibility(View.INVISIBLE);
    /*Sự kiện click vào item*/
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.lnlGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                itemEventListener.onItemClick(nhomCVModel,(LinearLayout)view);
+            }
+        });
+        holder.lnlGroup.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                itemEventListener.onItemLongClick(nhomCVModel,(LinearLayout) view);
+                return true;
             }
         });
     }
+
+
 
     @Override
     public int getItemCount() {

@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.mvp.detaiGroupWork.view;
+package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -41,6 +41,47 @@
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_top_bartasks_60dp"
+        android:background="@color/colorBlue"
+        android:id="@+id/lnlayout_longclick_work"
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_back_longclick_itemwork"
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp"
+            android:padding="15dp"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:text="1 item selected"
+            android:id="@+id/tv_name_item_work_selected"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/txt_toolbar_18sp"
+            android:textColor="@color/colorWhite"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+
+            />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_delete_item_work"
+            app:srcCompat="@drawable/ic_delete_white_24dp"
+            android:padding="15dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/lnlayout_add_todos"
         android:baselineAligned="false"
         android:layout_width="match_parent"
@@ -77,16 +118,25 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_star_white"
+            app:srcCompat="@drawable/ic_star_white"
             android:padding="@dimen/padding_5dp"
             />
 
     </LinearLayout>
-
+    <ProgressBar
+        android:id="@+id/progressBar_Loadmore"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorTear800"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:id="@+id/lnl_groupempty"
@@ -111,12 +161,26 @@
             />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_groupworks_works"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/myScrollingContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </android.support.v7.widget.RecyclerView>
+        android:fillViewport="true"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ExpandableListView
+                android:id="@+id/list_groupworks_works"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                >
+            </ExpandableListView>
+
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 
 </LinearLayout>

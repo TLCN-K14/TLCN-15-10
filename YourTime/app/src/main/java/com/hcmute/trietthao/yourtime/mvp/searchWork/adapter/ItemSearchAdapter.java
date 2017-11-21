@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.R;
@@ -18,6 +19,8 @@ import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
+import com.hcmute.trietthao.yourtime.mvp.IOnItemGroupWorkListener;
+import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 
 import java.util.ArrayList;
 
@@ -34,11 +37,16 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
     Context context;
     ArrayList<NhomCVModel> mListNhomCV;
     DBWorkServer dbWorkServer;
+    IOnItemWorkListener itemSearchListener;
+    IOnItemGroupWorkListener itemGroupWorkListener;
 
-    public ItemSearchAdapter(Context context, ArrayList<NhomCVModel> mListNhomCV){
+    public ItemSearchAdapter(Context context, ArrayList<NhomCVModel> mListNhomCV,
+                             IOnItemWorkListener itemSearchListener,IOnItemGroupWorkListener itemGroupWorkListener
+        ){
         this.context = context;
         this.mListNhomCV = mListNhomCV;
-
+        this.itemSearchListener = itemSearchListener;
+        this.itemGroupWorkListener = itemGroupWorkListener;
     }
 
     @Override
@@ -81,8 +89,15 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         converView = inflater.inflate(R.layout.item_group_header,null);
+        final NhomCVModel nhomCVModel= mListNhomCV.get(groupPosition);
         Button btnNameGroup = (Button) converView.findViewById(R.id.item_groupwork_name);
-        btnNameGroup.setText(mListNhomCV.get(groupPosition).getTenNhom());
+        btnNameGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemGroupWorkListener.onItemClick(nhomCVModel);
+            }
+        });
+        btnNameGroup.setText(nhomCVModel.getTenNhom());
 
         return converView;
     }
@@ -96,6 +111,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
         Log.e("ItemSearchAdapter","getChildView  "+congViecModel.getTenCongViec());
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         converView = inflater.inflate(R.layout.item_work,null);
+        LinearLayout lnlWork = (LinearLayout) converView.findViewById(R.id.lnl_item_work);
         CheckBox cbTickWork = (CheckBox) converView.findViewById(R.id.item_work_checkbox);
         TextView tvNameWork = (TextView) converView.findViewById(R.id.item_work_name);
         TextView tvTimeWork = (TextView) converView.findViewById(R.id.item_work_time);
@@ -107,27 +123,17 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
         tvNameWork.setText(congViecModel.getTenCongViec());
         tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
 
+
         if(congViecModel.getCoUuTien()==1)
-           ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
+            ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
         else
             ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
-
-//        String url_imgAssigned="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=avaupload";
-//        Picasso.with(context).load(url_imgAssigned+arrayList.get(position).getImg()+".png")
-//                .placeholder(R.drawable.fdi1)
-//                .error(R.drawable.fdi1)
-//                .into(holder.imgItem);
-//
-//        if(congViecModel.getIdNguoiDuocGiaoCV()!=null)
-//            Picasso.with(context).load(imageResource).fit().centerInside().into(holder.imgItem);
-//        else
 
         ivPriorityWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(congViecModel.getCoUuTien()==1){
                     ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
-
                 }
                 else{
                     ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
@@ -156,6 +162,18 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
             }
         });
 
+//        String url_imgAssigned="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=avaupload";
+//        Picasso.with(context).load(url_imgAssigned+arrayList.get(position).getImg()+".png")
+//                .placeholder(R.drawable.fdi1)
+//                .error(R.drawable.fdi1)
+//                .into(holder.imgItem);
+//
+//        if(congViecModel.getIdNguoiDuocGiaoCV()!=null)
+//            Picasso.with(context).load(imageResource).fit().centerInside().into(holder.imgItem);
+//        else
+
+
+
             ivAssignedWork.setVisibility(View.INVISIBLE);
 
         if(congViecModel.getIdNhacNho()==null)
@@ -164,6 +182,21 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
             ivRepeatWork.setVisibility(View.VISIBLE);
 
         ivConversationWork.setVisibility(View.INVISIBLE);
+
+        lnlWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            itemSearchListener.onItemClick(congViecModel,(LinearLayout) view);
+            }
+        });
+
+        lnlWork.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                itemSearchListener.onItemLongClick(congViecModel,(LinearLayout) view);
+                return true;
+            }
+        });
 
         return converView;
 

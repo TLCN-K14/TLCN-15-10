@@ -16,14 +16,19 @@ public class DateUtils {
     }
 
     public static Date converStringToDateTime(String input) throws ParseException {
-        String defaultTimezone = TimeZone.getDefault().getID();
-        Date date = (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")).parse(input.replaceAll("Z$", "+0000"));
-        SimpleDateFormat dt = new SimpleDateFormat("EE dd MM");
-        return date;
+
+        SimpleDateFormat dateResultFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        dateResultFormat.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        Date date = dateResultFormat.parse(input.replaceAll("Z$", "+0000"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR,cal.get(Calendar.HOUR)-7);
+        return cal.getTime();
     }
 
     public static String getDateTimeToInsertUpdate(String input) throws ParseException {
         Date date = converStringToDateTime(input);
+
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         return formatDate(date, dateFormat);
     }
@@ -43,14 +48,15 @@ public class DateUtils {
         }
         String s=" ,";
         switch (date.getDay()){
-            case 1: s+="T.2 "; break;
-            case 2: s+="T.3 "; break;
-            case 3: s+="T.4 "; break;
-            case 4: s+="T.5 "; break;
-            case 5: s+="T.6 "; break;
-            case 6: s+="T.7 "; break;
-            case 7: s+="C.N "; break;
+            case 1: s+="Monday "; break;
+            case 2: s+="Tuesday "; break;
+            case 3: s+="Wednesday "; break;
+            case 4: s+="Thurday "; break;
+            case 5: s+="Friday "; break;
+            case 6: s+="Saturday "; break;
+            case 7: s+="Sunday "; break;
         }
+
         String dateFormat1 = "HH:mm";
         String dateFormat2 = "dd";
         String dateFormat3 = "MM";

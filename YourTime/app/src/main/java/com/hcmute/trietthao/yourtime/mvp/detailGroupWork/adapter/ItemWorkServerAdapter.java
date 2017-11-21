@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.mvp.detaiGroupWork.adapter;
+package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.adapter;
 
 import android.content.Context;
 import android.view.View;

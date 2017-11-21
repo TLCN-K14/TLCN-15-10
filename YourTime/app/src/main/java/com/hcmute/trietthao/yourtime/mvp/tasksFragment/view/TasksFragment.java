@@ -1,11 +1,11 @@
 package com.hcmute.trietthao.yourtime.mvp.tasksFragment.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.mvp.detaiGroupWork.view.DetailGroupWorkActivity;
-import com.hcmute.trietthao.yourtime.mvp.detaiGroupWorkMain.view.DetailGroupWorkMainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
-import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
-import com.hcmute.trietthao.yourtime.mvp.searchWork.view.SearchWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWorkMain.view.DetailGroupWorkMainActivity;
+import com.hcmute.trietthao.yourtime.mvp.searchWork.view.SearchWorkViewActivity;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAdapter;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.IOnItemGroupWorkTasksListener;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter.TasksPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
@@ -43,7 +43,7 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 
 public class TasksFragment extends Fragment implements
-        View.OnClickListener,GetGroupWorkListener,ITasksView {
+        View.OnClickListener,ITasksView,IOnItemGroupWorkTasksListener {
 
     TextView txtDayCurrent;
     TextView txtInboxCountCompleted,txtInboxCountAll, txtInboxCountOverDue;
@@ -56,13 +56,32 @@ public class TasksFragment extends Fragment implements
     CircleImageView imgUser;
 
     LinearLayout lnlInbox, lnlAssignedToMe, lnlStarred, lnlToday, lnlWeek, lnlAll, lnlCompleted;
+    LinearLayout lnlCurrentItemLongClick;
 
 
     @Bind(R.id.btn_search)
     ImageView ivSearch;
 
+    @Bind(R.id.tv_name_item_selected)
+    TextView tvNameItemSelected;
+
+    @Bind(R.id.iv_back_longclick_groupwork)
+    ImageView ivBackLongClick;
+
+    @Bind(R.id.iv_rename_groupwork)
+    ImageView ivRenameGroupWork;
+
+    @Bind(R.id.iv_delete_groupwork)
+    ImageView ivDeleteGroupWork;
+
     @Bind(R.id.lnl_create_groupwork)
     LinearLayout lnlCreateGroupWork;
+
+    @Bind(R.id.lnlayout_longclick_groupwork)
+    LinearLayout lnlLongClickGroupWork;
+
+    @Bind(R.id.lnlayout_topbar)
+    LinearLayout lnlTopBar;
 
     @Bind(R.id.list_groupworks)
     RecyclerView rvListGroupWork;
@@ -75,9 +94,12 @@ public class TasksFragment extends Fragment implements
 
     GroupWorkServerAdapter mGroupWorkServerAdapter;
     DBGroupWorkServer dbGroupWorkServer;
+    NhomCVModel currentGroupWorkLongClick;
 
     private ArrayList<NhomCVModel> mListNhomCV;
     private ArrayList<CongViecModel> mListCV;
+
+    boolean isLongClicking = false;
 
     public static TasksFragment newInstance() {
         TasksFragment fragment = new TasksFragment();
@@ -102,18 +124,19 @@ public class TasksFragment extends Fragment implements
         txtNameUser=view.findViewById(R.id.name_user);
         imgUser=view.findViewById(R.id.image_user);
 
-//        rvListGroupWork = view.findViewById(R.id.list_groupworks);
         rvListGroupWork.setLayoutManager(new LinearLayoutManager(getContext()));
         rvListGroupWork.setHasFixedSize(true);
-
-//        dbGroupWorkServer = new DBGroupWorkServer(this);
-//        dbGroupWorkServer.getListGroupWork(1);
 
         mTasksPresenter = new TasksPresenter(this);
         initData();
 
         lnlCreateGroupWork.setOnClickListener(this);
         ivSearch.setOnClickListener(this);
+        ivBackLongClick.setOnClickListener(this);
+        ivRenameGroupWork.setOnClickListener(this);
+        ivDeleteGroupWork.setOnClickListener(this);
+
+        lnlLongClickGroupWork.setVisibility(View.GONE);
 
         setupHeaderTask(headerTasksView);
 
@@ -191,8 +214,30 @@ public class TasksFragment extends Fragment implements
                 startActivity(intent);
                 break;
             case  R.id.btn_search:
-                intent = new Intent(getContext(), SearchWorkActivity.class);
+                intent = new Intent(getContext(), SearchWorkViewActivity.class);
                 startActivity(intent);
+                break;
+            case  R.id.iv_rename_groupwork:
+                Toast.makeText(getActivity(), "Rename-----"+currentGroupWorkLongClick.getTenNhom(),
+                        Toast.LENGTH_LONG).show();
+                break;
+            case  R.id.iv_delete_groupwork:
+                Toast.makeText(getActivity(), "Delete-----"+currentGroupWorkLongClick.getTenNhom(),
+                        Toast.LENGTH_LONG).show();
+                break;
+
+            case  R.id.iv_back_longclick_groupwork:
+                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                isLongClicking = false;
+                lnlCurrentItemLongClick = null;
+                currentGroupWorkLongClick = null;
+                lnlLongClickGroupWork.setVisibility(View.GONE);
+                lnlTopBar.setVisibility(View.VISIBLE);
+
+                tvNameItemSelected.setText("");
+//                mGroupWorkServerAdapter = new GroupWorkServerAdapter(getActivity(),mListNhomCV,this,this);
+//                rvListGroupWork.setAdapter(mGroupWorkServerAdapter);
+//                mGroupWorkServerAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -237,12 +282,6 @@ public class TasksFragment extends Fragment implements
         lnlCompleted.setOnClickListener(this);
     }
 
-    @Override
-    public void getListGroupWork(ArrayList<NhomCVModel> listGroupWork) {
-        Log.e("TasksFragment","--So phan tu groupwork"+listGroupWork.size());
-
-
-    }
 
     @Override
     public void showLoading() {
@@ -257,14 +296,13 @@ public class TasksFragment extends Fragment implements
     @Override
     public void getAllGroupWorkSuccess() {
         mListNhomCV = mTasksPresenter.getListGroupWorkOnline();
-        mGroupWorkServerAdapter = new GroupWorkServerAdapter(getActivity(),mListNhomCV);
+        mGroupWorkServerAdapter = new GroupWorkServerAdapter(getActivity(),mListNhomCV,this);
         rvListGroupWork.setAdapter(mGroupWorkServerAdapter);
     }
 
     @Override
     public void getListAllWorkSucess() {
         mListCV = mTasksPresenter.getListAllWorkOnline();
-
         setupCountWork();
     }
 
@@ -430,5 +468,42 @@ public class TasksFragment extends Fragment implements
             txtAllCountOverDue.setVisibility(View.INVISIBLE);
     }
 
+
+    @Override
+    public void onItemClick(NhomCVModel nhomCVModel,LinearLayout view) {
+        if(!isLongClicking)
+            Toast.makeText(getActivity(), "On Click!-----"+nhomCVModel.getTenNhom(),
+                Toast.LENGTH_LONG).show();
+        else{
+            setupLongClick(nhomCVModel,view);
+        }
+    }
+
+    @Override
+    public void onItemLongClick(NhomCVModel nhomCVModel, LinearLayout view) {
+        isLongClicking = true;
+        setupLongClick(nhomCVModel,view);
+        Toast.makeText(getActivity(), "On Long Click!-----"+nhomCVModel.getTenNhom(),
+                Toast.LENGTH_LONG).show();
+    }
+
+    public void setupLongClick(NhomCVModel nhomCVModel,LinearLayout view){
+        if(currentGroupWorkLongClick!=null && currentGroupWorkLongClick.getIdNhom()==nhomCVModel.getIdNhom()){
+            ivBackLongClick.performClick();
+        }else{
+            if(lnlCurrentItemLongClick!=null){
+                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+            }
+            else{
+                lnlTopBar.setVisibility(View.GONE);
+                lnlLongClickGroupWork.setVisibility(View.VISIBLE);
+            }
+            currentGroupWorkLongClick = new NhomCVModel();
+            lnlCurrentItemLongClick = view;
+            currentGroupWorkLongClick = nhomCVModel;
+            tvNameItemSelected.setText(currentGroupWorkLongClick.getTenNhom()+" seleted");
+            lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#0099CC"));
+        }
+    }
 
 }
