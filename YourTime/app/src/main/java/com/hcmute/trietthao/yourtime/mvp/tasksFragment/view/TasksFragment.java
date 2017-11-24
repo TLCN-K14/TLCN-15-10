@@ -96,6 +96,8 @@ public class TasksFragment extends Fragment implements
     DBGroupWorkServer dbGroupWorkServer;
     NhomCVModel currentGroupWorkLongClick;
 
+    PreferManager mPreferManager;
+
     private ArrayList<NhomCVModel> mListNhomCV;
     private ArrayList<CongViecModel> mListCV;
 
@@ -127,6 +129,10 @@ public class TasksFragment extends Fragment implements
         rvListGroupWork.setLayoutManager(new LinearLayoutManager(getContext()));
         rvListGroupWork.setHasFixedSize(true);
 
+        mPreferManager = new PreferManager(getContext());
+
+        Toast.makeText(getActivity(), "ID USER: "+mPreferManager.getID(),
+                Toast.LENGTH_LONG).show();
         mTasksPresenter = new TasksPresenter(this);
         initData();
 
@@ -478,6 +484,7 @@ public class TasksFragment extends Fragment implements
         if(!isLongClicking){
             Intent intent = new Intent(getContext(), DetailGroupWorkActivity.class);
             intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
+            intent.putExtra("EXTRA_GROUPWORK_NAME", nhomCVModel.getTenNhom());
             startActivity(intent);
         }
         else{

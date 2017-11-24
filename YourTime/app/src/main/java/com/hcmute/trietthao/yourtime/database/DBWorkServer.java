@@ -55,9 +55,9 @@ public class DBWorkServer {
         });
     }
 
-    public void getListWorkByIdGroup(final Integer idnhom){
+    public void getListWorkByIdGroup( Integer idnguoidung,final Integer idnhom){
         mService = ApiUtils.getService();
-        Call<ArrayList<CongViecModel>> call = mService.getListWorkByIdGroup(idnhom);
+        Call<ArrayList<CongViecModel>> call = mService.getListWorkByIdGroup(idnguoidung,idnhom);
         Log.e("Response",call.request().url().toString());
         call.enqueue(new Callback<ArrayList<CongViecModel>>() {
             @Override

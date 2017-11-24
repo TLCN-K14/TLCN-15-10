@@ -104,6 +104,6 @@ public class PreferManager implements DBNguoiDungServer.userListener {
         this.nguoiDungModel=user;
     }
     public int getID(){
-        return Integer.parseInt(KEY_ID);
+        return pref.getInt(KEY_ID, 0);
     }
 }

@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
-import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
 
 import java.util.ArrayList;
+
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
 
 /**
  * Created by lxtri on 11/11/2017.
@@ -90,9 +91,9 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
                 return true;
             }
         });
+
+        setFadeInTime(holder.itemView,300);
     }
-
-
 
     @Override
     public int getItemCount() {

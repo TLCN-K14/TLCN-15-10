@@ -25,6 +25,7 @@ import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDate;
 
@@ -224,6 +225,8 @@ public class ItemDetailGroupWorkAdapter extends BaseExpandableListAdapter implem
                 return true;
             }
         });
+
+        setFadeInTime(converView,1000);
 
         return converView;
 

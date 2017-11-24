@@ -28,13 +28,11 @@ import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkAct
 import com.hcmute.trietthao.yourtime.mvp.searchWork.adapter.ItemSearchAdapter;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchGetWorkPresenter;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
 
 
@@ -253,6 +251,7 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
     public void onItemClick(NhomCVModel nhomCVModel) {
         Intent intent = new Intent(getApplicationContext(), DetailGroupWorkActivity.class);
         intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
+        intent.putExtra("EXTRA_GROUPWORK_NAME", nhomCVModel.getTenNhom());
         startActivity(intent);
     }
 }

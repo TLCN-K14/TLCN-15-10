@@ -3,6 +3,7 @@ package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeOutTime;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
 
 
@@ -41,6 +44,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Bind(R.id.tv_name_item_work_selected)
     TextView tvNameItemWork;
+
+    @Bind(R.id.tv_name_groupwork)
+    TextView tvNameGroupWork;
 
     @Bind(R.id.iv_back_longclick_itemwork)
     ImageView ivBackFromLongClick;
@@ -61,6 +67,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     ProgressBar pbLoading;
 
     String EXTRA_GROUPWORK_ID = "";
+    String EXTRA_GROUPWORK_NAME = "";
 
     DetailGroupWorkPresenter mDetailGroupWorkPresenter;
 
@@ -68,7 +75,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     LinearLayout lnlCurrentItemLongClick;
     ArrayList<CongViecModel> mListWork, mListWorkCompleted;
 
-    ItemWorkServerAdapter itemWorkServerAdapter, itemWorkServerAdapterCompleted;
+    public static ItemWorkServerAdapter itemWorkServerAdapter, itemWorkServerAdapterCompleted;
 
     boolean isLongClicking = false;
 
@@ -86,9 +93,16 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         rvListWorkCompleted.setHasFixedSize(true);
 
         EXTRA_GROUPWORK_ID = getIntent().getStringExtra("EXTRA_GROUPWORK_ID");
+        EXTRA_GROUPWORK_NAME = getIntent().getStringExtra("EXTRA_GROUPWORK_NAME");
+
+        tvNameGroupWork.setText(EXTRA_GROUPWORK_NAME);
+
         Toast.makeText(getApplication(), "GROUPWORKID! "+EXTRA_GROUPWORK_ID,
                 Toast.LENGTH_LONG).show();
-        //mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
+        mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
+        initData();
+
+        lnlLongClickMenu.setVisibility(View.GONE);
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
@@ -98,11 +112,13 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         }
 
         mTxtShowHideCompletedWorks.setOnClickListener(this);
+        ivBackFromLongClick.setOnClickListener(this);
+        ivDeleteItemWork.setOnClickListener(this);
     }
 
     public void initData(){
         if(isNetWorkConnected(getApplication())){
-            mDetailGroupWorkPresenter.getWorkByIdGroup(Integer.parseInt(EXTRA_GROUPWORK_ID));
+            mDetailGroupWorkPresenter.getWorkByIdGroup(1,Integer.parseInt(EXTRA_GROUPWORK_ID));
         }
     }
 
@@ -120,17 +136,35 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         super.onDestroy();
     }
 
+
     @Override
     public void onClick(View view) {
         int i = view.getId();
         switch (i){
             case R.id.txt_show_hide_completed_works:
                 if(isShowCompletedWorks){
-                    mTxtShowHideCompletedWorks.setText(R.string.hide_completed_works);
-                    isShowCompletedWorks=false;
-                }else{
                     mTxtShowHideCompletedWorks.setText(R.string.show_completed_works);
+                    isShowCompletedWorks=false;
+                    setFadeOutTime(rvListWorkCompleted,500);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            rvListWorkCompleted.setVisibility(View.INVISIBLE);
+                        }
+                    }, 500);
+                }else{
+                    mTxtShowHideCompletedWorks.setText(R.string.hide_completed_works);
                     isShowCompletedWorks=true;
+                    setFadeInTime(rvListWorkCompleted,500);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            rvListWorkCompleted.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
+
                 }
                 break;
             case R.id.iv_back_longclick_itemwork:
@@ -155,12 +189,16 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         mListWork = mDetailGroupWorkPresenter.getListWorkNormal();
         mListWorkCompleted = mDetailGroupWorkPresenter.getListWorkCompleted();
 
-        itemWorkServerAdapter = new ItemWorkServerAdapter(getParent(),mListWork,
+        Toast.makeText(getApplication(), "Size Normal: "+mListWork.size()+" Size Completed: "+mListWorkCompleted.size(),
+                Toast.LENGTH_LONG).show();
+
+        itemWorkServerAdapter = new ItemWorkServerAdapter(getApplicationContext(),mListWork,
                 mListWorkCompleted,1,this);
-        itemWorkServerAdapterCompleted = new ItemWorkServerAdapter(getParent(),
+        itemWorkServerAdapterCompleted = new ItemWorkServerAdapter(getApplicationContext(),
                 mListWork,mListWorkCompleted,2,this);
         rvListWork.setAdapter(itemWorkServerAdapter);
         rvListWorkCompleted.setAdapter(itemWorkServerAdapterCompleted);
+        rvListWorkCompleted.setVisibility(View.INVISIBLE);
     }
 
     @Override

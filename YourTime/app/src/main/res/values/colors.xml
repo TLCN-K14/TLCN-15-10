@@ -52,6 +52,7 @@
 
     <color name="colorBlue100">#BBDEFB</color>
     <color name="colorScreenBackground2">#2F6251</color>
+    <color name="colorItemWorkCompleted">#BBCAC5</color>
 
     <!--color calendar-->
     <color name="event_color_01">#59dbe0</color>

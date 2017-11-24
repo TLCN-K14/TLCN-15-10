@@ -23,6 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
+
                 android:id="@+id/etxt_search"
                 android:textColor="@color/colorWhite"
                 android:gravity="center_vertical"

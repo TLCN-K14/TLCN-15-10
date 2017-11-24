@@ -53,6 +53,9 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
     @Bind(R.id.txt_groupempty)
     TextView mTxtGroupEmpty;
 
+    @Bind(R.id.tv_name_groupwork)
+    TextView tvNameGroupWork;
+
     @Bind(R.id.tv_name_item_work_selected)
     TextView tvNameItemWork;
 
@@ -123,6 +126,14 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
     public void initData(){
         if(isNetWorkConnected(getApplication())){
             mdetailGroupWorkMainPresenter.getAllWorkOnline(1,EXTRA_GROUPMAIN_ID);
+            switch (EXTRA_GROUPMAIN_ID){
+                case "1": tvNameGroupWork.setText(getResources().getString(R.string.assigned_to_me)); break;
+                case "2": tvNameGroupWork.setText(getResources().getString(R.string.starred)); break;
+                case "3": tvNameGroupWork.setText(getResources().getString(R.string.today)); break;
+                case "4": tvNameGroupWork.setText(getResources().getString(R.string.week)); break;
+                case "5": tvNameGroupWork.setText(getResources().getString(R.string.all)); break;
+                case "6": tvNameGroupWork.setText(getResources().getString(R.string.completed)); break;
+            }
         }
 
     }
@@ -222,6 +233,7 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
     public void onItemClick(NhomCVModel nhomCVModel) {
         Intent intent = new Intent(getApplicationContext(), DetailGroupWorkActivity.class);
         intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
+        intent.putExtra("EXTRA_GROUPWORK_NAME", nhomCVModel.getTenNhom());
         startActivity(intent);
     }
 

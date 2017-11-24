@@ -57,14 +57,16 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     public void getListGroupWork(final ArrayList<NhomCVModel> listGroupWork) {
         mList = new ArrayList<>();
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mList = listGroupWork;
-                iTasksView.getAllGroupWorkSuccess();
-                iTasksView.hideLoading();
-            }
-        }, 1000);
+        if(listGroupWork!=null){
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mList = listGroupWork;
+                    iTasksView.hideLoading();
+                    iTasksView.getAllGroupWorkSuccess();
+                }
+            }, 1000);
+        }
     }
 
     @Override
@@ -72,11 +74,13 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
         for(int i=0;i<congViecModelArrayList.size();i++){
             if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
                 try {
-                    if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
-                        congViecModelArrayList.get(i).setTrangThai("overdue");
-                        dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
-                        dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModelArrayList.get(i).getIdCongViec(),
-                                getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));
+                    if(congViecModelArrayList.get(i).getTrangThai().equals("waiting")){
+                        if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
+                            congViecModelArrayList.get(i).setTrangThai("overdue");
+                            dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
+                            dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModelArrayList.get(i).getIdCongViec(),
+                                    getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();

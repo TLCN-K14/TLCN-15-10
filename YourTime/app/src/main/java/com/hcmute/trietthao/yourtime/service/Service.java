@@ -50,7 +50,7 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     Call<ArrayList<CongViecModel>> getListAllWork(@Query("idnguoidung") Integer idnguoidung);
 
     @GET("/getlistworkbyidgroup")
-    Call<ArrayList<CongViecModel>> getListWorkByIdGroup(@Query("idnhom") Integer idnhom);
+    Call<ArrayList<CongViecModel>> getListWorkByIdGroup(@Query("idnguoidung") Integer idnguoidung,@Query("idnhom") Integer idnhom);
 
     @GET("/getlistallworksearch")
     Call<ArrayList<CongViecModel>> getListAllWorkSearch(@Query("idnguoidung") Integer idnguoidung,@Query("keysearch") String keysearch);

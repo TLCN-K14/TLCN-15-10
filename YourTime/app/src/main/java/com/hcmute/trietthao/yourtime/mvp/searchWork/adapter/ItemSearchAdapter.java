@@ -26,6 +26,7 @@ import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDate;
 
@@ -218,6 +219,8 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
             }
         });
 
+        setFadeInTime(converView,1000);
+
         return converView;
 
     }
@@ -228,6 +231,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
             mListNhomCV.remove(groupPosition);
         notifyDataSetChanged();
     }
+
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {

@@ -1,9 +1,12 @@
 package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.adapter;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,13 @@ import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
+import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeOutAnimation;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
@@ -34,15 +40,16 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
     implements PostWorkListener{
 
     Activity activity;
+    Context context;
     ArrayList<CongViecModel> mListCV1,mListCV2;
     Integer flag;
     DBWorkServer dbWorkServer;
     IOnItemWorkListener itemWorkListener;
 
-    public ItemWorkServerAdapter(Activity activity, ArrayList<CongViecModel> mListCV1,
+    public ItemWorkServerAdapter(Context context, ArrayList<CongViecModel> mListCV1,
                                  ArrayList<CongViecModel> mListCV2,Integer flag,
                                  IOnItemWorkListener itemWorkListener){
-        this.activity = activity;
+        this.context = context;
         this.mListCV1 = mListCV1;
         this.mListCV2 = mListCV2;
         this.flag = flag;
@@ -76,8 +83,8 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
 
     @Override
     public ItemWorkServerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.item_work, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_work, parent, false);
         return new ItemWorkServerAdapter.ViewHolder(view);
     }
 
@@ -86,16 +93,18 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
         final CongViecModel congViecModel;
         if(flag==1){
             congViecModel = mListCV1.get(position);
+            Log.e("ITEM"," ------ "+congViecModel.getTenCongViec());
             holder.tvNameWork.setText(congViecModel.getTenCongViec());
+
             if(congViecModel.getThoiGianBatDau()!=null)
                 holder.tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
             else
                 holder.tvTimeWork.setText("");
 
             if(congViecModel.getTrangThai().equals("waiting"))
-                holder.tvTimeWork.setTextColor(ContextCompat.getColor(activity, R.color.colorBlue));
+                holder.tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorBlue));
             if(congViecModel.getTrangThai().equals("overdue"))
-                holder.tvTimeWork.setTextColor(ContextCompat.getColor(activity, R.color.colorRed));
+                holder.tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
 
             dbWorkServer = new DBWorkServer(this);
 
@@ -130,12 +139,13 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                 {
                     if ( isChecked )
                     {
+                        setFadeOutAnimation(holder.itemView);
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 dbWorkServer.updateStatusWork("done",congViecModel.getIdCongViec());
-
+                                congViecModel.setTrangThai("done");
                                 if(congViecModel.getThoiGianBatDau()!=null){
                                     try {
                                         dbWorkServer.updateStatusWorkTimeNotNull("done",congViecModel.getIdCongViec(),
@@ -146,7 +156,9 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                                 }
                                 mListCV2.add(congViecModel);
                                 mListCV1.remove(position);
-                                notifyDataSetChanged();
+                                Log.e("Size:","--List1: "+mListCV1.size()+"    --List2: "+mListCV2.size());
+                                DetailGroupWorkActivity.itemWorkServerAdapter.notifyDataSetChanged();
+                                DetailGroupWorkActivity.itemWorkServerAdapterCompleted.notifyDataSetChanged();
                             }
                         }, 1000);
                     }
@@ -164,10 +176,21 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
 
         }else{
             congViecModel = mListCV2.get(position);
-            holder.tvNameWork.setText(congViecModel.getTenCongViec());
-            holder.tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
+            Log.e("ITEM"," ------ "+congViecModel.getTenCongViec());
 
-            holder.tvTimeWork.setTextColor(ContextCompat.getColor(activity, R.color.colorGray500));
+
+            holder.tvNameWork.setText(congViecModel.getTenCongViec());
+            holder.tvNameWork.setTextColor(ContextCompat.getColor(context, R.color.colorGray500));
+            holder.tvNameWork.setPaintFlags(holder.tvNameWork.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            holder.lnlWork.setBackground(ContextCompat.getDrawable(context,R.drawable.borderwork_completed));
+
+            if(congViecModel.getThoiGianBatDau()!=null)
+                holder.tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
+            else
+                holder.tvTimeWork.setText("");
+
+            holder.tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorGray500));
 
             dbWorkServer = new DBWorkServer(this);
 
@@ -198,27 +221,32 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
 
             holder.cbTickWork.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
             {
-                @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
                 {
                     if ( !isChecked )
                     {
+                        setFadeOutAnimation(holder.itemView);
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 try {
-                                    if(isOverDueDate((congViecModel.getThoiGianBatDau())))
-                                        dbWorkServer.updateStatusWork("overdue",congViecModel.getIdCongViec());
-                                    else
-                                        dbWorkServer.updateStatusWork("waiting",congViecModel.getIdCongViec());
                                     if(congViecModel.getThoiGianBatDau()!=null){
-                                        if(isOverDueDate((congViecModel.getThoiGianBatDau())))
+                                        if(isOverDueDate((congViecModel.getThoiGianBatDau()))){
                                             dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModel.getIdCongViec(),
                                                     getDateTimeToInsertUpdate(congViecModel.getThoiGianBatDau()));
-                                        else
+                                            dbWorkServer.updateStatusWork("overdue",congViecModel.getIdCongViec());
+                                            congViecModel.setTrangThai("overdue");
+                                        }
+                                        else{
+                                            dbWorkServer.updateStatusWork("waiting",congViecModel.getIdCongViec());
+                                            congViecModel.setTrangThai("waiting");
                                             dbWorkServer.updateStatusWorkTimeNotNull("waiting",congViecModel.getIdCongViec(),
                                                     getDateTimeToInsertUpdate(congViecModel.getThoiGianBatDau()));
+                                        }
+                                    }else{
+                                        dbWorkServer.updateStatusWork("waiting",congViecModel.getIdCongViec());
+                                        congViecModel.setTrangThai("waiting");
                                     }
 
                                 } catch (ParseException e) {
@@ -226,7 +254,9 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                                 }
                                 mListCV1.add(congViecModel);
                                 mListCV2.remove(position);
-                                notifyDataSetChanged();
+                                Log.e("Size:","--List1: "+mListCV1.size()+"    --List2: "+mListCV2.size());
+                                DetailGroupWorkActivity.itemWorkServerAdapter.notifyDataSetChanged();
+                                DetailGroupWorkActivity.itemWorkServerAdapterCompleted.notifyDataSetChanged();
                             }
                         }, 1000);
                     }
@@ -261,6 +291,8 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                 return true;
             }
         });
+
+        setFadeInTime(holder.itemView,1000);
 
     }
 

@@ -8,16 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:background="@color/dodgerblue">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/txtsize_header_20sp"
-            android:gravity="center"
-            android:layout_marginLeft="20dp"
-            android:text="@string/setting"/>
+        android:background="@color/colorPrimary">
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_avatar"
             android:layout_width="70dp"
@@ -60,7 +52,7 @@
                     android:id="@android:id/tabs"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/dodgerblue" />
+                    android:background="@color/colorPrimary" />
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"

@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Name GroupWork"
-                android:id="@+id/profile_info_nametoolbar"
+                android:id="@+id/tv_name_groupwork"
                 android:textColor="@color/colorWhite"
                 android:gravity="center_vertical"
                 android:textSize="@dimen/dimen_18sp"/>
@@ -125,6 +125,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:hint="@string/add_todo_edittext"
+                android:focusable="false"
                 android:textColor="@color/colorWhite"
                 android:textColorHint="@color/colorWhite"
                 android:textSize="@dimen/txtsize_16sp"

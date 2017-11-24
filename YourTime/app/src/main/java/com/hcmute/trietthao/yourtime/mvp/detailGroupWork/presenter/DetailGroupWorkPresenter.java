@@ -26,14 +26,16 @@ public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWo
 
 
     @Override
-    public void getWorkByIdGroup(Integer idgroup) {
+    public void getWorkByIdGroup(Integer idnguoidung,Integer idgroup) {
         iDetailGroupWorkView.showLoading();
         dbWorkServer = new DBWorkServer(this);
-        dbWorkServer.getListWorkByIdGroup(idgroup);
+        dbWorkServer.getListWorkByIdGroup(idnguoidung,idgroup);
     }
 
     @Override
     public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
+        mListWorkNormal = new ArrayList<CongViecModel>();
+        mListWorkCompleted = new ArrayList<CongViecModel>();
         if(congViecModelArrayList==null){
             iDetailGroupWorkView.hideLoading();
             iDetailGroupWorkView.getWorkByIDGroupFail();
