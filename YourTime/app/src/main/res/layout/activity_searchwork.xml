@@ -87,14 +87,9 @@
             />
     </LinearLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/myScrollingContent"
-        android:layout_width="match_parent"
-        android:fillViewport="true"
-        android:layout_height="match_parent">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ExpandableListView
@@ -115,7 +110,6 @@
                 android:indeterminateTintMode="src_atop"
                 android:indeterminateTint="@color/colorTear800"/>
         </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
 
 
 

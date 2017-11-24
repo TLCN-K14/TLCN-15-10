@@ -182,7 +182,7 @@ public class TasksFragment extends Fragment implements
         switch (i){
             case R.id.lnl_inbox:
                 intent = new Intent(getContext(), DetailGroupWorkActivity.class);
-                intent.putExtra("EXTRA_GROUPWORK_ID", "1");
+                intent.putExtra("EXTRA_GROUPWORK_ID", "0");
                 startActivity(intent);
                 break;
             case R.id.lnl_assigned_to_me:
@@ -378,10 +378,12 @@ public class TasksFragment extends Fragment implements
         if(mListCV.size()>0){
             for(int i=0;i<mListCV.size();i++){
                 try {
-                    if(isToday(converStringToDateTime(mListCV.get(i).getThoiGianBatDau()))){
-                        all++;
-                        if(mListCV.get(i).getTrangThai().equals("overdue"))
-                            overdue++;
+                    if(mListCV.get(i).getThoiGianBatDau()!=null){
+                        if(isToday(converStringToDateTime(mListCV.get(i).getThoiGianBatDau()))){
+                            all++;
+                            if(mListCV.get(i).getTrangThai().equals("overdue"))
+                                overdue++;
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -405,10 +407,12 @@ public class TasksFragment extends Fragment implements
         if(mListCV.size()>0){
             for(int i=0;i<mListCV.size();i++){
                 try {
-                    if(isDateInCurrentWeek(converStringToDateTime(mListCV.get(i).getThoiGianBatDau()))){
+                    if(mListCV.get(i).getThoiGianBatDau()!=null){
+                        if(isDateInCurrentWeek(converStringToDateTime(mListCV.get(i).getThoiGianBatDau()))){
                             all++;
                             if(mListCV.get(i).getTrangThai().equals("overdue"))
                                 overdue++;
+                        }
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -471,9 +475,11 @@ public class TasksFragment extends Fragment implements
 
     @Override
     public void onItemClick(NhomCVModel nhomCVModel,LinearLayout view) {
-        if(!isLongClicking)
-            Toast.makeText(getActivity(), "On Click!-----"+nhomCVModel.getTenNhom(),
-                Toast.LENGTH_LONG).show();
+        if(!isLongClicking){
+            Intent intent = new Intent(getContext(), DetailGroupWorkActivity.class);
+            intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
+            startActivity(intent);
+        }
         else{
             setupLongClick(nhomCVModel,view);
         }

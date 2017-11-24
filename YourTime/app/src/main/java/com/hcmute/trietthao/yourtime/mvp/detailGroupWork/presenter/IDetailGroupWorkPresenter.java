@@ -5,4 +5,5 @@ package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.presenter;
  */
 
 public interface IDetailGroupWorkPresenter {
+    void getWorkByIdGroup(Integer idgroup);
 }

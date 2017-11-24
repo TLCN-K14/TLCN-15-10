@@ -2,6 +2,7 @@ package com.hcmute.trietthao.yourtime.mvp.searchWork.adapter;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,10 @@ import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemGroupWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDisplayDate;
 
 /**
@@ -42,7 +45,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
 
     public ItemSearchAdapter(Context context, ArrayList<NhomCVModel> mListNhomCV,
                              IOnItemWorkListener itemSearchListener,IOnItemGroupWorkListener itemGroupWorkListener
-        ){
+       ){
         this.context = context;
         this.mListNhomCV = mListNhomCV;
         this.itemSearchListener = itemSearchListener;
@@ -121,22 +124,40 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
         final ImageView ivPriorityWork = (ImageView) converView.findViewById(R.id.item_work_priority);
 
         tvNameWork.setText(congViecModel.getTenCongViec());
-        tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
-
-
-        if(congViecModel.getCoUuTien()==1)
-            ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
+        if(congViecModel.getThoiGianBatDau()!=null)
+            tvTimeWork.setText(getDisplayDate(congViecModel.getThoiGianBatDau()));
         else
-            ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
+            tvTimeWork.setText("");
 
+        if(congViecModel.getTrangThai().equals("waiting"))
+                tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorBlue));
+        if(congViecModel.getTrangThai().equals("done"))
+            tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorGray800));
+        if(congViecModel.getTrangThai().equals("overdue"))
+            tvTimeWork.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
+
+        dbWorkServer = new DBWorkServer(this);
+
+        if(congViecModel.getCoUuTien()==1){
+            ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
+        }
+
+        else{
+            ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
+        }
         ivPriorityWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(congViecModel.getCoUuTien()==1){
+                    dbWorkServer.updatePriorityWork(0,congViecModel.getIdCongViec());
+                    congViecModel.setCoUuTien(0);
                     ivPriorityWork.setImageResource(R.drawable.ic_priority_unselected);
                 }
                 else{
                     ivPriorityWork.setImageResource(R.drawable.ic_priority_selected);
+                    dbWorkServer.updatePriorityWork(1,congViecModel.getIdCongViec());
+                    congViecModel.setCoUuTien(1);
                 }
             }
         });
@@ -152,6 +173,17 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            dbWorkServer.updateStatusWork("done",congViecModel.getIdCongViec());
+                            if(congViecModel.getThoiGianBatDau()!=null){
+                                try {
+
+                                    dbWorkServer.updateStatusWorkTimeNotNull("done",congViecModel.getIdCongViec(),
+                                            getDateTimeToInsertUpdate(congViecModel.getThoiGianBatDau()));
+                                    Log.e("Thoigianupdate","---------- "+ getDateTimeToInsertUpdate(congViecModel.getThoiGianBatDau()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             removeItem(groupPosition,childPosition);
                             //dbWorkServer.updateStatusWork("done",congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau());
 
@@ -162,19 +194,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
             }
         });
 
-//        String url_imgAssigned="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=avaupload";
-//        Picasso.with(context).load(url_imgAssigned+arrayList.get(position).getImg()+".png")
-//                .placeholder(R.drawable.fdi1)
-//                .error(R.drawable.fdi1)
-//                .into(holder.imgItem);
-//
-//        if(congViecModel.getIdNguoiDuocGiaoCV()!=null)
-//            Picasso.with(context).load(imageResource).fit().centerInside().into(holder.imgItem);
-//        else
-
-
-
-            ivAssignedWork.setVisibility(View.INVISIBLE);
+        ivAssignedWork.setVisibility(View.INVISIBLE);
 
         if(congViecModel.getIdNhacNho()==null)
             ivRepeatWork.setVisibility(View.INVISIBLE);
@@ -218,4 +238,5 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
     public void getResultPostWork(Boolean isSucess) {
 
     }
+
 }

@@ -46,7 +46,7 @@ public class DateUtils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String s=" ,";
+        String s=", ";
         switch (date.getDay()){
             case 1: s+="Monday "; break;
             case 2: s+="Tuesday "; break;
@@ -76,6 +76,17 @@ public class DateUtils {
 
     public static boolean isToday(Date date) {
         return isSameDay(date, Calendar.getInstance().getTime());
+    }
+
+    public static boolean isDateNull(String input) throws ParseException {
+        Date date = converStringToDateTime(input);
+        if(date.getMonth()==0)
+            return true;
+        return false;
+    }
+
+    public static boolean isOverDueDate(String input) throws ParseException {
+        return converStringToDateTime(input).compareTo(Calendar.getInstance().getTime())<0;
     }
 
     public static Date convertTimeZone(Date date, TimeZone fromTZ, TimeZone toTZ) {

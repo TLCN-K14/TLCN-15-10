@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class CVThongBaoModel implements Serializable {
+
     @SerializedName("idCongViec")
     @Expose
     private Integer idCongViec;

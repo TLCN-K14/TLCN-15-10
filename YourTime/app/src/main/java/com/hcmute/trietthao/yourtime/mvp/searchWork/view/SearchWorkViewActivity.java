@@ -1,5 +1,6 @@
 package com.hcmute.trietthao.yourtime.mvp.searchWork.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -18,11 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hcmute.trietthao.yourtime.DetailWorkActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemGroupWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.adapter.ItemSearchAdapter;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchGetWorkPresenter;
 
@@ -32,7 +34,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.converStringToDateTime;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
 
 
@@ -163,19 +165,10 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
     @Override
     public void getListGroupWorkSucess() {
         mListNhomCv = formatList(mSearchWorkPresenter.getListSearchOnline());
+
         itemSearchAdapter = new ItemSearchAdapter(getApplication(),mListNhomCv,this
                 ,this);
         elListSearch.setAdapter(itemSearchAdapter);
-
-        try {
-            Toast.makeText(getApplication(), ""+converStringToDateTime(
-                    mListNhomCv.get(0).getCongViecModels().get(0).getThoiGianKetThuc()),
-                    Toast.LENGTH_LONG).show();
-            Log.e("Time---",""+converStringToDateTime(
-                    mListNhomCv.get(0).getCongViecModels().get(0).getThoiGianKetThuc()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         for(int i=0;i<mListNhomCv.size();i++)
             elListSearch.expandGroup(i);
@@ -221,9 +214,11 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onItemClick(CongViecModel congViecModel, LinearLayout view) {
-        if(!isLongClicking)
-            Toast.makeText(getApplication(), "On Click! "+congViecModel.getTenCongViec(),
-                    Toast.LENGTH_LONG).show();
+        if(!isLongClicking){
+            Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
+            intent.putExtra("EXTRA_WORK_ID", congViecModel.getIdCongViec().toString());
+            startActivity(intent);
+        }
         else{
             setupLongClick(congViecModel,view);
         }
@@ -256,7 +251,8 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onItemClick(NhomCVModel nhomCVModel) {
-        Toast.makeText(getApplication(), "On Click Group Work! "+nhomCVModel.getTenNhom(),
-                Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getApplicationContext(), DetailGroupWorkActivity.class);
+        intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
+        startActivity(intent);
     }
 }

@@ -49,13 +49,27 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     @GET("/getlistallwork")
     Call<ArrayList<CongViecModel>> getListAllWork(@Query("idnguoidung") Integer idnguoidung);
 
+    @GET("/getlistworkbyidgroup")
+    Call<ArrayList<CongViecModel>> getListWorkByIdGroup(@Query("idnhom") Integer idnhom);
+
     @GET("/getlistallworksearch")
     Call<ArrayList<CongViecModel>> getListAllWorkSearch(@Query("idnguoidung") Integer idnguoidung,@Query("keysearch") String keysearch);
 
+
+    @FormUrlEncoded
+    @POST("/updatestatuswork")
+    Call<UpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
+                                           @Field("idcongviec") Integer idcongviec);
+
      @FormUrlEncoded
-     @POST("/updatestatuswork")
-     Call<UpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
-                                            @Field("idcongviec") Integer idcongviec, @Field("thoigianbatdau") String thoigianbatdau);
+     @POST("/updatestatusworktimenotnull")
+     Call<UpdateWorkResponse> updateStatusWorkTimeNotNull(@Field("trangthai") String trangthai,
+                                            @Field("idcongviec") Integer idcongviec,@Field("thoigianbatdau") String thoigianbatdau);
+
+     @FormUrlEncoded
+     @POST("/updateprioritywork")
+     Call<UpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
+                                               @Field("idcongviec") Integer idcongviec);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

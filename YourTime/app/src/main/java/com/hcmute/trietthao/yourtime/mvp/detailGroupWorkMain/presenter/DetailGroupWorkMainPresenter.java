@@ -86,9 +86,11 @@ public class DetailGroupWorkMainPresenter implements IDetailGroupWorkMainPresent
         for(int i=0;i<nhomCVModelArrayList.size();i++){
             ArrayList<CongViecModel> listCVTemp = new ArrayList<>();
             for(int j=0;j<congViecModelArrayList.size();j++){
-                if(nhomCVModelArrayList.get(i).getIdNhom()==congViecModelArrayList.get(j).getIdNhom() &&
-                        isToday(converStringToDateTime(congViecModelArrayList.get(j).getThoiGianBatDau()))){
-                    listCVTemp.add(congViecModelArrayList.get(j));
+                if(nhomCVModelArrayList.get(i).getIdNhom()==congViecModelArrayList.get(j).getIdNhom()){
+                    if(congViecModelArrayList.get(j).getThoiGianBatDau()!=null){
+                        if(isToday(converStringToDateTime(congViecModelArrayList.get(j).getThoiGianBatDau())))
+                         listCVTemp.add(congViecModelArrayList.get(j));
+                    }
                 }
             }
             nhomCVModelArrayList.get(i).setCongViecModels(listCVTemp);
@@ -101,10 +103,14 @@ public class DetailGroupWorkMainPresenter implements IDetailGroupWorkMainPresent
         for(int i=0;i<nhomCVModelArrayList.size();i++){
             ArrayList<CongViecModel> listCVTemp = new ArrayList<>();
             for(int j=0;j<congViecModelArrayList.size();j++){
-                if(nhomCVModelArrayList.get(i).getIdNhom()==congViecModelArrayList.get(j).getIdNhom() &&
-                        isDateInCurrentWeek(converStringToDateTime(congViecModelArrayList.get(j).getThoiGianBatDau()))){
-                    listCVTemp.add(congViecModelArrayList.get(j));
+                if(nhomCVModelArrayList.get(i).getIdNhom()==congViecModelArrayList.get(j).getIdNhom()){
+                    if(congViecModelArrayList.get(j).getThoiGianBatDau()!=null){
+                        if (isDateInCurrentWeek(converStringToDateTime(congViecModelArrayList.get(j).getThoiGianBatDau()))){
+                            listCVTemp.add(congViecModelArrayList.get(j));
+                        }
+                    }
                 }
+
             }
             nhomCVModelArrayList.get(i).setCongViecModels(listCVTemp);
         }
@@ -144,6 +150,7 @@ public class DetailGroupWorkMainPresenter implements IDetailGroupWorkMainPresent
     @Override
     public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
         mListCV = congViecModelArrayList;
+        Log.e("SIZEWork","-------- "+mListCV.size());
         switch (ID_SCREEN){
             case "1":
                 mListNhomCV = setupListNhomCVAssigned(mListNhomCV,mListCV);
@@ -172,6 +179,7 @@ public class DetailGroupWorkMainPresenter implements IDetailGroupWorkMainPresent
                 mListNhomCV = setupListNhomCVCompleted(mListNhomCV,mListCV);
                 break;
         }
+        Log.e("SIZEGROUP22","-------- "+mListNhomCV.size());
         iDetailGroupWorkMainView.hideLoading();
         iDetailGroupWorkMainView.getDetailGroupWorkSuccess();
     }
@@ -189,6 +197,7 @@ public class DetailGroupWorkMainPresenter implements IDetailGroupWorkMainPresent
             mListNhomCV.addAll(listGroupWork);
             dbWorkServer = new DBWorkServer(this);
             dbWorkServer.getListAllWork(idnguoidung);
+            Log.e("SIZEGROUP","-------- "+mListNhomCV.size());
         }
     }
 }

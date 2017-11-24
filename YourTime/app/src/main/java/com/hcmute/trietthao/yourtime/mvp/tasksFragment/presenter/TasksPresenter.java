@@ -7,18 +7,23 @@ import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
 import com.hcmute.trietthao.yourtime.database.GetWorkListener;
+import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
 import com.hcmute.trietthao.yourtime.service.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
 
 /**
  * Created by lxtri on 11/11/2017.
  */
 
-public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener {
+public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener,PostWorkListener {
 
     ITasksView iTasksView;
     private Service mService;
@@ -44,7 +49,7 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     @Override
     public void getAllWorkOnline(int idnguoidung) {
         Log.e("TaskPresenter","Vaoo get all workonline");
-        dbWorkServer = new DBWorkServer(this);
+        dbWorkServer = new DBWorkServer(this,this);
         dbWorkServer.getListAllWork(idnguoidung);
     }
 
@@ -64,7 +69,26 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
 
     @Override
     public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
+        for(int i=0;i<congViecModelArrayList.size();i++){
+            if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
+                try {
+                    if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
+                        congViecModelArrayList.get(i).setTrangThai("overdue");
+                        dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
+                        dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModelArrayList.get(i).getIdCongViec(),
+                                getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         mListWork = congViecModelArrayList;
         iTasksView.getListAllWorkSucess();
+    }
+
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+
     }
 }

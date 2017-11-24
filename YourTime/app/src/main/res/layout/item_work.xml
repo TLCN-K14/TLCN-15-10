@@ -51,7 +51,7 @@
                     android:id="@+id/item_work_time"
                     android:text="T.7 14 Th10"
                     android:gravity="top"
-                    android:textColor="@color/colorRed"
+                    android:textColor="@color/colorGray800"
                     android:textSize="@dimen/dimen_12sp"
                     />
             </LinearLayout>

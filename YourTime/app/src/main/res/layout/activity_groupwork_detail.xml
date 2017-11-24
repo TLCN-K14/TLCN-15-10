@@ -136,6 +136,17 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar_Loadmore"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorTear800"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_works"
         android:layout_width="match_parent"
