@@ -21,7 +21,7 @@ import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
-import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.IDetailGroupWorkView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -45,15 +45,17 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
     Integer flag;
     DBWorkServer dbWorkServer;
     IOnItemWorkListener itemWorkListener;
+    IDetailGroupWorkView iDetailGroupWorkView;
 
     public ItemWorkServerAdapter(Context context, ArrayList<CongViecModel> mListCV1,
                                  ArrayList<CongViecModel> mListCV2,Integer flag,
-                                 IOnItemWorkListener itemWorkListener){
+                                 IOnItemWorkListener itemWorkListener, IDetailGroupWorkView iDetailGroupWorkView){
         this.context = context;
         this.mListCV1 = mListCV1;
         this.mListCV2 = mListCV2;
         this.flag = flag;
         this.itemWorkListener = itemWorkListener;
+        this.iDetailGroupWorkView = iDetailGroupWorkView;
     }
 
     @Override
@@ -157,8 +159,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                                 mListCV2.add(congViecModel);
                                 mListCV1.remove(position);
                                 Log.e("Size:","--List1: "+mListCV1.size()+"    --List2: "+mListCV2.size());
-                                DetailGroupWorkActivity.itemWorkServerAdapter.notifyDataSetChanged();
-                                DetailGroupWorkActivity.itemWorkServerAdapterCompleted.notifyDataSetChanged();
+                                iDetailGroupWorkView.notifyDataSetChanged();
                             }
                         }, 1000);
                     }
@@ -255,8 +256,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                                 mListCV1.add(congViecModel);
                                 mListCV2.remove(position);
                                 Log.e("Size:","--List1: "+mListCV1.size()+"    --List2: "+mListCV2.size());
-                                DetailGroupWorkActivity.itemWorkServerAdapter.notifyDataSetChanged();
-                                DetailGroupWorkActivity.itemWorkServerAdapterCompleted.notifyDataSetChanged();
+                                iDetailGroupWorkView.notifyDataSetChanged();
                             }
                         }, 1000);
                     }

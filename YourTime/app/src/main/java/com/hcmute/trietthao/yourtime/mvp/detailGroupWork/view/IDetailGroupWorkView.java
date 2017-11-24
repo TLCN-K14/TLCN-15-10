@@ -9,6 +9,8 @@ public interface IDetailGroupWorkView {
 
     void getWorkByIDGroupFail();
 
+    void notifyDataSetChanged();
+
     void showLoading();
 
     void hideLoading();

@@ -75,7 +75,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     LinearLayout lnlCurrentItemLongClick;
     ArrayList<CongViecModel> mListWork, mListWorkCompleted;
 
-    public static ItemWorkServerAdapter itemWorkServerAdapter, itemWorkServerAdapterCompleted;
+    ItemWorkServerAdapter itemWorkServerAdapter, itemWorkServerAdapterCompleted;
 
     boolean isLongClicking = false;
 
@@ -193,9 +193,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 Toast.LENGTH_LONG).show();
 
         itemWorkServerAdapter = new ItemWorkServerAdapter(getApplicationContext(),mListWork,
-                mListWorkCompleted,1,this);
+                mListWorkCompleted,1,this,this);
         itemWorkServerAdapterCompleted = new ItemWorkServerAdapter(getApplicationContext(),
-                mListWork,mListWorkCompleted,2,this);
+                mListWork,mListWorkCompleted,2,this,this);
         rvListWork.setAdapter(itemWorkServerAdapter);
         rvListWorkCompleted.setAdapter(itemWorkServerAdapterCompleted);
         rvListWorkCompleted.setVisibility(View.INVISIBLE);
@@ -205,6 +205,12 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     public void getWorkByIDGroupFail() {
         Toast.makeText(getApplication(), "getWorkByIDGroupFail! Check your connection!",
                 Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        itemWorkServerAdapter.notifyDataSetChanged();
+        itemWorkServerAdapterCompleted.notifyDataSetChanged();
     }
 
     @Override
