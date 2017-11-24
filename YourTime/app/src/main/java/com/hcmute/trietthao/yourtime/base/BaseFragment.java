@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,19 +26,24 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public abstract class BaseActivity extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
+public abstract class BaseFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
+    private Toolbar mToolbar;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        mToolbar.setTitle(R.string.calendar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
 
+        setHasOptionsMenu(true);
         mWeekView = (WeekView) view.findViewById(R.id.weekView);
 
         // Show a toast message about the touched event.
@@ -59,38 +65,6 @@ public abstract class BaseActivity extends Fragment implements WeekView.EventCli
         return view;
     }
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_base);
-//
-//        // Get a reference for the week view in the layout.
-//        mWeekView = (WeekView) findViewById(R.id.weekView);
-//
-//        // Show a toast message about the touched event.
-//        mWeekView.setOnEventClickListener(this);
-//
-//        // The week view has infinite scrolling horizontally. We have to provide the events of a
-//        // month every time the month changes on the week view.
-//        mWeekView.setMonthChangeListener(this);
-//
-//        // Set long press listener for events.
-//        mWeekView.setEventLongPressListener(this);
-//
-//        // Set long press listener for empty view
-//        mWeekView.setEmptyViewLongPressListener(this);
-//
-//        // Set up a date time interpreter to interpret how the date and time will be formatted in
-//        // the week view. This is optional.
-//        setupDateTimeInterpreter(false);
-//    }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

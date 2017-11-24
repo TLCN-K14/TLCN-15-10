@@ -1,6 +1,6 @@
 package com.hcmute.trietthao.yourtime;
 
-import com.hcmute.trietthao.yourtime.base.BaseActivity;
+import com.hcmute.trietthao.yourtime.base.BaseFragment;
 import com.hcmute.trietthao.yourtime.calendar.WeekViewEvent;
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class CalendarFragment extends BaseActivity {
+public class CalendarFragment extends BaseFragment {
 
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
