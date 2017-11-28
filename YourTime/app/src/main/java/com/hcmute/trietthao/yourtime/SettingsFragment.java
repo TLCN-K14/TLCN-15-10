@@ -18,13 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
-import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
-import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
-import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.AccountDetailsActivity;
 import com.squareup.picasso.Picasso;
@@ -53,7 +51,6 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
     PreferManager preferManager;
 
     DBNguoiDungServer dbNguoiDungServer;
-    HashMap<String, String> user;
     public static NguoiDungModel userCurrent=null;
 
 
@@ -76,17 +73,16 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
         mLnDetails=view.findViewById(R.id.ln_account_details);
         mLnSignOut=view.findViewById(R.id.ln_sign_out);
 
-
         preferManager=new PreferManager(getActivity().getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
+
 
         // get user data from session
         HashMap<String, String> user = preferManager.getUserDetails();
         dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
-        // get email
-//        String userEmail = user.get(PreferManager.KEY_EMAIL);
-//
-//        // get name
+        dbNguoiDungServer.getListUser();
+
+
         String name = user.get(PreferManager.KEY_NAME);
 //        Log.e("name:::::::::::::",PreferManager.KEY_NAME);
 //
@@ -161,10 +157,11 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
         return view;
     }
 
+
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
         String url = "http://192.168.43.219:8000/getimg?nameimg=";
-        String url_imgitem="https://tlcn-yourtime.herokuapp.com//getimg?nameimg=";
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
         userCurrent = listUser.get(0);
         if(userCurrent.getAnhDaiDien()!=null)
         {
@@ -184,7 +181,6 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
     @Override
     public void getUser(NguoiDungModel user) {
-
     }
 
 

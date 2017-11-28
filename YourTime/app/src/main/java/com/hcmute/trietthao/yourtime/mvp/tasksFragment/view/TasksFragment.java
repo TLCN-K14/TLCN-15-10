@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.createGroupWork.view.CreateGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
@@ -27,10 +30,12 @@ import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAd
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.IOnItemGroupWorkTasksListener;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter.TasksPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,7 +48,7 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 
 public class TasksFragment extends Fragment implements
-        View.OnClickListener,ITasksView,IOnItemGroupWorkTasksListener {
+        View.OnClickListener,ITasksView,IOnItemGroupWorkTasksListener, DBNguoiDungServer.userListener  {
 
     TextView txtDayCurrent;
     TextView txtInboxCountCompleted,txtInboxCountAll, txtInboxCountOverDue;
@@ -89,7 +94,6 @@ public class TasksFragment extends Fragment implements
     @Bind(R.id.progressBar_Loadmore)
     ProgressBar pbLoading;
 
-    PreferManager preferManager;
     TasksPresenter mTasksPresenter;
 
     GroupWorkServerAdapter mGroupWorkServerAdapter;
@@ -97,9 +101,11 @@ public class TasksFragment extends Fragment implements
     NhomCVModel currentGroupWorkLongClick;
 
     PreferManager mPreferManager;
+    DBNguoiDungServer dbNguoiDungServer;
+    public static NguoiDungModel userCurrent=null;
 
     private ArrayList<NhomCVModel> mListNhomCV;
-    private ArrayList<CongViecModel> mListCV;
+    public static ArrayList<CongViecModel> mListCV;
 
     boolean isLongClicking = false;
 
@@ -130,6 +136,20 @@ public class TasksFragment extends Fragment implements
         rvListGroupWork.setHasFixedSize(true);
 
         mPreferManager = new PreferManager(getContext());
+        dbNguoiDungServer=new DBNguoiDungServer(this);
+
+
+        // get user data from session
+        HashMap<String, String> user = mPreferManager.getUserDetails();
+        dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
+        dbNguoiDungServer.getListUser();
+
+
+        String name = user.get(PreferManager.KEY_NAME);
+//        Log.e("name:::::::::::::",PreferManager.KEY_NAME);
+//
+        txtNameUser.setText(name);
+
 
         Toast.makeText(getActivity(), "ID USER: "+mPreferManager.getID(),
                 Toast.LENGTH_LONG).show();
@@ -519,4 +539,29 @@ public class TasksFragment extends Fragment implements
         }
     }
 
+    @Override
+    public void getListUser(ArrayList<NguoiDungModel> listUser) {
+        String url = "http://192.168.43.219:8000/getimg?nameimg=";
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
+        userCurrent = listUser.get(0);
+        if(userCurrent.getAnhDaiDien()!=null)
+        {
+            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
+                    .error(R.drawable.null_avatar)
+                    .into(imgUser);
+        }
+        txtNameUser.setText(userCurrent.getTenNguoiDung());
+        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
+
+    }
+
+    @Override
+    public void getResultInsert(Boolean isSuccess) {
+
+    }
+
+    @Override
+    public void getUser(NguoiDungModel user) {
+
+    }
 }

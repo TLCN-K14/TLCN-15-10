@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id, first_name, last_name, email,picture, birthday, location"); // Parámetros que pedimos a facebook
+                parameters.putString("fields", "id, first_name, last_name, email, picture, birthday, location"); // Parámetros que pedimos a facebook
                 request.setParameters(parameters);
                 request.executeAsync();
 
@@ -238,8 +238,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         if(requestCode==LOGIN_REQ){
-            if(preferManager.isLoggedIn())
+            if(preferManager.isLoggedIn()) {
                 finish();
+            }
         }
         if(requestCode==LOGIN_REQ2){
             if( preferManager.isLoggedIn())
@@ -270,6 +271,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 main.putExtra("surname", object.getString("last_name"));
             if (object.has("email")){
                 main.putExtra("email", object.getString("email"));
+            }
+            if (!object.has("email")){
+                main.putExtra("email",object.getString(""));
             }
 
             startActivity(main);

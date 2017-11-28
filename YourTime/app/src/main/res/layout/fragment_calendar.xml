@@ -14,28 +14,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:background="@drawable/ln_showdow_gray">
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/calendar"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:textColor="@color/colorGray800"-->
-            <!--android:textSize="22sp" />-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/today_in"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:textColor="@color/lowBlack"-->
-            <!--android:textSize="@dimen/txt_14sp" />-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginLeft="@dimen/padding_item_list_10dp"-->
-            <!--android:text="@string/day_view"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:textColor="@color/lowBlack"-->
-            <!--android:textSize="@dimen/txt_14sp" />-->
+
     </android.support.v7.widget.Toolbar>
 
     <com.hcmute.trietthao.yourtime.calendar.WeekView
@@ -45,6 +24,7 @@
         app:eventTextColor="@android:color/white"
         app:textSize="12sp"
         app:hourHeight="60dp"
+        app:eventTextSize="16sp"
         app:headerColumnPadding="8dp"
         app:headerColumnTextColor="@color/toolbar_text"
         app:headerRowPadding="12dp"

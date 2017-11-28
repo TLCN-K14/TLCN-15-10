@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
 
-/**
- * Created by lxtri on 11/11/2017.
- */
 
 public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener,PostWorkListener {
 

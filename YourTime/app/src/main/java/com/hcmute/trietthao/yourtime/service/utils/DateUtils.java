@@ -26,6 +26,17 @@ public class DateUtils {
         return cal.getTime();
     }
 
+    public static Calendar converStringToCalendar(String input) throws ParseException {
+
+        SimpleDateFormat dateResultFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        dateResultFormat.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        Date date = dateResultFormat.parse(input.replaceAll("Z$", "+0000"));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR,cal.get(Calendar.HOUR)-7);
+        return cal;
+    }
+
     public static String getDateTimeToInsertUpdate(String input) throws ParseException {
         Date date = converStringToDateTime(input);
 

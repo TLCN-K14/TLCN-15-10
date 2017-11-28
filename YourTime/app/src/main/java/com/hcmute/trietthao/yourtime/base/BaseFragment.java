@@ -21,19 +21,26 @@ import com.hcmute.trietthao.yourtime.calendar.DateTimeInterpreter;
 import com.hcmute.trietthao.yourtime.calendar.MonthLoader;
 import com.hcmute.trietthao.yourtime.calendar.WeekView;
 import com.hcmute.trietthao.yourtime.calendar.WeekViewEvent;
+import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.database.DBWorkServer;
+import com.hcmute.trietthao.yourtime.database.GetWorkListener;
+import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public abstract class BaseFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
+public abstract class BaseFragment extends Fragment implements WeekView.EventClickListener, MonthLoader.MonthChangeListener,
+        WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener{
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
     private int mWeekViewType = TYPE_THREE_DAY_VIEW;
     private WeekView mWeekView;
     private Toolbar mToolbar;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +65,7 @@ public abstract class BaseFragment extends Fragment implements WeekView.EventCli
 
         // Set long press listener for empty view
         mWeekView.setEmptyViewLongPressListener(this);
+
 
         // Set up a date time interpreter to interpret how the date and time will be formatted in
         // the week view. This is optional.
