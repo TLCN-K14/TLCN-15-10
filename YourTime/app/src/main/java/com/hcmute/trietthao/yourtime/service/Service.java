@@ -7,6 +7,7 @@ import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 
 import com.hcmute.trietthao.yourtime.response.InsertGroupWorkResponse;
 
+import com.hcmute.trietthao.yourtime.response.InsertGroupWorkUserReponse;
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 import com.hcmute.trietthao.yourtime.response.UpdateWorkResponse;
 
@@ -41,7 +42,7 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     @FormUrlEncoded
     @POST("/insertgroupwork")
     Call<InsertGroupWorkResponse> insertGroupWork(@Field("idnhom") Integer idnhom, @Field("tennhom") String tennhom,
-                                                  @Field("lanhomcanhan") boolean lanhomcanhan);
+                                                  @Field("lanhomcanhan") Integer lanhomcanhan);
 
     @GET("/getlistgroupwork")
     Call<ArrayList<NhomCVModel>> getListGroupWork(@Query("idnguoidung") Integer idnguoidung);
@@ -70,6 +71,13 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
      @POST("/updateprioritywork")
      Call<UpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
                                                @Field("idcongviec") Integer idcongviec);
+
+     @GET("/getgroupbyid")
+     Call<ArrayList<NhomCVModel>> getGroupWorkById(@Query("idnhom") Integer idnhom);
+
+     @FormUrlEncoded
+     @POST("/insertgroupworkuser")
+     Call<InsertGroupWorkUserReponse> insertWorkGroupUser(@Field("idnhom") Integer idnhom, @Field("idnguoidung") Integer idnguoidung, @Field("vaitro") String vaitro);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

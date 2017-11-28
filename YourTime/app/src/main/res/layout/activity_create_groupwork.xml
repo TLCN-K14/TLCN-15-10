@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@color/colorBlue"
+        android:background="@color/royalBlue"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
         <LinearLayout
@@ -29,6 +29,7 @@
                     android:layout_weight="5"
                     />
                 <ImageView
+                    android:id="@+id/imgv_save"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -41,9 +42,12 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="bottom"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/txt_14sp"
                 android:layout_marginStart="35dp"
                 android:text="@string/list_name"/>
             <EditText
+                android:id="@+id/edit_group_name"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -132,17 +136,17 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="6">
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_invite_people"
+                app:srcCompat="@drawable/ic_add_circle_blue_24dp"
                 android:id="@+id/item_member_civ_member"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/item_member_civ_member"
                 android:text="@string/invite_people"
-                android:textColor="@color/colorBlue"
+                android:textColor="@color/royalBlue"
                 android:textSize="@dimen/dimen_18sp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"/>

@@ -21,22 +21,36 @@ public class DBGroupWorkServer {
 
     Service mService;
     GetGroupWorkListener getGroupWorkListener;
+    PostGroupWorkListener postGroupWorkListener;
+//    GetGroupWorkByIDListener getGroupWorkByIDListener;
 
     public DBGroupWorkServer(GetGroupWorkListener getGroupWorkListener) {
         this.getGroupWorkListener = getGroupWorkListener;
     }
+    public DBGroupWorkServer(PostGroupWorkListener postGroupWorkListener ) {
+        this.postGroupWorkListener = postGroupWorkListener;
+    }
+//    public DBGroupWorkServer(GetGroupWorkByIDListener getGroupWorkByIDListener ) {
+//        this.getGroupWorkByIDListener = getGroupWorkByIDListener;
+//    }
+    public DBGroupWorkServer(PostGroupWorkListener postGroupWorkListener, GetGroupWorkListener getGroupWorkListener ) {
+        this.postGroupWorkListener = postGroupWorkListener;
+        this.getGroupWorkListener = getGroupWorkListener;
+    }
 
-    public void insertGroupWork(Integer idnhom,String tennhom, boolean lanhomcanhan){
+    public void insertGroupWork(Integer idnhom,String tennhom, Integer lanhomcanhan){
         mService = ApiUtils.getService();
         Call<InsertGroupWorkResponse> call = mService.insertGroupWork(idnhom,tennhom,lanhomcanhan);
         call.enqueue(new Callback<InsertGroupWorkResponse>() {
             @Override
             public void onResponse(Call<InsertGroupWorkResponse> call, Response<InsertGroupWorkResponse> response) {
                 if(response.isSuccessful()) {
+                    postGroupWorkListener.getResultPostGroupWork(true);
                     Log.e("Response",""+response.message());
                 }
                 else
                 {
+                    postGroupWorkListener.getResultPostGroupWork(false);
                     Log.e("Response. Lỗi: ",response.message());
                 }
             }
@@ -46,7 +60,7 @@ public class DBGroupWorkServer {
             }
         });
     }
-    // Hàm lấy list user
+    // Hàm lấy list group work
     public void getListGroupWork(final Integer idnguoidung){
         mService = ApiUtils.getService();
         Call<ArrayList<NhomCVModel>> call = mService.getListGroupWork(idnguoidung);
@@ -67,5 +81,26 @@ public class DBGroupWorkServer {
             }
         });
     }
+    // Hàm lấy list user
+//    public void getGroupWorkById(final Integer idnhom){
+//        mService = ApiUtils.getService();
+//        Call<ArrayList<NhomCVModel>> call = mService.getGroupWorkById(idnhom);
+//        Log.e("Response",call.request().url().toString());
+//        Log.e("idnhom :::::::",idnhom.toString());
+//        call.enqueue(new Callback<ArrayList<NhomCVModel>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<NhomCVModel>> call, Response<ArrayList<NhomCVModel>> response) {
+//                if(response.isSuccessful()){
+//                    Log.e("Response","Lấy groupwork thành công"+response.message());
+//                    getGroupWorkByIDListener.getGroupWorkById(response.body().get(0));
+//                }else
+//                    Log.e("Response","Lấy groupwork thất bại ");
+//            }
+//            @Override
+//            public void onFailure(Call<ArrayList<NhomCVModel>> call, Throwable t) {
+//                Log.e("Response","Lấy list groupwork thất bại "+t.getMessage());
+//            }
+//        });
+//    }
 
 }

@@ -5,4 +5,7 @@ package com.hcmute.trietthao.yourtime.mvp.createGroupWork.presenter;
  */
 
 public interface ICreateGroupWorkPresenter {
+    void insertGroupWork(int idNhom, String tenNhom,int laNhomCaNhan);
+    void insertGroupWorkUser(int idNhom,int idNguoiDung, String vaitro);
+    void getGroupById(int idNhom);
 }

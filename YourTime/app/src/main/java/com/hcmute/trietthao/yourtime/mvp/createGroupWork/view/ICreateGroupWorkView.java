@@ -6,6 +6,6 @@ package com.hcmute.trietthao.yourtime.mvp.createGroupWork.view;
 
 public interface ICreateGroupWorkView {
     void createGroupWorkSuccess();
-
+    void showToast(String message);
     void createGroupWorkFail();
 }
