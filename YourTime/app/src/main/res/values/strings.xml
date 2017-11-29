@@ -37,7 +37,8 @@
 
     <string name="add_a_comment">Add a comment . . .</string>
     <string name="assign_to">Assign to</string>
-    <string name="set_date_reminder"><![CDATA[Set Date & Reminder]]></string>
+    <string name="set_date_reminder_start"><![CDATA[Set Date & Reminder Start]]></string>
+    <string name="set_date_reminder_end"><![CDATA[Set Date & Reminder End]]></string>
     <string name="add_a_note">Add a note . . .</string>
     <string name="add_a_picture">Add a picture</string>
     <string name="create_list">Create list</string>
@@ -45,7 +46,7 @@
     <string name="pedding">PENDING</string>
     <string name="invite_people">Invite People</string>
     <string name="just_now">Just Now</string>
-    <string name="add_a_todo_in">Add a to-do in</string>
+    <string name="add_a_todo_in">Add a to-do in "Inbox"</string>
     <string name="add">ADD</string>
     <string name="cancel">CANCEL</string>
     <string name="inbox">Inbox</string>
@@ -88,4 +89,7 @@
     <string name="calendar">Calendar</string>
     <string name="today_in">TODAY</string>
     <string name="day_view">DAY VIEW</string>
+    <string name="remind_me">Remind me</string>
+    <string name="repeat_every">Repeat every ...</string>
+    <string name="remove">Remove</string>
 </resources>

@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.DetailWorkActivity;
+import com.hcmute.trietthao.yourtime.mvp.detailWork.view.DetailWorkActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
@@ -27,6 +27,7 @@ import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.adapter.ItemSearchAdapter;
 import com.hcmute.trietthao.yourtime.mvp.searchWork.presenter.SearchGetWorkPresenter;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
 
@@ -76,6 +77,7 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
     CongViecModel currentItemWork;
 
     ItemSearchAdapter itemSearchAdapter;
+    PreferManager mPreferManager;
 
     boolean isLongClicking = false;
 
@@ -87,6 +89,8 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
 
         mSearchWorkPresenter = new SearchGetWorkPresenter(this);
         mListNhomCv = new ArrayList<>();
+
+        mPreferManager = new PreferManager(getApplicationContext());
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
@@ -113,7 +117,7 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
                     ivClearSearch.setVisibility(View.VISIBLE);
 
                     if(isNetWorkConnected(getApplicationContext())){
-                        mSearchWorkPresenter.getAllWorkSearchOnline(1,etSearch.getText().toString());  // ID USER IN PREFERENCE
+                        mSearchWorkPresenter.getAllWorkSearchOnline(mPreferManager.getID(),etSearch.getText().toString());  // ID USER IN PREFERENCE
                     }
 
                 }else
@@ -215,6 +219,7 @@ public class SearchWorkViewActivity extends AppCompatActivity implements View.On
         if(!isLongClicking){
             Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
             intent.putExtra("EXTRA_WORK_ID", congViecModel.getIdCongViec().toString());
+            intent.putExtra("EXTRA_WORK_NAME", congViecModel.getTenCongViec());
             startActivity(intent);
         }
         else{

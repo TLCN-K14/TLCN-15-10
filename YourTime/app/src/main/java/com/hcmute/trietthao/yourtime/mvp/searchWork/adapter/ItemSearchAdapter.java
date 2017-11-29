@@ -197,7 +197,7 @@ public class ItemSearchAdapter extends BaseExpandableListAdapter implements Post
 
         ivAssignedWork.setVisibility(View.INVISIBLE);
 
-        if(congViecModel.getIdNhacNho()==null)
+        if(congViecModel.getIdNhacNho()==0)
             ivRepeatWork.setVisibility(View.INVISIBLE);
         else
             ivRepeatWork.setVisibility(View.VISIBLE);

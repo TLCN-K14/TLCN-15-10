@@ -73,7 +73,7 @@ public class DBGroupWorkServer {
                     Log.e("Response","Lấy list groupwork thành công"+response.message());
                     getGroupWorkListener.getListGroupWork(response.body());
                 }else
-                    Log.e("Response","Lấy list groupwork thất bại ");
+                    Log.e("Response","Lấy list groupwork thất bại "+response.message());
             }
             @Override
             public void onFailure(Call<ArrayList<NhomCVModel>> call, Throwable t) {

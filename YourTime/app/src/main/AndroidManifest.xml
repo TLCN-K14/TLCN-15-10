@@ -52,19 +52,19 @@
         </activity>
         <activity android:name=".profile.ExtrasActivity"/>
         <activity android:name=".profile.GeneralActivity"/>
-        <activity android:name=".mvp.detailGroupWork.view.DetailGroupWorkActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-
-
-        <activity android:name=".DetailWorkActivity"
+        <activity android:name=".mvp.detailGroupWork.view.DetailGroupWorkActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
+        </activity>
+
+
+        <activity android:name=".mvp.detailWork.view.DetailWorkActivity"
+            android:parentActivityName=".mvp.detailGroupWork.view.DetailGroupWorkActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mvp.detailWork.view.DetailWorkActivity" />
         </activity>
         <activity
             android:name=".mvp.detailGroupWorkMain.view.DetailGroupWorkMainActivity"
@@ -105,6 +105,13 @@
             <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         <!--</activity>-->
+
+        <activity android:name=".AddANoteActivity"
+            android:parentActivityName=".mvp.detailWork.view.DetailWorkActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".mvp.detailWork.view.DetailWorkActivity" />
+        </activity>
 
     </application>
 

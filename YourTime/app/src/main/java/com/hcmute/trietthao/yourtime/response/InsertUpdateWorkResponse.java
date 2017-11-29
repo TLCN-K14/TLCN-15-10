@@ -6,19 +6,19 @@ import com.google.gson.annotations.SerializedName;
  * Created by lttha on 11/11/2017.
  */
 
-public class UpdateWorkResponse {
+public class InsertUpdateWorkResponse {
 
     @SerializedName("status")
     private int status;
     @SerializedName("message")
     private String message;
 
-    public UpdateWorkResponse(int status, String message) {
+    public InsertUpdateWorkResponse(int status, String message) {
         this.status = status;
         this.message = message;
     }
 
-    public UpdateWorkResponse() {
+    public InsertUpdateWorkResponse() {
     }
 
     public int getStatus() {

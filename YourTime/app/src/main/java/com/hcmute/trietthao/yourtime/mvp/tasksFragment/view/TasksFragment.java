@@ -196,8 +196,8 @@ public class TasksFragment extends Fragment implements
 
     protected void initData() {
         if(isNetWorkConnected(getContext())){
-            mTasksPresenter.getAllGroupWorkOnline(1);
-            mTasksPresenter.getAllWorkOnline(1);
+            mTasksPresenter.getAllGroupWorkOnline(mPreferManager.getID());
+            mTasksPresenter.getAllWorkOnline(mPreferManager.getID());
         }
     }
 

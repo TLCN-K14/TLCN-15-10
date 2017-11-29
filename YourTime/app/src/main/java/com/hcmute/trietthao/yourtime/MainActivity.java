@@ -1,5 +1,7 @@
 package com.hcmute.trietthao.yourtime;
 
+import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,10 +12,18 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
@@ -22,6 +32,7 @@ import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -29,12 +40,17 @@ import butterknife.ButterKnife;
 
 
 
-public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener {
+public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener,View.OnClickListener {
 
     @Bind(R.id.fab_create_work)
     FloatingActionButton mFabCreateWork;
     @Bind(R.id.navigation)
     BottomNavigationView mBottomNavigationView;
+
+    RelativeLayout rlBottomSheetChooseGroup;
+    ImageView ivBottomSheetSetReminderStart, ivBottomSheetSetReminderEnd, ivBottomSheetSetPriority, ivBottomSheetImgGroup;
+    TextView tvBottomSheetAddWork,tvBottomSheetCancel, tvBottomSheetNameGroup;
+    EditText etNameWork;
 
     ScreenUtils screenUtils;
 
@@ -43,6 +59,21 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
     DBNguoiDungServer dbNguoiDungServer;
     HashMap<String, String> user;
+
+    BottomSheetDialog bottomSheetDialog;
+
+    AlertDialog.Builder dialogReminder;
+    LayoutInflater layoutInflaterRemider;
+    View viewRemider;
+    AlertDialog alertDialogRemider;
+    TextView tvSaveRemider, tvRemoveRemider, tvReminder, tvTitleRemider;
+    LinearLayout lnlTimeReminder;
+
+    Calendar timeReminderStart;
+    Calendar timeReminderEnd;
+
+    boolean isPriority = false;
+
     public static NguoiDungModel userCurrent=null;
     private int MAIN_REQ = 0;
 
@@ -67,6 +98,13 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             Intent login= new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(login,MAIN_REQ);
         }
+
+        rlBottomSheetChooseGroup.setOnClickListener(this);
+        ivBottomSheetSetReminderStart.setOnClickListener(this);
+        ivBottomSheetSetReminderEnd.setOnClickListener(this);
+        ivBottomSheetSetPriority.setOnClickListener(this);
+        tvBottomSheetAddWork.setOnClickListener(this);
+        tvBottomSheetCancel.setOnClickListener(this);
 
 
         mBottomNavigationView .setOnNavigationItemSelectedListener
@@ -114,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     public void setupBottomSheetView(){
 
         mBottomSheetCreateWorkView = getLayoutInflater().inflate(R.layout.bottom_sheet_create_work, null);
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+
+        bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
         bottomSheetDialog.setContentView(mBottomSheetCreateWorkView);
         bottomSheetDialog.setCancelable (true);
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from((View) mBottomSheetCreateWorkView.getParent());
@@ -122,6 +161,16 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
         screenUtils = new ScreenUtils(getApplicationContext());
         bottomSheetBehavior.setPeekHeight(screenUtils.getHeight()*80/100);
+
+        rlBottomSheetChooseGroup = mBottomSheetCreateWorkView.findViewById(R.id.lnl_bottomsheet_choooselist);
+        ivBottomSheetSetReminderStart = mBottomSheetCreateWorkView.findViewById(R.id.img_bottomsheet_reminder_start);
+        ivBottomSheetSetReminderEnd =  mBottomSheetCreateWorkView.findViewById(R.id.img_bottomsheet_reminder_end);
+        ivBottomSheetImgGroup =  mBottomSheetCreateWorkView.findViewById(R.id.img_bottomsheet_imggroup);
+        ivBottomSheetSetPriority = mBottomSheetCreateWorkView.findViewById(R.id.img_bottomsheet_setpriority);
+        tvBottomSheetAddWork =  mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_add);
+        tvBottomSheetCancel = mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_cancel);
+        tvBottomSheetNameGroup =  mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_namegroup);
+        etNameWork =  mBottomSheetCreateWorkView.findViewById(R.id.etxt_name_work);
 
         mFabCreateWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,5 +243,139 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     @Override
     public void getUser(NguoiDungModel user) {
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.lnl_bottomsheet_choooselist:
+            break;
+            case R.id.img_bottomsheet_reminder_start:
+                setupDialog();
+                timeReminderStart = Calendar.getInstance();
+
+                tvTitleRemider.setText("Set Date & Time Start");
+                tvReminder.setText("Reminder at "+timeReminderStart.getTime().getHours()+":"
+                        +timeReminderStart.getTime().getMinutes());
+
+                tvSaveRemider.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // save data
+                        alertDialogRemider.dismiss();
+
+                    }
+                });
+
+                tvRemoveRemider.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // remove time
+                        alertDialogRemider.dismiss();
+
+                    }
+                });
+
+                lnlTimeReminder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TimePickerDialog mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                timeReminderStart.set(Calendar.HOUR_OF_DAY, selectedHour);
+                                timeReminderStart.set(Calendar.MINUTE, selectedMinute);
+                                tvReminder.setText("Reminder at "+selectedHour+":"
+                                        +selectedMinute);
+                            }
+                        }, timeReminderStart.getTime().getHours(), timeReminderStart.getTime().getMinutes(), true);
+
+                        mTimePicker.setTitle("Time reminder");
+                        mTimePicker.show();
+                    }
+                });
+
+                alertDialogRemider.show();
+
+                break;
+
+            case R.id.img_bottomsheet_reminder_end:
+                setupDialog();
+                timeReminderEnd = Calendar.getInstance();
+
+                tvTitleRemider.setText("Set Date & Time End");
+                tvReminder.setText("Reminder at "+timeReminderEnd.getTime().getHours()+":"
+                        +timeReminderEnd.getTime().getMinutes());
+
+                tvSaveRemider.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // save data
+                        alertDialogRemider.dismiss();
+
+                    }
+                });
+
+                tvRemoveRemider.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // remove time
+                        alertDialogRemider.dismiss();
+
+                    }
+                });
+
+                lnlTimeReminder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TimePickerDialog mTimePicker = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                timeReminderEnd.set(Calendar.HOUR_OF_DAY, selectedHour);
+                                timeReminderEnd.set(Calendar.MINUTE, selectedMinute);
+                                tvReminder.setText("Reminder at "+selectedHour+":"
+                                        +selectedMinute);
+                            }
+                        }, timeReminderEnd.getTime().getHours(), timeReminderEnd.getTime().getMinutes(), true);
+
+                        mTimePicker.setTitle("Time reminder");
+                        mTimePicker.show();
+                    }
+                });
+
+                alertDialogRemider.show();
+                break;
+            case R.id.img_bottomsheet_setpriority:
+                if(isPriority){
+                    isPriority = false;
+                    ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
+                }else{
+                    isPriority = true;
+                    ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_on);
+                }
+            break;
+            case R.id.txt_bottomsheet_add:
+                bottomSheetDialog.cancel();
+                break;
+            case R.id.txt_bottomsheet_cancel:
+                bottomSheetDialog.cancel();
+                break;
+        }
+    }
+
+    public void setupDialog(){
+        dialogReminder = new AlertDialog.Builder(this);
+        dialogReminder.setCancelable(true);
+        layoutInflaterRemider = LayoutInflater.from((getBaseContext()));
+        viewRemider = layoutInflaterRemider.inflate(R.layout.dialog_reminder, null);
+
+        dialogReminder.setView(viewRemider);
+        alertDialogRemider = dialogReminder.create();
+
+        tvSaveRemider = viewRemider.findViewById(R.id.tv_save);
+        tvRemoveRemider =  viewRemider.findViewById(R.id.tv_remove);
+        tvReminder = viewRemider.findViewById(R.id.tv_time_reminder);
+        tvTitleRemider = viewRemider.findViewById(R.id.tv_title);
+        lnlTimeReminder = viewRemider.findViewById(R.id.lnl_time_reminder);
     }
 }

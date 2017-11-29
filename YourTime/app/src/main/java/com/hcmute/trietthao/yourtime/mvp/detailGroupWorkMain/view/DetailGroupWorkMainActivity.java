@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -15,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.DetailWorkActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
@@ -24,6 +24,8 @@ import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWorkMain.adapter.ItemDetailGroupWorkAdapter;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWorkMain.presenter.DetailGroupWorkMainPresenter;
+import com.hcmute.trietthao.yourtime.mvp.detailWork.view.DetailWorkActivity;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
 
@@ -77,11 +79,15 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
     LinearLayout lnlCurrentItemLongClick;
     boolean isLongClicking = false;
 
+    PreferManager mPreferManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupworkmain_detail);
         ButterKnife.bind(this);
+
+        mPreferManager = new PreferManager(getApplicationContext());
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -125,7 +131,8 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
 
     public void initData(){
         if(isNetWorkConnected(getApplication())){
-            mdetailGroupWorkMainPresenter.getAllWorkOnline(1,EXTRA_GROUPMAIN_ID);
+            Log.e("INIT"," ------------GROUP ID: "+EXTRA_GROUPMAIN_ID);
+            mdetailGroupWorkMainPresenter.getAllWorkOnline(mPreferManager.getID(),EXTRA_GROUPMAIN_ID);
             switch (EXTRA_GROUPMAIN_ID){
                 case "1": tvNameGroupWork.setText(getResources().getString(R.string.assigned_to_me)); break;
                 case "2": tvNameGroupWork.setText(getResources().getString(R.string.starred)); break;
@@ -242,6 +249,7 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
         if(!isLongClicking){
             Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
             intent.putExtra("EXTRA_WORK_ID", congViecModel.getIdCongViec().toString());
+            intent.putExtra("EXTRA_WORK_NAME", congViecModel.getTenCongViec());
             startActivity(intent);
         }
         else{

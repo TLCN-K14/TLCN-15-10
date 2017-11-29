@@ -52,26 +52,35 @@ public class DateUtils {
 
     public static String getDisplayDate(String input){
         Date date = null;
+        String dateFormat1 = "HH:mm";
+        String dateFormat2 = "dd";
+        String dateFormat3 = "MM";
         try {
             date = converStringToDateTime(input);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String s=", ";
-        switch (date.getDay()){
-            case 1: s+="Monday "; break;
-            case 2: s+="Tuesday "; break;
-            case 3: s+="Wednesday "; break;
-            case 4: s+="Thurday "; break;
-            case 5: s+="Friday "; break;
-            case 6: s+="Saturday "; break;
-            case 7: s+="Sunday "; break;
+        String s = formatDate(date, dateFormat1) +", ";
+        if(isToday(date))
+            s+="Today";
+        else if(isTomorrow(date))
+            s+="Tomorrow";
+        else if(isYesterday(date))
+            s+="Yesterday";
+        else{
+            switch (date.getDay()){
+                case 1: s+="Monday "; break;
+                case 2: s+="Tuesday "; break;
+                case 3: s+="Wednesday "; break;
+                case 4: s+="Thurday "; break;
+                case 5: s+="Friday "; break;
+                case 6: s+="Saturday "; break;
+                case 7: s+="Sunday "; break;
+            }
+            s+= formatDate(date, dateFormat2)+" Th"+formatDate(date, dateFormat3);
         }
 
-        String dateFormat1 = "HH:mm";
-        String dateFormat2 = "dd";
-        String dateFormat3 = "MM";
-        return formatDate(date, dateFormat1)+s+formatDate(date, dateFormat2)+" Th"+formatDate(date, dateFormat3);
+        return s;
     }
 
     public static boolean isDateInCurrentWeek(Date date) {
@@ -87,6 +96,44 @@ public class DateUtils {
 
     public static boolean isToday(Date date) {
         return isSameDay(date, Calendar.getInstance().getTime());
+    }
+
+    public static boolean isTomorrow(Date date) {
+        return isNextDay(date, Calendar.getInstance().getTime());
+    }
+
+    public static boolean isYesterday(Date date) {
+        return isYesterDay(date, Calendar.getInstance().getTime());
+    }
+
+    public static boolean isNextDay(Date leftDate, Date rightDate) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(leftDate);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(rightDate);
+        return startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR) &&
+                startCalendar.get(Calendar.DAY_OF_YEAR) == endCalendar.get(Calendar.DAY_OF_YEAR) +1 ;
+    }
+
+    public static boolean isYesterDay(Date leftDate, Date rightDate) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(leftDate);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(rightDate);
+        return startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR) &&
+                startCalendar.get(Calendar.DAY_OF_YEAR) == endCalendar.get(Calendar.DAY_OF_YEAR) -1 ;
+
+
+    }
+
+    // check 2 date is same day
+    public static boolean isSameDay(Date leftDate, Date rightDate) {
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(leftDate);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(rightDate);
+        return startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR) &&
+                startCalendar.get(Calendar.DAY_OF_YEAR) == endCalendar.get(Calendar.DAY_OF_YEAR);
     }
 
     public static boolean isDateNull(String input) throws ParseException {
@@ -160,15 +207,7 @@ public class DateUtils {
         return cal.get(Calendar.YEAR);
     }
 
-    // check 2 date is same day
-    public static boolean isSameDay(Date leftDate, Date rightDate) {
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(leftDate);
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(rightDate);
-        return startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR) &&
-                startCalendar.get(Calendar.DAY_OF_YEAR) == endCalendar.get(Calendar.DAY_OF_YEAR);
-    }
+
 
     // get first date of a month
     public static Date getFirstDayOfMonth(int month, int year) {

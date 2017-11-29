@@ -170,7 +170,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
             holder.ivAssignedWork.setVisibility(View.INVISIBLE);
             holder.ivConversationWork.setVisibility(View.INVISIBLE);
 
-            if(congViecModel.getIdNhacNho()==null)
+            if(congViecModel.getIdNhacNho()==0)
                 holder.ivRepeatWork.setVisibility(View.INVISIBLE);
             else
                 holder.ivRepeatWork.setVisibility(View.VISIBLE);
@@ -267,7 +267,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
             holder.ivAssignedWork.setVisibility(View.INVISIBLE);
             holder.ivConversationWork.setVisibility(View.INVISIBLE);
 
-            if(congViecModel.getIdNhacNho()==null)
+            if(congViecModel.getIdNhacNho()==0)
                 holder.ivRepeatWork.setVisibility(View.INVISIBLE);
             else
             {

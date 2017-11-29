@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:hint="@string/add_a_todo_in"
         android:gravity="top"
+        android:id="@+id/etxt_name_work"
         android:textColorHint="@color/colorGray500"
         android:layout_margin="10dp"
         android:textSize="24sp"
@@ -17,6 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_groupwork_50dp"
+        android:id="@+id/lnl_bottomsheet_choooselist"
         android:background="@drawable/border_top_gray">
         <ImageView
             android:layout_width="50dp"
@@ -47,23 +50,23 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_setdate"
-            android:id="@+id/img_bottomsheet_setdate"
+            android:id="@+id/img_bottomsheet_reminder_start"
             android:layout_marginStart="10dp"
             android:padding="15dp"/>
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_setreminder"
-            android:layout_toEndOf="@+id/img_bottomsheet_setdate"
-            android:id="@+id/img_bottomsheet_settime"
-            android:padding="15dp"/>
+            app:srcCompat="@drawable/ic_notifications_paused_gray_24dp"
+            android:layout_toEndOf="@+id/img_bottomsheet_reminder_start"
+            android:id="@+id/img_bottomsheet_reminder_end"
+            android:padding="13dp"/>
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_setpriority"
-            android:layout_toEndOf="@+id/img_bottomsheet_settime"
+            android:src="@drawable/ic_priority_off"
+            android:layout_toEndOf="@+id/img_bottomsheet_reminder_end"
             android:id="@+id/img_bottomsheet_setpriority"
-            android:padding="15dp"/>
+            android:padding="10dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

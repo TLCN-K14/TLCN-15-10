@@ -10,19 +10,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.DetailWorkActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.adapter.ItemWorkServerAdapter;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.presenter.DetailGroupWorkPresenter;
+import com.hcmute.trietthao.yourtime.mvp.detailWork.view.DetailWorkActivity;
+import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
 
@@ -54,6 +59,12 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     @Bind(R.id.iv_delete_item_work)
     ImageView ivDeleteItemWork;
 
+    @Bind(R.id.iv_img_add_work)
+    ImageView ivAddWork;
+
+    @Bind(R.id.etxt_add_work)
+    EditText etAddWork;
+
     @Bind(R.id.lnlayout_longclick_work)
     LinearLayout lnlLongClickMenu;
 
@@ -81,11 +92,17 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     boolean isShowCompletedWorks = false;
 
+    PreferManager mPreferManager;
+    Integer REQUEST_WORK_DETAIL = 000;
+    boolean isAddWorkEnable = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groupwork_detail);
         ButterKnife.bind(this);
+
+        mPreferManager = new PreferManager(getApplicationContext());
 
         rvListWork.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvListWork.setHasFixedSize(true);
@@ -96,6 +113,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         EXTRA_GROUPWORK_NAME = getIntent().getStringExtra("EXTRA_GROUPWORK_NAME");
 
         tvNameGroupWork.setText(EXTRA_GROUPWORK_NAME);
+
 
         Toast.makeText(getApplication(), "GROUPWORKID! "+EXTRA_GROUPWORK_ID,
                 Toast.LENGTH_LONG).show();
@@ -114,14 +132,39 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         mTxtShowHideCompletedWorks.setOnClickListener(this);
         ivBackFromLongClick.setOnClickListener(this);
         ivDeleteItemWork.setOnClickListener(this);
+
+        etAddWork.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                if (s.length() > 0)
+                { //do your work here }
+                    ivAddWork.setImageResource(R.drawable.ic_add_active);
+                    isAddWorkEnable = true;
+                }else{
+                    ivAddWork.setImageResource(R.drawable.ic_add_non_active);
+                    isAddWorkEnable = false;
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public void initData(){
         if(isNetWorkConnected(getApplication())){
-            mDetailGroupWorkPresenter.getWorkByIdGroup(1,Integer.parseInt(EXTRA_GROUPWORK_ID));
+            Log.e("INIT"," ------------GROUP ID: "+EXTRA_GROUPWORK_ID);
+            if(EXTRA_GROUPWORK_ID!=null)
+                mDetailGroupWorkPresenter.getWorkByIdGroup(mPreferManager.getID(),Integer.parseInt(EXTRA_GROUPWORK_ID));
         }
     }
-
     @Override
     protected void onResume() {
 //        rvListWork.setAdapter((RecyclerView.Adapter)null);
@@ -239,11 +282,26 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         if(!isLongClicking){
             Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
             intent.putExtra("EXTRA_WORK_ID", congViecModel.getIdCongViec().toString());
-            startActivity(intent);
+            intent.putExtra("EXTRA_GROUPWORK_ID", EXTRA_GROUPWORK_ID);
+            intent.putExtra("EXTRA_GROUPWORK_NAME", EXTRA_GROUPWORK_NAME);
+            startActivityForResult(intent,REQUEST_WORK_DETAIL);
         }
         else{
             setupLongClick(congViecModel,view);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_WORK_DETAIL){
+            if(resultCode==RESULT_OK){
+                EXTRA_GROUPWORK_ID = data.getStringExtra("EXTRA_GROUPWORK_ID");
+                EXTRA_GROUPWORK_NAME = data.getStringExtra("EXTRA_GROUPWORK_NAME");
+                Log.e("OnResult",""+EXTRA_GROUPWORK_NAME);
+                initData();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

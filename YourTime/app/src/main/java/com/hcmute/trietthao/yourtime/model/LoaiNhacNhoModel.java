@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class LoaiNhacNhoModel implements Serializable {
     @SerializedName("idNhacNho")
@@ -17,16 +16,23 @@ public class LoaiNhacNhoModel implements Serializable {
 
     @SerializedName("thoiGianLapLai")
     @Expose
-    private Date thoiGianLapLai;
+    private Integer thoiGianLapLai;
 
-    public LoaiNhacNhoModel(Integer idNhacNho, String noiDung, Date thoiGianLapLai) {
-        this.idNhacNho = idNhacNho;
-        this.noiDung = noiDung;
-        this.thoiGianLapLai = thoiGianLapLai;
-    }
+    @SerializedName("loaiLapLai")
+    @Expose
+    private String loaiLapLai;
+
+
 
     public LoaiNhacNhoModel() {
 
+    }
+
+    public LoaiNhacNhoModel(Integer idNhacNho, String noiDung, Integer thoiGianLapLai, String loaiLapLai) {
+        this.idNhacNho = idNhacNho;
+        this.noiDung = noiDung;
+        this.thoiGianLapLai = thoiGianLapLai;
+        this.loaiLapLai = loaiLapLai;
     }
 
     public Integer getIdNhacNho() {
@@ -45,11 +51,19 @@ public class LoaiNhacNhoModel implements Serializable {
         this.noiDung = noiDung;
     }
 
-    public Date getThoiGianLapLai() {
+    public Integer getThoiGianLapLai() {
         return thoiGianLapLai;
     }
 
-    public void setThoiGianLapLai(Date thoiGianLapLai) {
+    public void setThoiGianLapLai(Integer thoiGianLapLai) {
         this.thoiGianLapLai = thoiGianLapLai;
+    }
+
+    public String getLoaiLapLai() {
+        return loaiLapLai;
+    }
+
+    public void setLoaiLapLai(String loaiLapLai) {
+        this.loaiLapLai = loaiLapLai;
     }
 }

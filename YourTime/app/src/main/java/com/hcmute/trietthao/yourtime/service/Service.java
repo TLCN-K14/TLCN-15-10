@@ -9,7 +9,7 @@ import com.hcmute.trietthao.yourtime.response.InsertGroupWorkResponse;
 
 import com.hcmute.trietthao.yourtime.response.InsertGroupWorkUserReponse;
 import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
-import com.hcmute.trietthao.yourtime.response.UpdateWorkResponse;
+import com.hcmute.trietthao.yourtime.response.InsertUpdateWorkResponse;
 
 import java.util.ArrayList;
 
@@ -59,18 +59,27 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @FormUrlEncoded
     @POST("/updatestatuswork")
-    Call<UpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
-                                           @Field("idcongviec") Integer idcongviec);
+    Call<InsertUpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
+                                                    @Field("idcongviec") Integer idcongviec);
 
      @FormUrlEncoded
      @POST("/updatestatusworktimenotnull")
-     Call<UpdateWorkResponse> updateStatusWorkTimeNotNull(@Field("trangthai") String trangthai,
-                                            @Field("idcongviec") Integer idcongviec,@Field("thoigianbatdau") String thoigianbatdau);
+     Call<InsertUpdateWorkResponse> updateStatusWorkTimeNotNull(@Field("trangthai") String trangthai,
+                                                                @Field("idcongviec") Integer idcongviec, @Field("thoigianbatdau") String thoigianbatdau);
 
      @FormUrlEncoded
      @POST("/updateprioritywork")
-     Call<UpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
-                                               @Field("idcongviec") Integer idcongviec);
+     Call<InsertUpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
+                                                       @Field("idcongviec") Integer idcongviec);
+
+    @FormUrlEncoded
+    @POST("/insertitemwhat")
+    Call<InsertUpdateWorkResponse> insertWork(@Field("idcongviec") Integer idcongviec, @Field("tenCongViec") String tenCongViec,
+                                                  @Field("thoiGianBatDau") String thoiGianBatDau, @Field("thoiGianKetThuc") String thoiGianKetThuc,
+                                                  @Field("ghiChu") String ghiChu, @Field("fileDinhKem") String fileDinhKem,
+                                                  @Field("coUuTien") Integer coUuTien, @Field("idNhom") Integer idNhom,
+                                                  @Field("idNhacNho") Integer idNhacNho, @Field("idNguoiTaoCV") int idNguoiTaoCV,
+                                                  @Field("idNguoiDuocGiaoCV") Integer idNguoiDuocGiaoCV, @Field("trangThai") String trangThai);
 
      @GET("/getgroupbyid")
      Call<ArrayList<NhomCVModel>> getGroupWorkById(@Query("idnhom") Integer idnhom);
