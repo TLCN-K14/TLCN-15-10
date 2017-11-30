@@ -1,66 +1,59 @@
 package com.hcmute.trietthao.yourtime.service.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 
 public class Base64Utils {
 
-    public static void decode(String content, IBase64DecodeListener listener) {
-        if (content == null || content.length() == 0) {
-            listener.onDecodeSuccess("");
-            return;
-        }
-        Base64DecodeTask task = new Base64DecodeTask();
-        task.setListener(listener);
-        task.execute(content);
+    private Context mContext;
+    public Base64Utils(Context context){
+        this.mContext = context;
     }
-    public static String encodeTobase64(Bitmap image) {
+    // get dic chi hinh anh sau khi chon tu diwn thoai
+
+    public Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(
+                mContext.getContentResolver().openInputStream(selectedImage), null, o);
+
+        final int REQUIRED_SIZE = 100;
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(
+                mContext.getContentResolver().openInputStream(selectedImage), null, o2);
+    }
+    // chuyen hinh anh sang nhi phan: blob
+    private byte[] getByteArrayFromBitmap(Bitmap bm){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        bm.compress(Bitmap.CompressFormat.PNG,100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray;
+    }
+    // chuyen hinh anh sang nhi phan: blob
+    public String getStringFromBitmap(Bitmap bm){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         String encodeImage = Base64.encodeToString(byteArray,Base64.DEFAULT);
         return encodeImage;
     }
-
-    public interface IBase64DecodeListener {
-
-        void onDecodeSuccess(String content);
-
-        void onDecodeError();
-    }
-
-    private static class Base64DecodeTask extends AsyncTask<String, Void, String> {
-
-        private IBase64DecodeListener listener;
-
-        public IBase64DecodeListener getListener() {
-            return listener;
-        }
-
-        public void setListener(IBase64DecodeListener listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                return new String(Base64.decode(params[0], Base64.DEFAULT));
-            } catch (Exception ignored) {
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String content) {
-            if (content != null) {
-                listener.onDecodeSuccess(content);
-            } else {
-                listener.onDecodeError();
-            }
-        }
-    }
-
 }

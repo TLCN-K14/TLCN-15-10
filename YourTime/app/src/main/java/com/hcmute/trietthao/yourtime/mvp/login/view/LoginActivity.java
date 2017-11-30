@@ -334,8 +334,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if(!NetworkUtils.isNetWorkConnected(this))
                 {
                     Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
-                }else
-                    Toast.makeText(this,"Login by facebook is coming!",Toast.LENGTH_LONG).show();
+                }
         }
 
     }

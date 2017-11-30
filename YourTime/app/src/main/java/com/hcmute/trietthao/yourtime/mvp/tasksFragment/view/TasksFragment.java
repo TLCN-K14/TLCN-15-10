@@ -145,12 +145,6 @@ public class TasksFragment extends Fragment implements
         dbNguoiDungServer.getListUser();
 
 
-        String name = user.get(PreferManager.KEY_NAME);
-//        Log.e("name:::::::::::::",PreferManager.KEY_NAME);
-//
-        txtNameUser.setText(name);
-
-
         Toast.makeText(getActivity(), "ID USER: "+mPreferManager.getID(),
                 Toast.LENGTH_LONG).show();
         mTasksPresenter = new TasksPresenter(this);
@@ -541,18 +535,6 @@ public class TasksFragment extends Fragment implements
 
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
-        String url = "http://192.168.43.219:8000/getimg?nameimg=";
-        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
-        userCurrent = listUser.get(0);
-        if(userCurrent.getAnhDaiDien()!=null)
-        {
-            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
-                    .error(R.drawable.null_avatar)
-                    .into(imgUser);
-        }
-        txtNameUser.setText(userCurrent.getTenNguoiDung());
-        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
-
     }
 
     @Override
@@ -562,6 +544,18 @@ public class TasksFragment extends Fragment implements
 
     @Override
     public void getUser(NguoiDungModel user) {
+        String url = "http://192.168.43.219:8000/getimg?nameimg=";
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
+        userCurrent = user;
+        if(userCurrent.getAnhDaiDien()!=null)
+        {
+            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
+                    .error(R.drawable.null_avatar)
+                    .into(imgUser);
+        }
+        txtNameUser.setText(userCurrent.getTenNguoiDung());
+        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
+
 
     }
 }

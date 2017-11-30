@@ -79,14 +79,8 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
         // get user data from session
         HashMap<String, String> user = preferManager.getUserDetails();
+        Log.e("Settingfragment:",preferManager.getID()+"");
         dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
-        dbNguoiDungServer.getListUser();
-
-
-        String name = user.get(PreferManager.KEY_NAME);
-//        Log.e("name:::::::::::::",PreferManager.KEY_NAME);
-//
-        mTxtUserName.setText(name);
 
 
         tabHostSetup();      // Khởi tạo tabhost chính
@@ -160,17 +154,6 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
-        String url = "http://192.168.43.219:8000/getimg?nameimg=";
-        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
-        userCurrent = listUser.get(0);
-        if(userCurrent.getAnhDaiDien()!=null)
-        {
-            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
-                    .error(R.drawable.null_avatar)
-                    .into(mImgVAvatar);
-        }
-        mTxtUserName.setText(userCurrent.getTenNguoiDung());
-        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
 
     }
 
@@ -181,34 +164,21 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
     @Override
     public void getUser(NguoiDungModel user) {
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
+        userCurrent = user;
+        if(userCurrent.getAnhDaiDien()!=null)
+        {
+            Picasso.with(getActivity()).load(url_imgitem+userCurrent.getAnhDaiDien()+".png")
+                    .error(R.drawable.null_avatar)
+                    .into(mImgVAvatar);
+        }
+        mTxtUserName.setText(userCurrent.getTenNguoiDung());
+        Log.e("SettingFragment:","Anh avatar"+url_imgitem+userCurrent.getAnhDaiDien()+".png");
+
     }
 
 
-    public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public DownloadImage(ImageView bmImage){
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls){
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try{
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            }catch (Exception e){
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result){
-            bmImage.setImageBitmap(result);
-        }
-
-    }
     public void tabHostSetup() {
         mTabHost.setup();
         TabHost.TabSpec tabAccount = mTabHost.newTabSpec("Account");
