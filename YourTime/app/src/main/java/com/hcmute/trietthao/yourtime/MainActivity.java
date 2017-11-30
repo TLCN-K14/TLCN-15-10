@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     // value insert work
     Calendar timeReminderStart;
     Calendar timeReminderEnd;
-    int idGroupWork = 0;
+    int idGroupWorkCurrent = 0;
+    String nameGroupCurrent = "Inbox";
     boolean isTimeEndChoose = false;
     int isPriority = 0;
 
@@ -299,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             break;
             case R.id.img_bottomsheet_reminder_start:
                 setupDialog();
+                ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate_on);
                 timeReminderStart = Calendar.getInstance();
                 timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+1);
 
@@ -311,7 +313,6 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                     @Override
                     public void onSelectedDayChange(@NonNull CalendarView calendarView, int year,int month, int dayOfMonth) {
                         timeReminderStart.set(year,month,dayOfMonth);
-                        ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate_on);
                     }
                 });
 
@@ -362,16 +363,16 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                 break;
 
             case R.id.img_bottomsheet_reminder_end:
+                isTimeEndChoose = true;
                 setupDialog();
+                ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_blue_24dp);
                 timeReminderEnd = Calendar.getInstance();
-                timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+2);
+                timeReminderEnd.set(Calendar.HOUR,timeReminderEnd.get(Calendar.HOUR)+2);
 
                 calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                     @Override
                     public void onSelectedDayChange(@NonNull CalendarView calendarView, int year,int month, int dayOfMonth) {
                         timeReminderEnd.set(year,month,dayOfMonth);
-                        isTimeEndChoose = true;
-                        ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_blue_24dp);
                     }
                 });
 
@@ -439,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                         }else{
                             CongViecModel congViecModel = new CongViecModel();
                             congViecModel.setIdCongViec(getIntCurrentDateTime());
-                            congViecModel.setIdNhom(idGroupWork);
+                            congViecModel.setIdNhom(idGroupWorkCurrent);
                             congViecModel.setTenCongViec(etBottomSheetNameWork.getText().toString());
                             try {
                                 congViecModel.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
@@ -524,7 +525,8 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
     @Override
     public void onItemClick(NhomCVModel nhomCVModel, LinearLayout view) {
-        idGroupWork = nhomCVModel.getIdNhom();
+        idGroupWorkCurrent = nhomCVModel.getIdNhom();
+        nameGroupCurrent = nhomCVModel.getTenNhom();
         tvBottomSheetNameGroup.setText(nhomCVModel.getTenNhom());
         etBottomSheetNameWork.setHint("Add a to-do in '"+nhomCVModel.getTenNhom()+"'...");
         if(nhomCVModel.getLaNhomCaNhan()==1){
@@ -545,12 +547,13 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
     @Override
     public void getResultPostWork(Boolean isSucess) {
-        idGroupWork = 0;
+        idGroupWorkCurrent = 0;
         isTimeEndChoose = false;
         isPriority = 0;
         ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate);
         ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_gray_24dp);
         ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
+        etBottomSheetNameWork.setText("Add to-do in '"+nameGroupCurrent+"'...");
         if(isSucess){
             Toast.makeText(getApplicationContext(), "Add work success!",
                     Toast.LENGTH_LONG).show();
