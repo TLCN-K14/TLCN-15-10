@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         setupBottomSheetView();
         preferManager = new PreferManager(getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
-        Log.e("email:::::::::",preferManager.KEY_EMAIL);
         if(preferManager.isLoggedIn()) {
             HashMap<String, String> user = preferManager.getUserDetails();
             dbNguoiDungServer.getUser(user.get(preferManager.KEY_EMAIL));
@@ -224,15 +223,6 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         String url = "http://192.168.43.219:8000/getimg?nameimg=";
         String url_imgitem="https://foody-trietv2.herokuapp.com/getimg?nameimg=";
         userCurrent = listUser.get(0);
-//        if(userCurrent.getImg()!=null)
-//        {
-//            Picasso.with(this).load(url_imgitem+userCurrent.getImg()+".png")
-//                    .error(R.drawable.fdi1)
-//                    .into(avatar_user);
-//        }
-//        name_user.setText(userCurrent.getUsername());
-//        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getImg()+".png");
-
     }
 
     @Override

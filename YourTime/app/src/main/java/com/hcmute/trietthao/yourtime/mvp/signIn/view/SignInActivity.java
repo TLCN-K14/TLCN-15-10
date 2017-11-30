@@ -106,9 +106,6 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
     @Override
     public void getUser(NguoiDungModel user) {
         final NguoiDungModel currentUser= user;
-        Intent data = new Intent();
-        data.putExtra("email",currentUser.getUserName());  // Set id của thành phố đã chọn vào para city_id
-        data.putExtra("pass",currentUser.getPassW());
         Toast.makeText(this,"Đăng nhập thành công \n đang chuyển hướng !\n", Toast.LENGTH_LONG).show();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

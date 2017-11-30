@@ -37,10 +37,6 @@ public class CreateGroupWorkPresenter implements ICreateGroupWorkPresenter,
         mDBGroupWorkUserServer.insertGroupWorkUser(idNhom,idNguoiDung,vaitro);
     }
 
-    @Override
-    public void getGroupById(int idNhom) {
-//        mDBGroupWorkServer.getGroupWorkById(idNhom);
-    }
 
     @Override
     public void getResultPostGroupWork(Boolean isSuccess) {

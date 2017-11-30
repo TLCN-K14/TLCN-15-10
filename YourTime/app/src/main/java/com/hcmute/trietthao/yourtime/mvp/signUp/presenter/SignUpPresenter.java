@@ -20,10 +20,10 @@ import java.util.HashMap;
 
 public class SignUpPresenter extends BasePresenter implements ISignUpPresenter, DBNguoiDungServer.userListener {
 
-    DBNguoiDungServer dbNguoiDungServer;
-    ISignUpView iSignUpView;
-    String email="", pass="", name="", encodedString="";
-    int id;
+    private DBNguoiDungServer dbNguoiDungServer;
+    private ISignUpView iSignUpView;
+    private String email="", pass="", name="", encodedString="";
+    private int id;
 
     public SignUpPresenter(ISignUpView iSignUpView) {
         this.iSignUpView=iSignUpView;
@@ -55,7 +55,7 @@ public class SignUpPresenter extends BasePresenter implements ISignUpPresenter, 
             }
         }
         if(isSame)
-            iSignUpView.showToast("Tài khoản đã tồn tại!!!");
+            iSignUpView.signUpFail("Tài khoản đã tồn tại!!!");
         else
         {
             dbNguoiDungServer.insertUser(id,name, encodedString, email, pass);
@@ -71,7 +71,7 @@ public class SignUpPresenter extends BasePresenter implements ISignUpPresenter, 
         {
             iSignUpView.signUpSuccess();
         }else {
-            iSignUpView.signUpFail();
+            iSignUpView.signUpFail("Insert user fail! Check your connection!");
         }
 
     }
@@ -82,7 +82,7 @@ public class SignUpPresenter extends BasePresenter implements ISignUpPresenter, 
     }
 
     @Override
-    public void checkSignUp(int id, String name, String avatar, String userName, String passW) {
+    public void insertUser(int id, String name, String avatar, String userName, String passW) {
         dbNguoiDungServer=new DBNguoiDungServer(this);
         this.id=id;
         this.name=name;
@@ -92,9 +92,4 @@ public class SignUpPresenter extends BasePresenter implements ISignUpPresenter, 
         dbNguoiDungServer.getListUser();
     }
 
-    @Override
-    public void getListUserP() {
-        dbNguoiDungServer=new DBNguoiDungServer(this);
-        dbNguoiDungServer.getListUser();
-    }
 }

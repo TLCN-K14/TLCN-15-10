@@ -35,7 +35,7 @@ public class CreateGroupWorkActivity extends AppCompatActivity implements View.O
     @Bind(R.id.imgv_save)
     ImageView mImgvSave;
 
-    int idNhom,laNhomCaNhan;
+    int idNhom;
     String tenNhom;
     PreferManager mPreferManager;
 
@@ -67,7 +67,6 @@ public class CreateGroupWorkActivity extends AppCompatActivity implements View.O
                 idNhom=getIntCurrentDateTime();
                 mCreateGroupWorkPresenter.insertGroupWork(idNhom,tenNhom,1);
                 mCreateGroupWorkPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
-                mCreateGroupWorkPresenter.getGroupById(idNhom);
                 Intent detailWG= new Intent(CreateGroupWorkActivity.this, DetailGroupWorkActivity.class);
                 detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
                 detailWG.putExtra("EXTRA_GROUPWORK_NAME", tenNhom);

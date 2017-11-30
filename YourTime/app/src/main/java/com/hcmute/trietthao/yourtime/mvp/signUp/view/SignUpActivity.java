@@ -97,6 +97,32 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         signUpPresenter=new SignUpPresenter(this);
 
         shareDialog = new ShareDialog(this);
+//        LoginActivity.FROM_FB=false;
+//        LoginActivity.FROM_GG=false;
+
+        if(LoginActivity.FROM_FB){
+            Bundle inBundle = getIntent().getExtras();
+            String namefb = inBundle.get("name").toString();
+            String surnamefb = inBundle.get("surname").toString();
+            String emailfb =inBundle.get("email").toString();
+            String imageUrl = inBundle.get("imageUrl").toString();
+            mEditName.setText("" + namefb + " " + surnamefb);
+            mEditEmail.setText(emailfb);
+            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
+        }
+        if(LoginActivity.FROM_GG){
+            Bundle inBundle = getIntent().getExtras();
+            String personName = inBundle.get("gg_name").toString();
+            String personEmail = inBundle.get("gg_email").toString();
+            String personId = inBundle.get("gg_url").toString();
+
+            mEditName.setText(personName);
+            mEditEmail.setText(personEmail);
+            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(personId);
+
+            Log.e("Name::::::::",personName);
+            Log.e("Email::::::", personEmail);
+        }
 
 
         mBtnSignUp.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +135,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
                 id= getIntCurrentDateTime();
 
                 if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0&& isEmailValid(email)){
-                    signUpPresenter.checkSignUp(id,name,encodedString,email,pass);
-                    signUpPresenter.getListUserP();
+                    signUpPresenter.insertUser(id,name,encodedString,email,pass);
 
                 }
                 else
@@ -125,15 +150,6 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             }
         });
 
-//        Bundle inBundle = getIntent().getExtras();
-//        String namefb = inBundle.get("name").toString();
-//        String surnamefb = inBundle.get("surname").toString();
-//        String emailfb =inBundle.get("email").toString();
-//        String imageUrl = inBundle.get("imageUrl").toString();
-//        mEditName.setText("" + namefb + " " + surnamefb);
-//        mEditEmail.setText(emailfb);
-//        new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
-
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -145,40 +161,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult(data);
         }
-        //Từ login vào signup
-        if(requestCode==2){
-            if(resultCode==RESULT_OK){
-
-            }
-        }
         //Từ gg vào
-        if(requestCode==4){
-            if(resultCode==RESULT_OK){
-                Bundle inBundle = getIntent().getExtras();
-                String personName = inBundle.get("gg_name").toString();
-                String personEmail = inBundle.get("gg_email").toString();
-                String personId = inBundle.get("gg_url").toString();
-
-                mEditName.setText(personName);
-                mEditEmail.setText(personEmail);
-                new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(personId);
-
-                Log.e("Name::::::::",personName);
-                Log.e("Email::::::", personEmail);
-            }
-        }
-        //từ fb vàoo
-        else {
-            Log.e("facebookk::::::","");
-            Bundle inBundle = getIntent().getExtras();
-            String namefb = inBundle.get("name").toString();
-            String surnamefb = inBundle.get("surname").toString();
-            String emailfb =inBundle.get("email").toString();
-            String imageUrl = inBundle.get("imageUrl").toString();
-            mEditName.setText("" + namefb + " " + surnamefb);
-            mEditEmail.setText(emailfb);
-            new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
-        }
     }
 
     @Override
@@ -188,13 +171,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     }
 
     @Override
-    public void signUpFail() {
-        Toast.makeText(this,"Đăng ký thất bại!", Toast.LENGTH_LONG).show();
-
-    }
-
-    @Override
-    public void showToast(String message) {
+    public void signUpFail(String message) {
         Toast.makeText(this,message, Toast.LENGTH_LONG).show();
     }
 

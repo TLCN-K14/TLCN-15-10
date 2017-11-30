@@ -77,7 +77,7 @@ public class DBNguoiDungServer {
         });
     }
 
-    // ==== Login ==== //
+    // ==== get user ==== //
     public void getUser(String mail){
         mService = ApiUtils.getService();
         Call<ArrayList<NguoiDungModel>> call = mService.getUserByEmail(mail);
@@ -86,8 +86,10 @@ public class DBNguoiDungServer {
             @Override
             public void onResponse(Call<ArrayList<NguoiDungModel>> call, Response<ArrayList<NguoiDungModel>> response) {
                 if(response.isSuccessful()) {
-                    userListener.getUser(response.body().get(0));
-                    Log.e("Response","lay duoc "+response.body().size());
+                    if(response.body()!=null && response.body().size()>0){
+                        userListener.getUser(response.body().get(0));
+                        Log.e("Response","lay duoc "+response.body().size());
+                    }
                 }
                 else
                     Log.e("Response","khong lay duoc");

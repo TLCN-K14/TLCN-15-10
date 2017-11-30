@@ -76,7 +76,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
-    private int LOGIN_REQ = 1,LOGIN_REQ2 = 2, LOGIN_REQ3=3;
+    private int LOGIN_REQ = 1,LOGIN_REQ2 = 2;
+    public static boolean FROM_FB=false;
+    public static boolean FROM_GG=false;
 
     @Bind(R.id.btn_sign_up)
     Button mBtnSignUp;
@@ -104,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         ButterKnife.bind(this);
         initListener();
         preferManager= new PreferManager(getApplicationContext());
+        FROM_FB=false;
 
 
         //Google
@@ -127,6 +130,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
 
         // facebook
+
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -148,6 +152,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mBtnLoginFB.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                FROM_FB=true;
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
 
                     @Override
@@ -174,6 +179,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             }
         });
+
 
 
         //slide login
@@ -251,36 +257,37 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void nextActivity(JSONObject object){
-        try {
-            String id = object.getString("id");
-            Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+        if (FROM_FB) {
             try {
-                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
-                Log.i("profile_pic", profile_pic + "");
+                String id = object.getString("id");
+                Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+                try {
+                    URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                    Log.i("profile_pic", profile_pic + "");
 
-                Log.e("Vao start activity:", " ");
-                main.putExtra("imageUrl", profile_pic.toString());
+                    Log.e("Vao start activity:", " ");
+                    main.putExtra("imageUrl", profile_pic.toString());
 
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                if (object.has("first_name"))
+                    main.putExtra("name", object.getString("first_name"));
+                if (object.has("last_name"))
+                    main.putExtra("surname", object.getString("last_name"));
+                if (object.has("email")) {
+                    main.putExtra("email", object.getString("email"));
+                }
+                if (!object.has("email")) {
+                    main.putExtra("email", object.getString(""));
+                }
+                startActivity(main);
+
+
+            } catch (JSONException e) {
+                Log.d(TAG, "Error parsing JSON");
             }
-            if (object.has("first_name"))
-                main.putExtra("name", object.getString("first_name"));
-            if (object.has("last_name"))
-                main.putExtra("surname", object.getString("last_name"));
-            if (object.has("email")){
-                main.putExtra("email", object.getString("email"));
-            }
-            if (!object.has("email")){
-                main.putExtra("email",object.getString(""));
-            }
-
-            startActivity(main);
-
-
-        }catch(JSONException e) {
-            Log.d(TAG,"Error parsing JSON");
         }
 
     }
@@ -311,6 +318,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivityForResult(signUp, LOGIN_REQ2);
                 break;
             case R.id.txt_login_google:
+                FROM_GG=true;
                 if(NetworkUtils.isNetWorkConnected(this))
                 {
                     if(!mGoogleApiClient.isConnected())
@@ -326,7 +334,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if(!NetworkUtils.isNetWorkConnected(this))
                 {
                     Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
-                }
+                }else
+                    Toast.makeText(this,"Login by facebook is coming!",Toast.LENGTH_LONG).show();
         }
 
     }
@@ -360,20 +369,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.e("Vao from gg intent", "");
-            try {
-                Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
-                String name, email, gender, dpUrl = "";
-                name = acct.getDisplayName();
-                email = acct.getEmail();
-                dpUrl = acct.getPhotoUrl().toString();
-                main.putExtra("gg_name", name);
-                main.putExtra("gg_email", email);
-                main.putExtra("gg_url", dpUrl);
+            if(FROM_GG) {
+                try {
+                    Intent main = new Intent(LoginActivity.this, SignUpActivity.class);
+                    String name, email, gender, dpUrl = "";
+                    name = acct.getDisplayName();
+                    email = acct.getEmail();
+                    dpUrl = acct.getPhotoUrl().toString();
+                    main.putExtra("gg_name", name);
+                    main.putExtra("gg_email", email);
+                    main.putExtra("gg_url", dpUrl);
+                    startActivity(main);
 
-                startActivity(main);
-
-            } catch (Exception e) {
-                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
 
         }
