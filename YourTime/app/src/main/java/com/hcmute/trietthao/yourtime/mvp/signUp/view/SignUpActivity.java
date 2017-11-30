@@ -37,6 +37,7 @@ import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
+import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -55,7 +56,7 @@ import butterknife.ButterKnife;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 
 
-public class SignUpActivity extends AppCompatActivity implements ISignUpView, DBNguoiDungServer.userListener {
+public class SignUpActivity extends AppCompatActivity implements  View.OnClickListener,ISignUpView, DBNguoiDungServer.userListener {
     private ShareDialog shareDialog;
 
     @Bind(R.id.imgv_sign_up_avatar)
@@ -125,23 +126,7 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
         }
 
 
-        mBtnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                email=mEditEmail.getText().toString();
-                pass=mEditPass.getText().toString();
-                name= mEditName.getText().toString();
-                id= getIntCurrentDateTime();
-
-                if(pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0&& isEmailValid(email)){
-                    signUpPresenter.insertUser(id,name,encodedString,email,pass);
-
-                }
-                else
-                    Toast.makeText(getApplication(),"Nhập đầy đủ thông tin!!!", Toast.LENGTH_LONG).show();
-            }
-        });
+        mBtnSignUp.setOnClickListener(this);
 
         mImgvAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,12 +140,10 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Toast.makeText(this,"vào on activity result:::",Toast.LENGTH_LONG).show();
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
+        if (requestCode == SELECT_FILE)
+            onSelectFromGalleryResult(data);
+        else if (requestCode == REQUEST_CAMERA)
+            onCaptureImageResult(data);
         //Từ gg vào
     }
 
@@ -215,6 +198,29 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             }
         }, 1000);
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_sign_up:
+                if(!NetworkUtils.isNetWorkConnected(this))
+                {
+                    Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
+                }else {
+                    email = mEditEmail.getText().toString();
+                    pass = mEditPass.getText().toString();
+                    name = mEditName.getText().toString();
+                    id = getIntCurrentDateTime();
+
+                    if (pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0 && isEmailValid(email)) {
+                        signUpPresenter.insertUser(id, name, encodedString, email, pass);
+
+                    } else
+                        Toast.makeText(getApplication(), "Nhập đầy đủ thông tin!!!", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
     }
 
     public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
@@ -336,9 +342,16 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             e.printStackTrace();
         }
 
-        encodedString = Base64Utils.encodeTobase64(thumbnail);
-
+        Base64Utils myBitMap = new Base64Utils(this);
+//        Bitmap bitmap = null;
+//        try {
+//            bitmap = myBitMap.decodeUri(data.getData());
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         mImgvAvatar.setImageBitmap(thumbnail);
+        encodedString = myBitMap.getStringFromBitmap(thumbnail);
+//        mImgvAvatar.setImageBitmap(thumbnail);
     }
 
     @SuppressWarnings("deprecation")
@@ -353,9 +366,11 @@ public class SignUpActivity extends AppCompatActivity implements ISignUpView, DB
             }
         }
 
-        encodedString = Base64Utils.encodeTobase64(bm);
-
+        Base64Utils myBitMap = new Base64Utils(this);
         mImgvAvatar.setImageBitmap(bm);
+        encodedString = myBitMap.getStringFromBitmap(bm);
+
+//        mImgvAvatar.setImageBitmap(bm);
     }
     public static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";

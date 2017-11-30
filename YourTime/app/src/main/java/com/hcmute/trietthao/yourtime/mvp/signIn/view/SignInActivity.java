@@ -16,6 +16,7 @@ import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.signIn.presenter.SignInPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -78,15 +79,19 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_sign_in_s:
-                email = mEditEmail.getText().toString();
-                pass= mEditPassw.getText().toString();
-                if(email.length()>0&& pass.length()>0 && isEmailValid(email))
+                if(!NetworkUtils.isNetWorkConnected(this))
                 {
-                    signInPresenter.checkLogin(email,pass);
+                    Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();
+                }else {
+                    email = mEditEmail.getText().toString();
+                    pass = mEditPassw.getText().toString();
+                    if (email.length() > 0 && pass.length() > 0 && isEmailValid(email)) {
+                        signInPresenter.checkLogin(email, pass);
 
-                } else {
-                    Toast.makeText(SignInActivity.this,"Bạn cần nhập đầy đủ email và password!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SignInActivity.this, "Bạn cần nhập đầy đủ email và password!", Toast.LENGTH_LONG).show();
 
+                    }
                 }
                 break;
         }
