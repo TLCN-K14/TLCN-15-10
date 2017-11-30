@@ -2,6 +2,7 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,14 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
     private ArrayList<NhomCVModel> nhomCVModelList;
     private Activity activity;
     private IOnItemGroupWorkTasksListener itemEventListener;
+    String SCREEN_REQUEST = "";
     /**Contructor*/
-    public GroupWorkServerAdapter(Activity activity,ArrayList<NhomCVModel> nhomCVModelList, IOnItemGroupWorkTasksListener itemEventListener) {
+    public GroupWorkServerAdapter(Activity activity,ArrayList<NhomCVModel> nhomCVModelList,
+                                  IOnItemGroupWorkTasksListener itemEventListener, String SCREEN_REQUEST) {
         this.activity = activity;
         this.nhomCVModelList = nhomCVModelList;
         this.itemEventListener = itemEventListener;
+        this.SCREEN_REQUEST = SCREEN_REQUEST;
     }
     /** Create ViewHolder*/
     public class GroupWorkServerViewHolder extends  RecyclerView.ViewHolder {
@@ -64,19 +68,31 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
         /** Set Value*/
 
         final NhomCVModel nhomCVModel= nhomCVModelList.get(position);
-        if(nhomCVModel.getLaNhomCaNhan()==1)
-            holder.ivGroupWork.setImageResource(R.drawable.ic_groupnormal);
+        Log.e("MainActivity","Item: "+nhomCVModel.getTenNhom());
+        holder.tvGroupWork.setText(nhomCVModel.getTenNhom());
+        if(nhomCVModel.getLaNhomCaNhan()==1){
+            if(nhomCVModel.getIdNhom()==0){
+                holder.ivGroupWork.setImageResource(R.drawable.ic_inbox_blue);
+                holder.ivGroupWork.setPadding(2,2,2,233);
+            }
+            else
+                holder.ivGroupWork.setImageResource(R.drawable.ic_groupnormal);
+        }
         else
             holder.ivGroupWork.setImageResource(R.drawable.ic_groupassigned);
-        holder.tvGroupWork.setText(nhomCVModel.getTenNhom());
-        if(nhomCVModel.getSoCV()>0)
-            holder.tvGroupWorkAll.setText(nhomCVModel.getSoCV().toString());
-        else
-            holder.tvGroupWorkAll.setVisibility(View.INVISIBLE);
-        if(nhomCVModel.getSoCVQuaHan()>0)
-            holder.tvGroupWorkOverDue.setText(nhomCVModel.getSoCVQuaHan().toString());
-        else
-            holder.tvGroupWorkOverDue.setVisibility(View.INVISIBLE);
+        if(SCREEN_REQUEST.equals("TasksFragment")){
+            if(nhomCVModel.getSoCV()>0)
+                holder.tvGroupWorkAll.setText(nhomCVModel.getSoCV().toString());
+            else
+                holder.tvGroupWorkAll.setVisibility(View.INVISIBLE);
+            if(nhomCVModel.getSoCVQuaHan()>0)
+                holder.tvGroupWorkOverDue.setText(nhomCVModel.getSoCVQuaHan().toString());
+            else
+                holder.tvGroupWorkOverDue.setVisibility(View.INVISIBLE);
+        }else{
+            holder.tvGroupWorkOverDue.setVisibility(View.GONE);
+            holder.tvGroupWorkAll.setVisibility(View.GONE);
+        }
    /*Sự kiện click vào item*/
         holder.lnlGroup.setOnClickListener(new View.OnClickListener() {
             @Override

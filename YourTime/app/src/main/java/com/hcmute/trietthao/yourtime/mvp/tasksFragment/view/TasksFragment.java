@@ -322,7 +322,7 @@ public class TasksFragment extends Fragment implements
     @Override
     public void getAllGroupWorkSuccess() {
         mListNhomCV = mTasksPresenter.getListGroupWorkOnline();
-        mGroupWorkServerAdapter = new GroupWorkServerAdapter(getActivity(),mListNhomCV,this);
+        mGroupWorkServerAdapter = new GroupWorkServerAdapter(getActivity(),mListNhomCV,this,"TasksFragment");
         rvListGroupWork.setAdapter(mGroupWorkServerAdapter);
     }
 

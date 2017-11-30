@@ -14,6 +14,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,7 +29,12 @@ import android.widget.TimePicker;
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAdapter;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.IOnItemGroupWorkTasksListener;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter.TasksPresenter;
+import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
@@ -40,7 +47,8 @@ import butterknife.ButterKnife;
 
 
 
-public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener,View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener,View.OnClickListener, ITasksView,
+        IOnItemGroupWorkTasksListener{
 
     @Bind(R.id.fab_create_work)
     FloatingActionButton mFabCreateWork;
@@ -50,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     RelativeLayout rlBottomSheetChooseGroup;
     ImageView ivBottomSheetSetReminderStart, ivBottomSheetSetReminderEnd, ivBottomSheetSetPriority, ivBottomSheetImgGroup;
     TextView tvBottomSheetAddWork,tvBottomSheetCancel, tvBottomSheetNameGroup;
-    EditText etNameWork;
+    EditText etBottomSheetNameWork;
 
     ScreenUtils screenUtils;
 
@@ -72,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     Calendar timeReminderStart;
     Calendar timeReminderEnd;
 
+    TasksPresenter mTasksPresenter;
+    ArrayList<NhomCVModel> mListNhomCV;
+
     boolean isPriority = false;
 
     public static NguoiDungModel userCurrent=null;
@@ -88,6 +99,12 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         setupBottomSheetView();
         preferManager = new PreferManager(getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
+
+        mTasksPresenter = new TasksPresenter(this);
+        mTasksPresenter.getAllGroupWorkOnline(preferManager.getID());
+
+        Log.e("email:::::::::",preferManager.KEY_EMAIL);
+
         if(preferManager.isLoggedIn()) {
             HashMap<String, String> user = preferManager.getUserDetails();
             dbNguoiDungServer.getUser(user.get(preferManager.KEY_EMAIL));
@@ -169,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         tvBottomSheetAddWork =  mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_add);
         tvBottomSheetCancel = mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_cancel);
         tvBottomSheetNameGroup =  mBottomSheetCreateWorkView.findViewById(R.id.txt_bottomsheet_namegroup);
-        etNameWork =  mBottomSheetCreateWorkView.findViewById(R.id.etxt_name_work);
+        etBottomSheetNameWork =  mBottomSheetCreateWorkView.findViewById(R.id.etxt_name_work);
 
         mFabCreateWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,6 +257,28 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.lnl_bottomsheet_choooselist:
+
+                Log.e("MainActivity","Size: "+mListNhomCV.size());
+                dialogReminder = new AlertDialog.Builder(MainActivity.this);
+                dialogReminder.setCancelable(true);
+                layoutInflaterRemider = LayoutInflater.from((getBaseContext()));
+                viewRemider = layoutInflaterRemider.inflate(R.layout.dialog_list_groupwork, null);
+
+                RecyclerView list = viewRemider.findViewById(R.id.rv_list_groupwork);
+                list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                list.setHasFixedSize(true);
+
+                GroupWorkServerAdapter groupWorkServerAdapter = new GroupWorkServerAdapter(MainActivity.this,
+                        mListNhomCV,this,"MainActivity");
+
+                list.setAdapter(groupWorkServerAdapter);
+
+                dialogReminder.setView(viewRemider);
+
+                alertDialogRemider = dialogReminder.create();
+
+                alertDialogRemider.show();
+
             break;
             case R.id.img_bottomsheet_reminder_start:
                 setupDialog();
@@ -367,5 +406,56 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         tvReminder = viewRemider.findViewById(R.id.tv_time_reminder);
         tvTitleRemider = viewRemider.findViewById(R.id.tv_title);
         lnlTimeReminder = viewRemider.findViewById(R.id.lnl_time_reminder);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void getAllGroupWorkSuccess() {
+        mListNhomCV = new ArrayList<>();
+        NhomCVModel inbox = new NhomCVModel();
+        inbox.setIdNhom(0);
+        inbox.setTenNhom("Inbox");
+        inbox.setLaNhomCaNhan(1);
+        mListNhomCV.add(inbox);
+        mListNhomCV.addAll(mTasksPresenter.getListGroupWorkOnline());
+    }
+
+    @Override
+    public void getListAllWorkSucess() {
+
+    }
+
+    @Override
+    public void getAllGroupWorkFailure() {
+
+    }
+
+    @Override
+    public void onItemClick(NhomCVModel nhomCVModel, LinearLayout view) {
+        tvBottomSheetNameGroup.setText(nhomCVModel.getTenNhom());
+        etBottomSheetNameWork.setHint("Add a to-do in '"+nhomCVModel.getTenNhom()+"'...");
+        if(nhomCVModel.getLaNhomCaNhan()==1){
+            if(nhomCVModel.getIdNhom()==0)
+                ivBottomSheetImgGroup.setImageResource(R.drawable.ic_inbox_blue);
+            else
+                ivBottomSheetImgGroup.setImageResource(R.drawable.ic_groupnormal);
+        }
+        else
+            ivBottomSheetImgGroup.setImageResource(R.drawable.ic_groupassigned);
+        alertDialogRemider.dismiss();
+    }
+
+    @Override
+    public void onItemLongClick(NhomCVModel nhomCVModel, LinearLayout view) {
+
     }
 }
