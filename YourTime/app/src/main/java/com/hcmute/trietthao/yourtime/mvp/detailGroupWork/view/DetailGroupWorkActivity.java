@@ -36,10 +36,12 @@ import butterknife.ButterKnife;
 
 import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeInTime;
 import static com.hcmute.trietthao.yourtime.service.utils.AnimationUtils.setFadeOutTime;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWorkConnected;
 
 
-public class DetailGroupWorkActivity extends AppCompatActivity implements View.OnClickListener,IDetailGroupWorkView,IOnItemWorkListener {
+public class DetailGroupWorkActivity extends AppCompatActivity implements View.OnClickListener,IDetailGroupWorkView
+        ,IOnItemWorkListener {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -132,6 +134,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         mTxtShowHideCompletedWorks.setOnClickListener(this);
         ivBackFromLongClick.setOnClickListener(this);
         ivDeleteItemWork.setOnClickListener(this);
+        ivAddWork.setOnClickListener(this);
 
         etAddWork.addTextChangedListener(new TextWatcher() {
 
@@ -218,6 +221,19 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 lnlLongClickMenu.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.VISIBLE);
                 break;
+            case R.id.iv_img_add_work:
+                if(!etAddWork.getText().toString().equals("")){
+                    CongViecModel congViecModel = new CongViecModel();
+                    congViecModel.setIdCongViec(getIntCurrentDateTime());
+                    congViecModel.setCoUuTien(0);
+                    congViecModel.setTrangThai("waiting");
+                    congViecModel.setIdNguoiTaoCV(mPreferManager.getID());
+                    congViecModel.setTenCongViec(etAddWork.getText().toString());
+                    congViecModel.setIdNhom(Integer.parseInt(EXTRA_GROUPWORK_ID));
+                    congViecModel.setIdNhacNho(0);
+                    mDetailGroupWorkPresenter.insertWork(congViecModel);
+                }
+                break;
             case R.id.iv_delete_item_work:
                 Toast.makeText(getApplication(), "Delete-----"+currentItemWork.getTenCongViec(),
                         Toast.LENGTH_LONG).show();
@@ -268,7 +284,11 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Override
     public void insertWorkSuccess() {
-
+        Toast.makeText(getApplication(), "Add work Successful!",
+                Toast.LENGTH_LONG).show();
+        etAddWork.setText("");
+        ivAddWork.setImageResource(R.drawable.ic_add_non_active);
+        isAddWorkEnable = false;
     }
 
     @Override

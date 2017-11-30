@@ -55,6 +55,5 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'javax.inject:javax.inject:1@jar'
 
-
 }
 apply plugin: 'com.google.gms.google-services'

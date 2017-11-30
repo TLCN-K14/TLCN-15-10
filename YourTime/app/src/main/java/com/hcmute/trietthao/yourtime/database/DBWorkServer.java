@@ -2,7 +2,9 @@ package com.hcmute.trietthao.yourtime.database;
 
 import android.util.Log;
 
+import com.hcmute.trietthao.yourtime.model.CVThongBaoModel;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.response.InsertUpdateWorkNotificationResponse;
 import com.hcmute.trietthao.yourtime.response.InsertUpdateWorkResponse;
 import com.hcmute.trietthao.yourtime.service.Service;
 import com.hcmute.trietthao.yourtime.service.utils.ApiUtils;
@@ -22,9 +24,13 @@ public class DBWorkServer {
     Service mService;
     GetWorkListener getWorkListener;
     PostWorkListener postWorkListener;
+    GetWorkNotificationListener getWorkNotificationListener;
 
     public DBWorkServer(GetWorkListener getWorkListener) {
         this.getWorkListener = getWorkListener;
+    }
+    public DBWorkServer(GetWorkNotificationListener getWorkNotificationListener) {
+        this.getWorkNotificationListener = getWorkNotificationListener;
     }
     public DBWorkServer(PostWorkListener postWorkListener ) {
         this.postWorkListener = postWorkListener;
@@ -33,6 +39,13 @@ public class DBWorkServer {
             this.postWorkListener = postWorkListener;
             this.getWorkListener = getWorkListener;
         }
+
+    public DBWorkServer(PostWorkListener postWorkListener,GetWorkListener getWorkListener,
+                        GetWorkNotificationListener getWorkNotificationListener ) {
+        this.postWorkListener = postWorkListener;
+        this.getWorkListener = getWorkListener;
+        this.getWorkNotificationListener = getWorkNotificationListener;
+    }
 
     // Hàm lấy list user
     public void getListAllWork(final Integer idnguoidung){
@@ -50,6 +63,26 @@ public class DBWorkServer {
             }
             @Override
             public void onFailure(Call<ArrayList<CongViecModel>> call, Throwable t) {
+                Log.e("Response","Lấy list work thất bại "+t.getMessage());
+            }
+        });
+    }
+
+    public void getListAllWorkNotification(final Integer idnguoidung){
+        mService = ApiUtils.getService();
+        Call<ArrayList<CVThongBaoModel>> call = mService.getListAllWorkNotification(idnguoidung);
+        Log.e("Response",call.request().url().toString());
+        call.enqueue(new Callback<ArrayList<CVThongBaoModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<CVThongBaoModel>> call, Response<ArrayList<CVThongBaoModel>> response) {
+                if(response.isSuccessful()){
+                    Log.e("Response","Lấy list work notification thành công"+response.message());
+                    getWorkNotificationListener.getAllWorkNotification(response.body());
+                }else
+                    Log.e("Response","Lấy list work notification thất bại "+response.message());
+            }
+            @Override
+            public void onFailure(Call<ArrayList<CVThongBaoModel>> call, Throwable t) {
                 Log.e("Response","Lấy list work thất bại "+t.getMessage());
             }
         });
@@ -186,5 +219,31 @@ public class DBWorkServer {
             }
         });
     }
+
+    public void insertWorkNotification(Integer idcongviec,
+                                       String thoiGianBatDau,String thoiGianKetThuc,
+                                       Integer idNguoiThucHien,String trangThai){
+        mService = ApiUtils.getService();
+        Call<InsertUpdateWorkNotificationResponse> call = mService.insertWorkNotification(idcongviec,thoiGianBatDau,
+                thoiGianKetThuc,idNguoiThucHien,trangThai);
+        call.enqueue(new Callback<InsertUpdateWorkNotificationResponse>() {
+            @Override
+            public void onResponse(Call<InsertUpdateWorkNotificationResponse> call, Response<InsertUpdateWorkNotificationResponse> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Insert work notification thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Insert  work notification thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<InsertUpdateWorkNotificationResponse> call, Throwable t) {
+                Log.e("Response","Insert work notification thất bại "+t.getMessage());
+            }
+        });
+    }
+
 
 }

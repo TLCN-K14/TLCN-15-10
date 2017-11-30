@@ -2,6 +2,7 @@ package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.presenter;
 
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.GetWorkListener;
+import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.IDetailGroupWorkView;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * Created by lxtri on 11/15/2017.
  */
 
-public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWorkListener {
+public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWorkListener,PostWorkListener {
 
     ArrayList<CongViecModel> mListWorkNormal, mListWorkCompleted;
     IDetailGroupWorkView iDetailGroupWorkView;
@@ -28,8 +29,13 @@ public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWo
     @Override
     public void getWorkByIdGroup(Integer idnguoidung,Integer idgroup) {
         iDetailGroupWorkView.showLoading();
-        dbWorkServer = new DBWorkServer(this);
+        dbWorkServer = new DBWorkServer(this,this);
         dbWorkServer.getListWorkByIdGroup(idnguoidung,idgroup);
+    }
+
+    @Override
+    public void insertWork(CongViecModel congViecModel) {
+        dbWorkServer.insertWork(congViecModel);
     }
 
     @Override
@@ -49,5 +55,13 @@ public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWo
             iDetailGroupWorkView.hideLoading();
             iDetailGroupWorkView.getWorkByIDGroupSuccess();
         }
+    }
+
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+        if(isSucess)
+            iDetailGroupWorkView.insertWorkSuccess();
+        else
+            iDetailGroupWorkView.insertWorkFail();
     }
 }

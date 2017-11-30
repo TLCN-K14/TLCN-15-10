@@ -20,14 +20,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.database.DBWorkServer;
+import com.hcmute.trietthao.yourtime.database.PostWorkListener;
+import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
@@ -38,6 +43,7 @@ import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -45,10 +51,12 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 
 
 public class MainActivity extends AppCompatActivity implements DBNguoiDungServer.userListener,View.OnClickListener, ITasksView,
-        IOnItemGroupWorkTasksListener{
+        IOnItemGroupWorkTasksListener,PostWorkListener{
 
     @Bind(R.id.fab_create_work)
     FloatingActionButton mFabCreateWork;
@@ -76,14 +84,22 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     AlertDialog alertDialogRemider;
     TextView tvSaveRemider, tvRemoveRemider, tvReminder, tvTitleRemider;
     LinearLayout lnlTimeReminder;
+    CalendarView calendarViewReminder;
 
+    // value insert work
     Calendar timeReminderStart;
     Calendar timeReminderEnd;
+    int idGroupWork = 0;
+    boolean isTimeEndChoose = false;
+    int isPriority = 0;
+
+    DBWorkServer dbWorkServer;
+
 
     TasksPresenter mTasksPresenter;
     ArrayList<NhomCVModel> mListNhomCV;
 
-    boolean isPriority = false;
+
 
     public static NguoiDungModel userCurrent=null;
     private int MAIN_REQ = 0;
@@ -99,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         setupBottomSheetView();
         preferManager = new PreferManager(getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
+        dbWorkServer = new DBWorkServer(this);
 
         mTasksPresenter = new TasksPresenter(this);
         mTasksPresenter.getAllGroupWorkOnline(preferManager.getID());
@@ -283,15 +300,31 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             case R.id.img_bottomsheet_reminder_start:
                 setupDialog();
                 timeReminderStart = Calendar.getInstance();
+                timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+1);
+
 
                 tvTitleRemider.setText("Set Date & Time Start");
                 tvReminder.setText("Reminder at "+timeReminderStart.getTime().getHours()+":"
                         +timeReminderStart.getTime().getMinutes());
 
+                calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                    @Override
+                    public void onSelectedDayChange(@NonNull CalendarView calendarView, int year,int month, int dayOfMonth) {
+                        timeReminderStart.set(year,month,dayOfMonth);
+                        ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate_on);
+                    }
+                });
+
                 tvSaveRemider.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         // save data
+                        try {
+
+                            Log.e("TEST__","-------"+getDateTimeToInsertUpdate(timeReminderStart));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         alertDialogRemider.dismiss();
 
                     }
@@ -331,6 +364,16 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             case R.id.img_bottomsheet_reminder_end:
                 setupDialog();
                 timeReminderEnd = Calendar.getInstance();
+                timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+2);
+
+                calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                    @Override
+                    public void onSelectedDayChange(@NonNull CalendarView calendarView, int year,int month, int dayOfMonth) {
+                        timeReminderEnd.set(year,month,dayOfMonth);
+                        isTimeEndChoose = true;
+                        ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_blue_24dp);
+                    }
+                });
 
                 tvTitleRemider.setText("Set Date & Time End");
                 tvReminder.setText("Reminder at "+timeReminderEnd.getTime().getHours()+":"
@@ -375,16 +418,55 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                 alertDialogRemider.show();
                 break;
             case R.id.img_bottomsheet_setpriority:
-                if(isPriority){
-                    isPriority = false;
+                if(isPriority == 1){
+                    isPriority = 0;
                     ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
                 }else{
-                    isPriority = true;
+                    isPriority = 1;
                     ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_on);
                 }
             break;
             case R.id.txt_bottomsheet_add:
-                bottomSheetDialog.cancel();
+                if(!etBottomSheetNameWork.getText().toString().equals("")){
+                    if(!isTimeEndChoose)
+                        Toast.makeText(getApplicationContext(), "Please choose Reminder finish!",
+                                Toast.LENGTH_LONG).show();
+                    else{
+                        if(timeReminderStart.getTime().compareTo(timeReminderEnd.getTime())>0
+                                ){
+                            Toast.makeText(getApplicationContext(), "Reminder finish must greater Reminder begin!",
+                                    Toast.LENGTH_LONG).show();
+                        }else{
+                            CongViecModel congViecModel = new CongViecModel();
+                            congViecModel.setIdCongViec(getIntCurrentDateTime());
+                            congViecModel.setIdNhom(idGroupWork);
+                            congViecModel.setTenCongViec(etBottomSheetNameWork.getText().toString());
+                            try {
+                                congViecModel.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+                                congViecModel.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            congViecModel.setCoUuTien(isPriority);
+                            congViecModel.setIdNhacNho(0);
+                            congViecModel.setIdNguoiTaoCV(preferManager.getID());
+                            if(timeReminderStart.getTime().compareTo(Calendar.getInstance().getTime())<0)
+                                congViecModel.setTrangThai("overdue");
+                            else
+                                congViecModel.setTrangThai("waiting");
+                            dbWorkServer.insertWork(congViecModel);
+                            dbWorkServer.insertWorkNotification(congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau(),
+                                    congViecModel.getThoiGianKetThuc(),congViecModel.getIdNguoiTaoCV(),congViecModel.getTrangThai());
+
+                            isTimeEndChoose = false;
+                            bottomSheetDialog.cancel();
+                        }
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Enter name work!",
+                            Toast.LENGTH_LONG).show();
+                }
+
                 break;
             case R.id.txt_bottomsheet_cancel:
                 bottomSheetDialog.cancel();
@@ -401,6 +483,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         dialogReminder.setView(viewRemider);
         alertDialogRemider = dialogReminder.create();
 
+        calendarViewReminder = viewRemider.findViewById(R.id.calendar_reminder);
         tvSaveRemider = viewRemider.findViewById(R.id.tv_save);
         tvRemoveRemider =  viewRemider.findViewById(R.id.tv_remove);
         tvReminder = viewRemider.findViewById(R.id.tv_time_reminder);
@@ -441,6 +524,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
     @Override
     public void onItemClick(NhomCVModel nhomCVModel, LinearLayout view) {
+        idGroupWork = nhomCVModel.getIdNhom();
         tvBottomSheetNameGroup.setText(nhomCVModel.getTenNhom());
         etBottomSheetNameWork.setHint("Add a to-do in '"+nhomCVModel.getTenNhom()+"'...");
         if(nhomCVModel.getLaNhomCaNhan()==1){
@@ -457,5 +541,22 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     @Override
     public void onItemLongClick(NhomCVModel nhomCVModel, LinearLayout view) {
 
+    }
+
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+        idGroupWork = 0;
+        isTimeEndChoose = false;
+        isPriority = 0;
+        ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate);
+        ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_gray_24dp);
+        ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
+        if(isSucess){
+            Toast.makeText(getApplicationContext(), "Add work success!",
+                    Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Add work fail!",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

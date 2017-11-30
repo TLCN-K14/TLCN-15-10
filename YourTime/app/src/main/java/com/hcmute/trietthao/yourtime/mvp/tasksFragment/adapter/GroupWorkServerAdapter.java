@@ -73,7 +73,7 @@ public class GroupWorkServerAdapter extends RecyclerView.Adapter<GroupWorkServer
         if(nhomCVModel.getLaNhomCaNhan()==1){
             if(nhomCVModel.getIdNhom()==0){
                 holder.ivGroupWork.setImageResource(R.drawable.ic_inbox_blue);
-                holder.ivGroupWork.setPadding(2,2,2,233);
+                holder.ivGroupWork.setPadding(2,2,2,2);
             }
             else
                 holder.ivGroupWork.setImageResource(R.drawable.ic_groupnormal);

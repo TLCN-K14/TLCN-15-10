@@ -5,7 +5,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class CVThongBaoModel implements Serializable {
 
@@ -15,28 +14,21 @@ public class CVThongBaoModel implements Serializable {
 
     @SerializedName("thoiGianBatDau")
     @Expose
-    private Date thoiGianBatDau;
+    private String thoiGianBatDau;
 
     @SerializedName("thoiGianKetThuc")
     @Expose
-    private Date thoiGianKetThuc;
+    private String thoiGianKetThuc;
 
     @SerializedName("idNguoiThucHien")
     @Expose
-    private Date idNguoiThucHien;
+    private int idNguoiThucHien;
 
     @SerializedName("trangThai")
     @Expose
     private String trangThai;
 
-    public CVThongBaoModel(Integer idCongViec, Date thoiGianBatDau,
-                           Date thoiGianKetThuc, Date idNguoiThucHien, String trangThai) {
-        this.idCongViec = idCongViec;
-        this.thoiGianBatDau = thoiGianBatDau;
-        this.thoiGianKetThuc = thoiGianKetThuc;
-        this.idNguoiThucHien = idNguoiThucHien;
-        this.trangThai = trangThai;
-    }
+
 
     public CVThongBaoModel() {
 
@@ -50,27 +42,27 @@ public class CVThongBaoModel implements Serializable {
         this.idCongViec = idCongViec;
     }
 
-    public Date getThoiGianBatDau() {
+    public String getThoiGianBatDau() {
         return thoiGianBatDau;
     }
 
-    public void setThoiGianBatDau(Date thoiGianBatDau) {
+    public void setThoiGianBatDau(String thoiGianBatDau) {
         this.thoiGianBatDau = thoiGianBatDau;
     }
 
-    public Date getThoiGianKetThuc() {
+    public String getThoiGianKetThuc() {
         return thoiGianKetThuc;
     }
 
-    public void setThoiGianKetThuc(Date thoiGianKetThuc) {
+    public void setThoiGianKetThuc(String thoiGianKetThuc) {
         this.thoiGianKetThuc = thoiGianKetThuc;
     }
 
-    public Date getIdNguoiThucHien() {
+    public int getIdNguoiThucHien() {
         return idNguoiThucHien;
     }
 
-    public void setIdNguoiThucHien(Date idNguoiThucHien) {
+    public void setIdNguoiThucHien(int idNguoiThucHien) {
         this.idNguoiThucHien = idNguoiThucHien;
     }
 
@@ -79,6 +71,15 @@ public class CVThongBaoModel implements Serializable {
     }
 
     public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public CVThongBaoModel(Integer idCongViec, String thoiGianBatDau, String thoiGianKetThuc, int idNguoiThucHien, String trangThai) {
+
+        this.idCongViec = idCongViec;
+        this.thoiGianBatDau = thoiGianBatDau;
+        this.thoiGianKetThuc = thoiGianKetThuc;
+        this.idNguoiThucHien = idNguoiThucHien;
         this.trangThai = trangThai;
     }
 }

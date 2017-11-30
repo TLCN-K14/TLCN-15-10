@@ -7,7 +7,9 @@ import com.hcmute.trietthao.yourtime.database.DBGroupWorkServer;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.GetGroupWorkListener;
 import com.hcmute.trietthao.yourtime.database.GetWorkListener;
+import com.hcmute.trietthao.yourtime.database.GetWorkNotificationListener;
 import com.hcmute.trietthao.yourtime.database.PostWorkListener;
+import com.hcmute.trietthao.yourtime.model.CVThongBaoModel;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.ITasksView;
@@ -20,7 +22,8 @@ import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeT
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isOverDueDate;
 
 
-public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener,PostWorkListener {
+public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,GetWorkListener,
+        PostWorkListener,GetWorkNotificationListener {
 
     ITasksView iTasksView;
     private Service mService;
@@ -46,8 +49,9 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     @Override
     public void getAllWorkOnline(int idnguoidung) {
         Log.e("TaskPresenter","Vaoo get all workonline");
-        dbWorkServer = new DBWorkServer(this,this);
+        dbWorkServer = new DBWorkServer(this,this,this);
         dbWorkServer.getListAllWork(idnguoidung);
+        dbWorkServer.getListAllWorkNotification(idnguoidung);
     }
 
     @Override
@@ -75,8 +79,6 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
                         if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
                             congViecModelArrayList.get(i).setTrangThai("overdue");
                             dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
-                            dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModelArrayList.get(i).getIdCongViec(),
-                                    getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));
                         }
                     }
                 } catch (ParseException e) {
@@ -91,5 +93,24 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     @Override
     public void getResultPostWork(Boolean isSucess) {
 
+    }
+
+    @Override
+    public void getAllWorkNotification(ArrayList<CVThongBaoModel> congViecModelArrayList) {
+        for(int i=0;i<congViecModelArrayList.size();i++){
+            if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
+                try {
+                    if(congViecModelArrayList.get(i).getTrangThai().equals("waiting")){
+                        if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
+                            dbWorkServer.updateStatusWorkTimeNotNull("overdue",
+                                    congViecModelArrayList.get(i).getIdCongViec(),
+                                    getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

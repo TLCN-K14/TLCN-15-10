@@ -44,6 +44,12 @@ public class DateUtils {
         return formatDate(date, dateFormat);
     }
 
+    public static String getDateTimeToInsertUpdate(Calendar calendar) throws ParseException {
+        String dateFormat1 = "yyyy-MM-dd HH:mm:ss";
+       Date date = calendar.getTime();
+       return formatDate(date, dateFormat1);
+    }
+
     public static String getDateDisplay(String input) throws ParseException {
         Date date = converStringToDateTime(input);
         String dateFormat = "dd";
