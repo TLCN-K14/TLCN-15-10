@@ -36,6 +36,7 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
     int dem=0;
 
     int idNhom;
+    int idNhomCurrent;
     PreferManager mPreferManager;
 
     ChooseListPresenter mChooseListPresenter;
@@ -76,29 +77,39 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
                     startActivity(detailWG);
                 }
                 if(mCheckbWork.isChecked()){
-                    idNhom=getIntCurrentDateTime();
-                    mChooseListPresenter.insertGroupWork(idNhom,"Work",1);
-                    mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
+                    idNhomCurrent=getIntCurrentDateTime();
+                    while (idNhom==idNhomCurrent){
+                        idNhomCurrent++;
+                    }
+
+                    mChooseListPresenter.insertGroupWork(idNhomCurrent,"Work",1);
+                    mChooseListPresenter.insertGroupWorkUser(idNhomCurrent,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
                     detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
                     detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Work");
                     startActivity(detailWG);
                 }
                 if(mCheckbFamily.isChecked()){
-                    idNhom=getIntCurrentDateTime();
-                    mChooseListPresenter.insertGroupWork(idNhom,"Family",1);
-                    mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
+                    idNhomCurrent=getIntCurrentDateTime();
+                    while (idNhom==idNhomCurrent){
+                        idNhomCurrent++;
+                    }
+                    mChooseListPresenter.insertGroupWork(idNhomCurrent,"Family",1);
+                    mChooseListPresenter.insertGroupWorkUser(idNhomCurrent,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
-                    detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
+                    detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhomCurrent));
                     detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Family");
                     startActivity(detailWG);
                 }
                 if(mCheckbPrivate.isChecked()){
-                    idNhom=getIntCurrentDateTime();
-                    mChooseListPresenter.insertGroupWork(idNhom,"Private",1);
-                    mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
+                    idNhomCurrent=getIntCurrentDateTime();
+                    while (idNhom==idNhomCurrent){
+                        idNhomCurrent++;
+                    }
+                    mChooseListPresenter.insertGroupWork(idNhomCurrent,"Private",1);
+                    mChooseListPresenter.insertGroupWorkUser(idNhomCurrent,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
-                    detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
+                    detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhomCurrent));
                     detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Private");
                     startActivity(detailWG);
                 }
