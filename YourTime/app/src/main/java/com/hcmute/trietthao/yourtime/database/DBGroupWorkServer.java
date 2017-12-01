@@ -81,6 +81,30 @@ public class DBGroupWorkServer {
             }
         });
     }
+    public void deleteGroupWorkUser(Integer idNhom){
+        mService = ApiUtils.getService();
+        Call<NhomCVModel> deleteRequest = mService.deleteGroupWork(idNhom);
+        deleteRequest.enqueue(new Callback<NhomCVModel>() {
+            @Override
+            public void onResponse(Call<NhomCVModel> call, Response<NhomCVModel> response) {
+                if(response.isSuccessful()) {
+                    postGroupWorkListener.getResultPostGroupWork(true);
+                    Log.e("Response",""+response.message());
+                }
+                else
+                {
+                    postGroupWorkListener.getResultPostGroupWork (false);
+                    Log.e("Response. Lỗi: ",response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NhomCVModel> call, Throwable t) {
+                // handle failure
+                Log.e("Response",t.getMessage());
+            }
+        });
+    }
     // Hàm lấy list user
 //    public void getGroupWorkById(final Integer idnhom){
 //        mService = ApiUtils.getService();

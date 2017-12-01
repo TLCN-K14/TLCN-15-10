@@ -244,6 +244,9 @@ public class TasksFragment extends Fragment implements
             case  R.id.iv_delete_groupwork:
                 Toast.makeText(getActivity(), "Delete-----"+currentGroupWorkLongClick.getTenNhom(),
                         Toast.LENGTH_LONG).show();
+                Log.e("TaskFragment:: idNhom", currentGroupWorkLongClick.getIdNhom()+"");
+                Log.e("TaskFragment:: idnd", userCurrent.getIdNguoiDung()+"");
+                mTasksPresenter.deleteGroupWork(currentGroupWorkLongClick.getIdNhom(),userCurrent.getIdNguoiDung());
                 break;
 
             case  R.id.iv_back_longclick_groupwork:

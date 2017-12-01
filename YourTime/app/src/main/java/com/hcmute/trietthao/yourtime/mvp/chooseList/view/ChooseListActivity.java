@@ -81,7 +81,7 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
                     mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
                     detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
-                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Travel");
+                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Work");
                     startActivity(detailWG);
                 }
                 if(mCheckbFamily.isChecked()){
@@ -90,7 +90,7 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
                     mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
                     detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
-                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Travel");
+                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Family");
                     startActivity(detailWG);
                 }
                 if(mCheckbPrivate.isChecked()){
@@ -99,7 +99,7 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
                     mChooseListPresenter.insertGroupWorkUser(idNhom,mPreferManager.getID(),"Owner");
                     Intent detailWG= new Intent(ChooseListActivity.this, DetailGroupWorkActivity.class);
                     detailWG.putExtra("EXTRA_GROUPWORK_ID", String.valueOf(idNhom));
-                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Travel");
+                    detailWG.putExtra("EXTRA_GROUPWORK_NAME", "Private");
                     startActivity(detailWG);
                 }
 
@@ -114,7 +114,6 @@ public class ChooseListActivity extends AppCompatActivity implements CompoundBut
             case R.id.checkb_travel:
                 if(b){
                     dem++;
-
                 }
                 else
                     dem--;

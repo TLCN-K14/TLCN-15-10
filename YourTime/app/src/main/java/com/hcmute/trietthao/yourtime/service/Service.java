@@ -4,6 +4,7 @@ import com.hcmute.trietthao.yourtime.model.CVThongBaoModel;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
+import com.hcmute.trietthao.yourtime.model.NhomCVNguoiDungModel;
 import com.hcmute.trietthao.yourtime.response.InsertGroupWorkResponse;
 import com.hcmute.trietthao.yourtime.response.InsertGroupWorkUserReponse;
 import com.hcmute.trietthao.yourtime.response.InsertUpdateWorkNotificationResponse;
@@ -13,10 +14,12 @@ import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -64,14 +67,14 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
     Call<InsertUpdateWorkResponse> updateStatusWork(@Field("trangthai") String trangthai,
                                                     @Field("idcongviec") Integer idcongviec);
 
-     @FormUrlEncoded
-     @POST("/updatestatusworktimenotnull")
-     Call<InsertUpdateWorkResponse> updateStatusWorkTimeNotNull(@Field("trangthai") String trangthai,
+    @FormUrlEncoded
+    @POST("/updatestatusworktimenotnull")
+    Call<InsertUpdateWorkResponse> updateStatusWorkTimeNotNull(@Field("trangthai") String trangthai,
                                                                 @Field("idcongviec") Integer idcongviec, @Field("thoigianbatdau") String thoigianbatdau);
 
-     @FormUrlEncoded
-     @POST("/updateprioritywork")
-     Call<InsertUpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
+    @FormUrlEncoded
+    @POST("/updateprioritywork")
+    Call<InsertUpdateWorkResponse> updatePriorityWork(@Field("couutien") Integer couutien,
                                                        @Field("idcongviec") Integer idcongviec);
 
     @FormUrlEncoded
@@ -82,19 +85,26 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
                                                   @Field("coUuTien") Integer coUuTien, @Field("idNhom") Integer idNhom,
                                                   @Field("idNhacNho") Integer idNhacNho, @Field("idNguoiTaoCV") int idNguoiTaoCV,
                                                   @Field("idNguoiDuocGiaoCV") Integer idNguoiDuocGiaoCV, @Field("trangThai") String trangThai);
-
     @FormUrlEncoded
     @POST("/insertworknotifycation")
     Call<InsertUpdateWorkNotificationResponse> insertWorkNotification(@Field("idcongviec") Integer idcongviec,
                                                                       @Field("thoiGianBatDau") String thoiGianBatDau, @Field("thoiGianKetThuc") String thoiGianKetThuc,
                                                                       @Field("idNguoiThucHien") Integer idNguoiThucHien, @Field("trangThai") String trangThai);
 
-     @GET("/getgroupbyid")
-     Call<ArrayList<NhomCVModel>> getGroupWorkById(@Query("idnhom") Integer idnhom);
+    @GET("/getgroupbyid")
+    Call<ArrayList<NhomCVModel>> getGroupWorkById(@Query("idnhom") Integer idnhom);
 
-     @FormUrlEncoded
-     @POST("/insertgroupworkuser")
-     Call<InsertGroupWorkUserReponse> insertWorkGroupUser(@Field("idnhom") Integer idnhom, @Field("idnguoidung") Integer idnguoidung, @Field("vaitro") String vaitro);
+    @FormUrlEncoded
+    @POST("/insertgroupworkuser")
+    Call<InsertGroupWorkUserReponse> insertWorkGroupUser(@Field("idnhom") Integer idnhom, @Field("idnguoidung") Integer idnguoidung, @Field("vaitro") String vaitro);
+
+    @FormUrlEncoded
+    @POST("/deletegroupworkuser")
+    Call<NhomCVNguoiDungModel> deleteGroupWorkUser(@Field("idnhom") Integer idnhom,@Field("idnguoidung") Integer idnguoidung);
+
+    @FormUrlEncoded
+    @POST("/deletegroupwork")
+    Call<NhomCVModel> deleteGroupWork(@Field("idnhom") Integer idnhom);
 
 //    // Hàm  lấy review theo itemid
 //    @GET("/getreview")

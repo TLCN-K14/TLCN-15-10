@@ -8,5 +8,6 @@ public interface ITasksPresenter {
     void getAllGroupWorkOnline(int idnguoidung);
 
     void getAllWorkOnline(int idnguoidung);
+    void deleteGroupWork(int idNhom, int idNguoiDung);
 
 }
