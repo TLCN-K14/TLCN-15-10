@@ -101,5 +101,28 @@ public class DBNguoiDungServer {
         });
     }
 
+    public void updateProfile(final String tennguoidung,String anhdaidien, String username,
+                              String passw,Integer idnguoidung){
+        mService = ApiUtils.getService();
+        Call<InsertUserResponse> call = mService.updateProfile(tennguoidung,anhdaidien,username,passw,idnguoidung);
+        call.enqueue(new Callback<InsertUserResponse>() {
+            @Override
+            public void onResponse(Call<InsertUserResponse> call, Response<InsertUserResponse> response) {
+                if(response.isSuccessful()){
+                    userListener.getResultInsert(true);
+                    Log.e("Response","Update profile thành công"+response.message());
+                }else
+                {
+                    userListener.getResultInsert(false);
+                    Log.e("Response","Update profile thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<InsertUserResponse> call, Throwable t) {
+                Log.e("Response","Update status work thất bại "+t.getMessage());
+            }
+        });
+    }
+
 
 }

@@ -343,15 +343,8 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
         }
 
         Base64Utils myBitMap = new Base64Utils(this);
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = myBitMap.decodeUri(data.getData());
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
         mImgvAvatar.setImageBitmap(thumbnail);
         encodedString = myBitMap.getStringFromBitmap(thumbnail);
-//        mImgvAvatar.setImageBitmap(thumbnail);
     }
 
     @SuppressWarnings("deprecation")
@@ -370,7 +363,6 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
         mImgvAvatar.setImageBitmap(bm);
         encodedString = myBitMap.getStringFromBitmap(bm);
 
-//        mImgvAvatar.setImageBitmap(bm);
     }
     public static boolean isEmailValid(String email) {
         String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";

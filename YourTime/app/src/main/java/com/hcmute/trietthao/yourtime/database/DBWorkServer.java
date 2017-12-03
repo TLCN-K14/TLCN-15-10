@@ -245,5 +245,27 @@ public class DBWorkServer {
         });
     }
 
+    public void deleteWork(final Integer idcongviec){
+        mService = ApiUtils.getService();
+        Call<CongViecModel> call = mService.deleteWork(idcongviec);
+        call.enqueue(new Callback<CongViecModel>() {
+            @Override
+            public void onResponse(Call<CongViecModel> call, Response<CongViecModel> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Update status work thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Update status work thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<CongViecModel> call, Throwable t) {
+                Log.e("Response","Update status work thất bại "+t.getMessage());
+            }
+        });
+    }
+
 
 }

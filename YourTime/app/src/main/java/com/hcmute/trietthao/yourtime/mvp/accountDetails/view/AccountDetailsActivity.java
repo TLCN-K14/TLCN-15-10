@@ -25,8 +25,10 @@ import android.widget.Toast;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
+import com.hcmute.trietthao.yourtime.mvp.accountDetails.presenter.AccounDetailsPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,7 +42,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AccountDetailsActivity extends AppCompatActivity implements  View.OnClickListener, DBNguoiDungServer.userListener {
+public class AccountDetailsActivity extends AppCompatActivity implements  IAccountDetailsView,  View.OnClickListener, DBNguoiDungServer.userListener {
 
 
     @Bind(R.id.ln_take_photo)
@@ -67,8 +69,11 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
     final Context c = this;
     DBNguoiDungServer dbNguoiDungServer;
     PreferManager preferManager;
-    NguoiDungModel currentUser;
+    NguoiDungModel currentUser=null;
     String passwChange;
+    String tenNguoiDung,userName;
+    AccounDetailsPresenter mAccounDetailsPresenter;
+    String encodedString="";
 
 
 
@@ -80,16 +85,13 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
         ButterKnife.bind(this);
         preferManager= new PreferManager(getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
-        currentUser= new NguoiDungModel();
+        mAccounDetailsPresenter= new AccounDetailsPresenter(this);
 
         HashMap<String, String> user = preferManager.getUserDetails();
         dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
+        dbNguoiDungServer.getListUser();
+//        mTxtDetailsSave.setVisibility(View.GONE);
 
-
-//        if(!currentUser.getTenNguoiDung().equals(mTxtDetailsName.getText().toString())||
-//                !currentUser.getUserName().equals(mTxtDetailsEmail.getText().toString())||
-//                !currentUser.getPassW().equals(passwChange))
-//            mTxtDetailsSave.setVisibility(View.VISIBLE);
 
         mImgvBack.setOnClickListener(this);
         mLnTakePhoto.setOnClickListener(this);
@@ -163,12 +165,10 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
+        if (requestCode == SELECT_FILE)
+            onSelectFromGalleryResult(data);
+        else if (requestCode == REQUEST_CAMERA)
+            onCaptureImageResult(data);
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -191,7 +191,9 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
             e.printStackTrace();
         }
 
+        Base64Utils myBitMap = new Base64Utils(this);
         mImgPhoto.setImageBitmap(thumbnail);
+        encodedString = myBitMap.getStringFromBitmap(thumbnail);
     }
 
     @SuppressWarnings("deprecation")
@@ -206,9 +208,11 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
             }
         }
 
+        Base64Utils myBitMap = new Base64Utils(this);
         mImgPhoto.setImageBitmap(bm);
-    }
+        encodedString = myBitMap.getStringFromBitmap(bm);
 
+    }
 
     @Override
     public void onClick(View view) {
@@ -230,8 +234,8 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
                         .setCancelable(false)
                         .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
-                                String name = valueView.getText().toString();
-                                mTxtDetailsName.setText(name);
+                                tenNguoiDung = valueView.getText().toString();
+                                mTxtDetailsName.setText(tenNguoiDung);
                             }
                         })
 
@@ -258,7 +262,8 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
                         .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 if(currentUser.getPassW().equals(editPassDialog.getText().toString())){
-                                    mTxtDetailsEmail.setText(editEmailDialog.getText().toString());
+                                    userName=editEmailDialog.getText().toString();
+                                    mTxtDetailsEmail.setText(userName);
                                 }else {
                                     Toast.makeText(AccountDetailsActivity.this, "Wrong password. Please enter!",Toast.LENGTH_LONG).show();
                                 }
@@ -313,6 +318,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
+                                mAccounDetailsPresenter.updateProfileUser(tenNguoiDung,encodedString,userName,passwChange,currentUser.getIdNguoiDung());
 
                             }
                         })
@@ -336,6 +342,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
 
     @Override
     public void getListUser(ArrayList<NguoiDungModel> listUser) {
+        currentUser=listUser.get(0);
 
     }
 
@@ -347,6 +354,15 @@ public class AccountDetailsActivity extends AppCompatActivity implements  View.O
     @Override
     public void getUser(NguoiDungModel user) {
         currentUser=user;
+//        if(!currentUser.getTenNguoiDung().equals(mTxtDetailsName.getText().toString())||
+//                !currentUser.getUserName().equals(mTxtDetailsEmail.getText().toString())||
+//                !currentUser.getPassW().equals(passwChange)){
+//            mTxtDetailsSave.setVisibility(View.VISIBLE);
+//        }else
+//            mTxtDetailsSave.setVisibility(View.GONE);
+        mTxtDetailsName.setText(currentUser.getTenNguoiDung());
+        mTxtDetailsEmail.setText(currentUser.getUserName());
+
 
     }
 }
