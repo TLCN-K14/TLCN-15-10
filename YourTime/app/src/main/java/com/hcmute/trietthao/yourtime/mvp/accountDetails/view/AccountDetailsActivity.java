@@ -29,6 +29,7 @@ import com.hcmute.trietthao.yourtime.mvp.accountDetails.presenter.AccounDetailsP
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -360,6 +361,13 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
 //            mTxtDetailsSave.setVisibility(View.VISIBLE);
 //        }else
 //            mTxtDetailsSave.setVisibility(View.GONE);
+        String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
+        if(currentUser.getAnhDaiDien()!=null)
+        {
+            Picasso.with(this).load(url_imgitem+currentUser.getAnhDaiDien()+".png")
+                    .error(R.drawable.null_avatar)
+                    .into(mImgPhoto);
+        }
         mTxtDetailsName.setText(currentUser.getTenNguoiDung());
         mTxtDetailsEmail.setText(currentUser.getUserName());
 
