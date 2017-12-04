@@ -1,6 +1,5 @@
 package com.hcmute.trietthao.yourtime.mvp.signUp.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +26,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.share.widget.ShareDialog;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.imageProcessing.ConvertBitmap;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
@@ -34,10 +34,7 @@ import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
-import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
 import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -215,6 +212,7 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
 
                     if (pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0 && isEmailValid(email)) {
                         signUpPresenter.insertUser(id, name, encodedString, email, pass);
+                        Log.e("Code:",""+encodedString);
 
                     } else
                         Toast.makeText(getApplication(), "Nhập đầy đủ thông tin!!!", Toast.LENGTH_LONG).show();
@@ -345,23 +343,21 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
         Base64Utils myBitMap = new Base64Utils(this);
         mImgvAvatar.setImageBitmap(thumbnail);
         encodedString = myBitMap.getStringFromBitmap(thumbnail);
+
     }
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
-        Bitmap bm=null;
-        if (data != null) {
-            try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        ConvertBitmap myBitMap = new ConvertBitmap(this);
+        Bitmap bitmap = null;
+        try {
+            bitmap = myBitMap.decodeUri(data.getData());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        Base64Utils myBitMap = new Base64Utils(this);
-        mImgvAvatar.setImageBitmap(bm);
-        encodedString = myBitMap.getStringFromBitmap(bm);
+        mImgvAvatar.setImageBitmap(bitmap);
+        encodedString = myBitMap.getStringFromBitmap(bitmap);
 
     }
     public static boolean isEmailValid(String email) {

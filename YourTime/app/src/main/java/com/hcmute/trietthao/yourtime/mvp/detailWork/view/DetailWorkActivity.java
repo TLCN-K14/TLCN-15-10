@@ -4,13 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
@@ -29,9 +31,15 @@ import com.hcmute.trietthao.yourtime.imageProcessing.ConvertBitmap;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.Utility;
-import com.squareup.picasso.Picasso;
+import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Calendar;
 
 import butterknife.Bind;
@@ -137,7 +145,7 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
     String encodedString="null";
     private int REQUEST_IMAGE_GALLERY = 8888;
     private int REQUEST_IMAGE_CAPTURE = 9999;
-    Uri selectedImageURI;
+    private String userChoosenTask;
 
     PreferManager mPreferManager;
     CongViecModel mCongViec;
@@ -295,7 +303,7 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
             case R.id.lnl_add_picture:
                 ivImgPicute.setVisibility(View.VISIBLE);
                 ivDeleteFile.setVisibility(View.VISIBLE);
-                pickGalleryImage();
+                selectImage();
                 break;
             case R.id.lnl_add_a_comment: break;
 
@@ -355,9 +363,58 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this,"vào on activity result:::",Toast.LENGTH_LONG).show();
+        if (requestCode == REQUEST_IMAGE_GALLERY)
+            onSelectFromGalleryResult(data);
+        else if (requestCode == REQUEST_IMAGE_CAPTURE)
+            onCaptureImageResult(data);
+        //Từ gg vào
+    }
 
-    private String userChoosenTask;
-    String mCurrentPhotoPath;
+    public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImage(ImageView bmImage){
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls){
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try{
+                InputStream in = new URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            }catch (Exception e){
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result){
+            bmImage.setImageBitmap(result);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
+
+                }
+                break;
+        }
+    }
 
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
@@ -368,17 +425,17 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result= Utility.checkPermission(DetailWorkActivity.this);
+                boolean result=Utility.checkPermission(DetailWorkActivity.this);
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask ="Take Photo";
                     if(result)
-                        pickCameraImage();
+                        cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask ="Choose from Library";
                     if(result)
-                        pickGalleryImage();
+                        galleryIntent();
 
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -388,50 +445,59 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         builder.show();
     }
 
-    private void pickGalleryImage() {
+    private void galleryIntent()
+    {
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_GALLERY);
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"),REQUEST_IMAGE_GALLERY);
     }
 
-    private void pickCameraImage() {
+    private void cameraIntent()
+    {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // start camera activity
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
-    // nhận kết quả trả về khi chọn ảnh
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.e("REQUESTCODE","-----------onActivityResult");
-        if (resultCode == RESULT_OK) {
-            if(requestCode == REQUEST_IMAGE_GALLERY){
-                selectedImageURI = data.getData();
-                Picasso.with(this.getApplication()).load(selectedImageURI).noPlaceholder()
-                        .into(ivImgPicute);
 
-                ConvertBitmap myBitMap = new ConvertBitmap(this);
-                Bitmap bitmap = null;
-                try {
-                    bitmap = myBitMap.decodeUri(selectedImageURI);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                encodedString = myBitMap.getStringFromBitmap(bitmap);
-            }else if(requestCode == REQUEST_IMAGE_CAPTURE){
-//
-//                Log.e("REQUESTCODE","-----------CAMERA");
-////                Bitmap photo = (Bitmap)data.getExtras().get("data");
-////                Drawable drawable=new BitmapDrawable(photo);
-////                ivImgPicute.setBackgroundDrawable(drawable);
+    private void onCaptureImageResult(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-            }
-        }else
-            Log.e("REQUESTCODE","-----------ERROR");
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Base64Utils myBitMap = new Base64Utils(this);
+        ivImgPicute.setImageBitmap(thumbnail);
+        encodedString = myBitMap.getStringFromBitmap(thumbnail);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+
+        ConvertBitmap myBitMap = new ConvertBitmap(this);
+        Bitmap bitmap = null;
+        try {
+            bitmap = myBitMap.decodeUri(data.getData());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ivImgPicute.setImageBitmap(bitmap);
+        encodedString = myBitMap.getStringFromBitmap(bitmap);
+
     }
 
 }
