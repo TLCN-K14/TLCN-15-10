@@ -16,6 +16,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 
+import com.facebook.login.LoginManager;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.accountDetails.view.AccountDetailsActivity;
@@ -121,6 +122,7 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 preferManager.logoutUser();
+                                LoginManager.getInstance().logOut();
                             }
                         });
 

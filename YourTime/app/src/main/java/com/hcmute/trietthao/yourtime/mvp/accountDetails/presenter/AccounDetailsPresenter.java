@@ -37,6 +37,9 @@ public class AccounDetailsPresenter implements DBNguoiDungServer.userListener, I
     @Override
     public void updateProfileUser(String tenNguoiDung, String anhDaiDien, String userName, String passW, int idNguoiDung) {
         mDBNguoiDungServer= new DBNguoiDungServer(this);
-        mDBNguoiDungServer.updateProfile(tenNguoiDung,anhDaiDien,userName,passW,idNguoiDung);
+        mDBNguoiDungServer.updateProfile(tenNguoiDung,userName,passW,idNguoiDung);
+        if(!anhDaiDien.equals("")){
+            mDBNguoiDungServer.updateImgUser(anhDaiDien,idNguoiDung);
+        }
     }
 }

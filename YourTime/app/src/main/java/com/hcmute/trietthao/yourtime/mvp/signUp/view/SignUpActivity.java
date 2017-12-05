@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -106,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
             String imageUrl = inBundle.get("imageUrl").toString();
             mEditName.setText("" + namefb + " " + surnamefb);
             mEditEmail.setText(emailfb);
+            Log.e("Signup img::",imageUrl);
             new SignUpActivity.DownloadImage((ImageView) findViewById(R.id.imgv_sign_up_avatar)).execute(imageUrl);
         }
         if(LoginActivity.FROM_GG){
@@ -243,6 +245,8 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
 
         protected void onPostExecute(Bitmap result){
             bmImage.setImageBitmap(result);
+            ConvertBitmap myBitMap = new ConvertBitmap(getApplicationContext());
+            encodedString = myBitMap.getStringFromBitmap(result);
         }
 
     }

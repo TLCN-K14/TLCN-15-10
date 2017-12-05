@@ -108,12 +108,16 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @FormUrlEncoded
     @POST("/updateprofile")
-    Call<InsertUserResponse> updateProfile(@Field("tennguoidung") String tennguoidung, @Field("anhdaidien") String anhdaidien,
+    Call<InsertUserResponse> updateProfile(@Field("tennguoidung") String tennguoidung,
                                            @Field("username") String username,@Field("passw") String passw,
                                            @Field("idnguoidung") Integer idnguoidung);
 
     @FormUrlEncoded
     @POST("/deletework")
     Call<CongViecModel> deleteWork(@Field("idcongviec") Integer idcongviec);
+
+    @FormUrlEncoded
+    @POST("/updateimguser")
+    Call<InsertUserResponse> updateImgUser(@Field("anhdaidien") String anhdaidien, @Field("idnguoidung") Integer idnguoidung);
 
 }

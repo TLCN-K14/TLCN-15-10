@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.imageProcessing.ConvertBitmap;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.accountDetails.presenter.AccounDetailsPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
@@ -72,9 +73,10 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
     PreferManager preferManager;
     NguoiDungModel currentUser=null;
     String passwChange;
-    String tenNguoiDung,userName;
+    String tenNguoiDung="",userName="";
     AccounDetailsPresenter mAccounDetailsPresenter;
     String encodedString="";
+    int idUser;
 
 
 
@@ -92,7 +94,6 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
         dbNguoiDungServer.getUser(user.get(PreferManager.KEY_EMAIL));
         dbNguoiDungServer.getListUser();
 //        mTxtDetailsSave.setVisibility(View.GONE);
-
 
         mImgvBack.setOnClickListener(this);
         mLnTakePhoto.setOnClickListener(this);
@@ -165,7 +166,6 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == SELECT_FILE)
             onSelectFromGalleryResult(data);
         else if (requestCode == REQUEST_CAMERA)
@@ -195,23 +195,21 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
         Base64Utils myBitMap = new Base64Utils(this);
         mImgPhoto.setImageBitmap(thumbnail);
         encodedString = myBitMap.getStringFromBitmap(thumbnail);
+
     }
 
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
-        Bitmap bm=null;
-        if (data != null) {
-            try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        ConvertBitmap myBitMap = new ConvertBitmap(this);
+        Bitmap bitmap = null;
+        try {
+            bitmap = myBitMap.decodeUri(data.getData());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        Base64Utils myBitMap = new Base64Utils(this);
-        mImgPhoto.setImageBitmap(bm);
-        encodedString = myBitMap.getStringFromBitmap(bm);
+        mImgPhoto.setImageBitmap(bitmap);
+        encodedString = myBitMap.getStringFromBitmap(bitmap);
 
     }
 
@@ -319,7 +317,9 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
-                                mAccounDetailsPresenter.updateProfileUser(tenNguoiDung,encodedString,userName,passwChange,currentUser.getIdNguoiDung());
+                                Log.e("acountdetails:","idng::"+preferManager.getID());
+                                Log.e("Code:",""+encodedString);
+                                mAccounDetailsPresenter.updateProfileUser(tenNguoiDung,encodedString, userName,passwChange,preferManager.getID());
 
                             }
                         })
@@ -355,12 +355,6 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
     @Override
     public void getUser(NguoiDungModel user) {
         currentUser=user;
-//        if(!currentUser.getTenNguoiDung().equals(mTxtDetailsName.getText().toString())||
-//                !currentUser.getUserName().equals(mTxtDetailsEmail.getText().toString())||
-//                !currentUser.getPassW().equals(passwChange)){
-//            mTxtDetailsSave.setVisibility(View.VISIBLE);
-//        }else
-//            mTxtDetailsSave.setVisibility(View.GONE);
         String url_imgitem="https://tlcn-yourtime.herokuapp.com/getimg?nameimg=";
         if(currentUser.getAnhDaiDien()!=null)
         {
@@ -370,6 +364,10 @@ public class AccountDetailsActivity extends AppCompatActivity implements  IAccou
         }
         mTxtDetailsName.setText(currentUser.getTenNguoiDung());
         mTxtDetailsEmail.setText(currentUser.getUserName());
+
+        tenNguoiDung=currentUser.getTenNguoiDung();
+        userName=currentUser.getUserName();
+        passwChange=currentUser.getPassW();
 
 
     }

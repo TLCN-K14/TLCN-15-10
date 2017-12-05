@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_add_a_photo_black_24dp"/>
+            app:srcCompat="@drawable/ic_add_a_photo_black_24dp"/>
         <TextView
             android:layout_weight="20"
             android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:layout_gravity="end"
-            android:src="@drawable/ava2"/>
+            android:src="@drawable/null_avatar"/>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_perm_identity_black_24dp"/>
+            app:srcCompat="@drawable/ic_perm_identity_black_24dp"/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_mail_outline_black_24dp"/>
+            app:srcCompat="@drawable/ic_mail_outline_black_24dp"/>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
@@ -157,7 +157,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_lock_outline_black_24dp"/>
+            app:srcCompat="@drawable/ic_lock_outline_black_24dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

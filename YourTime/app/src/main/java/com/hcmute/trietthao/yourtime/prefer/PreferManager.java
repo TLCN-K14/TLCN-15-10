@@ -70,14 +70,6 @@ public class PreferManager implements DBNguoiDungServer.userListener {
 
         // After logout redirect user to MainActivity
         Intent i = new Intent(_context, LoginActivity.class);
-
-        // Closing all the Activities
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Add new Flag to start new Activity
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Staring Login Activity
         _context.startActivity(i);
     }
     public NguoiDungModel getUserPrefer(){
