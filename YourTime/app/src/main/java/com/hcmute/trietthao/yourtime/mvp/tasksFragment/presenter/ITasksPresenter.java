@@ -5,9 +5,10 @@ package com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter;
  */
 
 public interface ITasksPresenter {
-    void getAllGroupWorkOnline(int idnguoidung);
+    void getAllGroupWorkOnline(int idUser);
 
-    void getAllWorkOnline(int idnguoidung);
-    void deleteGroupWork(int idNhom, int idNguoiDung);
+    void getAllWorkOnline(int idUser);
+    void deleteGroupWork(int idGroup, int idUser);
+    void deleteWork(int idWork);
 
 }

@@ -267,5 +267,27 @@ public class DBWorkServer {
         });
     }
 
+    public void deleteWorkNotification(final Integer idcongviec){
+        mService = ApiUtils.getService();
+        Call<CongViecModel> call = mService.deleteWorkNotification(idcongviec);
+        call.enqueue(new Callback<CongViecModel>() {
+            @Override
+            public void onResponse(Call<CongViecModel> call, Response<CongViecModel> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Delete work notification thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Delete work notification thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<CongViecModel> call, Throwable t) {
+                Log.e("Response","Update status work thất bại "+t.getMessage());
+            }
+        });
+    }
+
 
 }

@@ -35,6 +35,7 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     DBWorkServer dbWorkServer;
     DBGroupWorkUserServer dbGroupWorkUserServer;
     private static boolean isGWUserDeleted;
+    boolean isDeletedWork = false;
 
     public TasksPresenter(ITasksView iTasksView){
         this.iTasksView = iTasksView;
@@ -44,27 +45,38 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     public ArrayList<CongViecModel> getListAllWorkOnline(){ return mListWork;}
 
     @Override
-    public void getAllGroupWorkOnline(int idnguoidung) {
+    public void getAllGroupWorkOnline(int idUser) {
         iTasksView.showLoading();
         dbGroupWorkServer = new DBGroupWorkServer(this,this);
-        dbGroupWorkServer.getListGroupWork(idnguoidung);
+        dbGroupWorkServer.getListGroupWork(idUser);
     }
 
     @Override
-    public void getAllWorkOnline(int idnguoidung) {
+    public void getAllWorkOnline(int idUser) {
         Log.e("TaskPresenter","Vaoo get all workonline");
         dbWorkServer = new DBWorkServer(this,this,this);
-        dbWorkServer.getListAllWork(idnguoidung);
-        dbWorkServer.getListAllWorkNotification(idnguoidung);
+        dbWorkServer.getListAllWork(idUser);
+        dbWorkServer.getListAllWorkNotification(idUser);
     }
 
     @Override
-    public void deleteGroupWork(int idNhom, int idNguoiDung) {
+    public void deleteGroupWork(int idGroup, int idUser) {
+        isDeletedWork = true;
+
         dbGroupWorkServer=new DBGroupWorkServer(this,this);
         dbGroupWorkUserServer= new DBGroupWorkUserServer(this);
-        dbGroupWorkUserServer.deleteGroupWorkUser(idNhom,idNguoiDung);
+        dbWorkServer=new DBWorkServer(this,this);
+
+        dbWorkServer.getListWorkByIdGroup(idUser,idGroup);
+
+        dbGroupWorkUserServer.deleteGroupWorkUser(idGroup,idUser);
         if (isGWUserDeleted)
-            dbGroupWorkServer.deleteGroupWorkUser(idNhom);
+            dbGroupWorkServer.deleteGroupWorkUser(idGroup);
+    }
+
+    @Override
+    public void deleteWork(int idWork) {
+
     }
 
     @Override
@@ -85,22 +97,31 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
 
     @Override
     public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
-        for(int i=0;i<congViecModelArrayList.size();i++){
-            if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
-                try {
-                    if(congViecModelArrayList.get(i).getTrangThai().equals("waiting")){
-                        if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
-                            congViecModelArrayList.get(i).setTrangThai("overdue");
-                            dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
+        if(isDeletedWork){
+            dbWorkServer=new DBWorkServer(this,this);
+            for(int i=0;i<congViecModelArrayList.size();i++){
+                dbWorkServer.deleteWork(congViecModelArrayList.get(i).getIdCongViec());
+                dbWorkServer.deleteWorkNotification(congViecModelArrayList.get(i).getIdCongViec());
+            }
+            isDeletedWork = false;
+        }else{
+            for(int i=0;i<congViecModelArrayList.size();i++){
+                if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
+                    try {
+                        if(congViecModelArrayList.get(i).getTrangThai().equals("waiting")){
+                            if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
+                                congViecModelArrayList.get(i).setTrangThai("overdue");
+                                dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
+                            }
                         }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
             }
+            mListWork = congViecModelArrayList;
+            iTasksView.getListAllWorkSucess();
         }
-        mListWork = congViecModelArrayList;
-        iTasksView.getListAllWorkSucess();
     }
 
     @Override

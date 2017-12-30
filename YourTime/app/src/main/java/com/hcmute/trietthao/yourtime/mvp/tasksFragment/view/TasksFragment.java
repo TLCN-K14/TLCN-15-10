@@ -246,6 +246,7 @@ public class TasksFragment extends Fragment implements
                         Toast.LENGTH_LONG).show();
                 Log.e("TaskFragment:: idNhom", currentGroupWorkLongClick.getIdNhom()+"");
                 Log.e("TaskFragment:: idnd", mPreferManager.getID()+"");
+
                 mTasksPresenter.deleteGroupWork(currentGroupWorkLongClick.getIdNhom(),mPreferManager.getID());
                 break;
 
