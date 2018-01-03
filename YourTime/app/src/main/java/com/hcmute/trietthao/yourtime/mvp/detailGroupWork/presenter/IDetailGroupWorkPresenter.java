@@ -10,4 +10,6 @@ public interface IDetailGroupWorkPresenter {
     void getWorkByIdGroup(Integer idnguoidung,Integer idgroup);
 
     void insertWork(CongViecModel congViecModel);
+
+    void deleteWork(int idcongviec);
 }

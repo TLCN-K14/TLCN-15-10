@@ -140,65 +140,68 @@
             />
     </LinearLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/myScrollingContent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:fillViewport="true"
         android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/myScrollingContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                     <include
                         layout="@layout/header_tasks"
                         android:id="@+id/header_tasks"/>
 
+                    <ProgressBar
+                        android:id="@+id/progressBar_Loadmore"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:indeterminateTintMode="src_atop"
+                        android:indeterminateTint="@color/colorTear800"/>
+                    <android.support.v7.widget.RecyclerView
+                            android:id="@+id/list_groupworks"
+                            android:layout_width="match_parent"
 
-                <ProgressBar
-                    android:id="@+id/progressBar_Loadmore"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:indeterminateTintMode="src_atop"
-                    android:indeterminateTint="@color/colorTear800"/>
-                <android.support.v7.widget.RecyclerView
-                        android:id="@+id/list_groupworks"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        >
+                            android:layout_height="match_parent"
+                            >
                     </android.support.v7.widget.RecyclerView>
-                <LinearLayout
-                    android:baselineAligned="false"
-                    android:layout_width="match_parent"
-                    android:id="@+id/lnl_create_groupwork"
-                    android:layout_height="@dimen/height_groupwork_50dp"
-                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:baselineAligned="false"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="30dp"
+                        android:id="@+id/lnl_create_groupwork"
+                        android:layout_height="@dimen/height_groupwork_50dp"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_add_list"
+                            android:layout_margin="3dp"
+                            android:padding="12dp"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="6"
+                            android:text="@string/create_list"
+                            android:textSize="@dimen/dimen_16sp"
 
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_add_list"
-                        android:layout_margin="3dp"
-                        android:padding="12dp"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="6"
-                        android:text="@string/create_list"
-                        android:textSize="@dimen/dimen_16sp"
-                        android:textColor="@color/colorBlue"
-                        android:gravity="center_vertical"/>
+                            android:textColor="@color/colorBlue"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
+                <!-- Your loooooong scrolling content here. -->
 
-
-
-            </LinearLayout>
-
-            <!-- Your loooooong scrolling content here. -->
-
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

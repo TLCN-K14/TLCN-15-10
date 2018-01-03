@@ -34,7 +34,6 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     DBGroupWorkServer dbGroupWorkServer;
     DBWorkServer dbWorkServer;
     DBGroupWorkUserServer dbGroupWorkUserServer;
-    private static boolean isGWUserDeleted;
     boolean isDeletedWork = false;
 
     public TasksPresenter(ITasksView iTasksView){
@@ -66,12 +65,11 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
         dbGroupWorkServer=new DBGroupWorkServer(this,this);
         dbGroupWorkUserServer= new DBGroupWorkUserServer(this);
         dbWorkServer=new DBWorkServer(this,this);
-
+//
         dbWorkServer.getListWorkByIdGroup(idUser,idGroup);
 
-        dbGroupWorkUserServer.deleteGroupWorkUser(idGroup,idUser);
-        if (isGWUserDeleted)
-            dbGroupWorkServer.deleteGroupWorkUser(idGroup);
+        dbGroupWorkUserServer.deleteGroupWorkUser(idGroup);
+        dbGroupWorkServer.deleteGroupWorkUser(idGroup);
     }
 
     @Override
@@ -100,8 +98,8 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
         if(isDeletedWork){
             dbWorkServer=new DBWorkServer(this,this);
             for(int i=0;i<congViecModelArrayList.size();i++){
-                dbWorkServer.deleteWork(congViecModelArrayList.get(i).getIdCongViec());
                 dbWorkServer.deleteWorkNotification(congViecModelArrayList.get(i).getIdCongViec());
+                dbWorkServer.deleteWork(congViecModelArrayList.get(i).getIdCongViec());
             }
             isDeletedWork = false;
         }else{
@@ -153,8 +151,6 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
 
     @Override
     public void getResultPostGroupWorkUser(Boolean isSuccess) {
-        if (isSuccess)
-            isGWUserDeleted=true;
-        isGWUserDeleted=false;
+
     }
 }

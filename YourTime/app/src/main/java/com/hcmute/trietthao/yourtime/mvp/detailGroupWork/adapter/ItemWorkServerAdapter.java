@@ -272,7 +272,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
             else
             {
                 holder.ivRepeatWork.setVisibility(View.VISIBLE);
-                holder.ivRepeatWork.setImageResource(R.drawable.ic_repeat_completed);
+                holder.ivRepeatWork.setImageResource(R.drawable.ic_repeat_off);
             }
 
         }

@@ -88,6 +88,26 @@ public class DBWorkServer {
         });
     }
 
+    public void getWorkById(final Integer idcongviec){
+        mService = ApiUtils.getService();
+        Call<ArrayList<CongViecModel>> call = mService.getWorkById(idcongviec);
+        Log.e("Response",call.request().url().toString());
+        call.enqueue(new Callback<ArrayList<CongViecModel>>() {
+            @Override
+            public void onResponse(Call<ArrayList<CongViecModel>> call, Response<ArrayList<CongViecModel>> response) {
+                if(response.isSuccessful()){
+                    Log.e("Response","Lấy  work by id thành công"+response.message());
+                    getWorkListener.getListAllWork(response.body());
+                }else
+                    Log.e("Response","Lấy  work by id thất bại "+response.message());
+            }
+            @Override
+            public void onFailure(Call<ArrayList<CongViecModel>> call, Throwable t) {
+                Log.e("Response","Lấy  work by id thất bại "+t.getMessage());
+            }
+        });
+    }
+
     public void getListWorkByIdGroup( Integer idnguoidung,final Integer idnhom){
         mService = ApiUtils.getService();
         Call<ArrayList<CongViecModel>> call = mService.getListWorkByIdGroup(idnguoidung,idnhom);
@@ -190,6 +210,52 @@ public class DBWorkServer {
             @Override
             public void onFailure(Call<InsertUpdateWorkResponse> call, Throwable t) {
                 Log.e("Response","Update priority work thất bại "+t.getMessage());
+            }
+        });
+    }
+
+    public void updateWork(CongViecModel congViecModel){
+        mService = ApiUtils.getService();
+        Call<InsertUpdateWorkResponse> call = mService.updateWork(congViecModel.getTenCongViec(),
+                congViecModel.getThoiGianBatDau(),congViecModel.getThoiGianKetThuc(),
+                congViecModel.getGhiChu(),congViecModel.getIdNhacNho(),congViecModel.getIdCongViec());
+        call.enqueue(new Callback<InsertUpdateWorkResponse>() {
+            @Override
+            public void onResponse(Call<InsertUpdateWorkResponse> call, Response<InsertUpdateWorkResponse> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Update  work thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Update  work thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<InsertUpdateWorkResponse> call, Throwable t) {
+                Log.e("Response","Update  work thất bại "+t.getMessage());
+            }
+        });
+    }
+
+    public void updateFileWork(String fileDinhKem, Integer idcongviec){
+        mService = ApiUtils.getService();
+        Call<InsertUpdateWorkResponse> call = mService.updateFileWork(fileDinhKem,idcongviec);
+        call.enqueue(new Callback<InsertUpdateWorkResponse>() {
+            @Override
+            public void onResponse(Call<InsertUpdateWorkResponse> call, Response<InsertUpdateWorkResponse> response) {
+                if(response.isSuccessful()){
+                    postWorkListener.getResultPostWork(true);
+                    Log.e("Response","Update file work thành công"+response.message());
+                }else
+                {
+                    postWorkListener.getResultPostWork(false);
+                    Log.e("Response","Update file work thất bại "+response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<InsertUpdateWorkResponse> call, Throwable t) {
+                Log.e("Response","Update file work thất bại "+t.getMessage());
             }
         });
     }

@@ -113,7 +113,7 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
         int i = view.getId();
         switch (i){
             case R.id.iv_back_longclick_itemwork:
-                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                lnlCurrentItemLongClick.setBackground(getResources().getDrawable(R.drawable.borderwork_white));
                 lnlCurrentItemLongClick = null;
                 currentItemWork = null;
                 isLongClicking = false;
@@ -268,7 +268,7 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
             ivBackFromLongClick.performClick();
         }else{
             if(lnlCurrentItemLongClick!=null){
-                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                lnlCurrentItemLongClick.setBackground(getResources().getDrawable(R.drawable.borderwork_white));
             }
             else{
                 mToolbar.setVisibility(View.GONE);

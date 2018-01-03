@@ -39,6 +39,12 @@ public class DetailGroupWorkPresenter implements IDetailGroupWorkPresenter,GetWo
     }
 
     @Override
+    public void deleteWork(int idcongviec) {
+        dbWorkServer = new DBWorkServer(this,this);
+        dbWorkServer.deleteWork(idcongviec);
+    }
+
+    @Override
     public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
         mListWorkNormal = new ArrayList<CongViecModel>();
         mListWorkCompleted = new ArrayList<CongViecModel>();

@@ -2,6 +2,7 @@ package com.hcmute.trietthao.yourtime.service;
 
 import com.hcmute.trietthao.yourtime.model.CVThongBaoModel;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.model.LoaiNhacNhoModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVNguoiDungModel;
@@ -14,12 +15,10 @@ import com.hcmute.trietthao.yourtime.response.InsertUserResponse;
 import java.util.ArrayList;
 
 import retrofit2.Call;
-import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -48,6 +47,12 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @GET("/getlistgroupwork")
     Call<ArrayList<NhomCVModel>> getListGroupWork(@Query("idnguoidung") Integer idnguoidung);
+
+    @GET("/getworkbyid")
+    Call<ArrayList<CongViecModel>> getWorkById(@Query("idcongviec") Integer idcongviec);
+
+    @GET("/gettyperepeat")
+    Call<ArrayList<LoaiNhacNhoModel>> getTypeRepeat();
 
     @GET("/getlistallwork")
     Call<ArrayList<CongViecModel>> getListAllWork(@Query("idnguoidung") Integer idnguoidung);
@@ -78,6 +83,20 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
                                                        @Field("idcongviec") Integer idcongviec);
 
     @FormUrlEncoded
+    @POST("/updatework")
+    Call<InsertUpdateWorkResponse> updateWork(@Field("tencongviec") String tencongviec,
+                                                      @Field("thoigianbatdau") String thoigianbatdau,
+                                                      @Field("thoigianketthuc") String thoigianketthuc,
+                                                      @Field("ghichu") String ghichu,
+                                                      @Field("idnhacnho") Integer idnhacnho,
+                                                      @Field("idcongviec") Integer idcongviec);
+
+   @FormUrlEncoded
+   @POST("/updatefilework")
+   Call<InsertUpdateWorkResponse> updateFileWork(@Field("filedinhkem") String filedinhkem,
+                                                   @Field("idcongviec") Integer idcongviec);
+
+    @FormUrlEncoded
     @POST("/insertwork")
     Call<InsertUpdateWorkResponse> insertWork(@Field("idcongviec") Integer idcongviec, @Field("tenCongViec") String tenCongViec,
                                                   @Field("thoiGianBatDau") String thoiGianBatDau, @Field("thoiGianKetThuc") String thoiGianKetThuc,
@@ -100,7 +119,7 @@ public interface Service { //Định nghĩa các REST API (Api Services) cho Ret
 
     @FormUrlEncoded
     @POST("/deletegroupworkuser")
-    Call<NhomCVNguoiDungModel> deleteGroupWorkUser(@Field("idnhom") Integer idnhom,@Field("idnguoidung") Integer idnguoidung);
+    Call<NhomCVNguoiDungModel> deleteGroupWorkUser(@Field("idnhom") Integer idnhom);
 
     @FormUrlEncoded
     @POST("/deletegroupwork")

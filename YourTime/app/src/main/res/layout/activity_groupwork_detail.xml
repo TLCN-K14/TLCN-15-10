@@ -141,6 +141,7 @@
 
     </LinearLayout>
 
+
     <ProgressBar
         android:id="@+id/progressBar_Loadmore"
         android:layout_width="wrap_content"
@@ -152,31 +153,49 @@
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/colorTear800"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_works"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent">
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/myScrollingContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_works"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                </android.support.v7.widget.RecyclerView>
 
-    <TextView
-        android:layout_width="180dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/border_tear"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/dimen_12sp"
-        android:id="@+id/txt_show_hide_completed_works"
-        android:text="@string/show_completed_works"/>
+                <TextView
+                    android:layout_width="180dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/border_tear"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/dimen_12sp"
+                    android:id="@+id/txt_show_hide_completed_works"
+                    android:text="@string/show_completed_works"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_works_completed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_works_completed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
 
+            <!-- Your loooooong scrolling content here. -->
+
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

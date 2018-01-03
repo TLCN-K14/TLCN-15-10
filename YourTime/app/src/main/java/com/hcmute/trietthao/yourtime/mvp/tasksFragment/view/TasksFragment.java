@@ -1,12 +1,14 @@
 package com.hcmute.trietthao.yourtime.mvp.tasksFragment.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +50,8 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 
 public class TasksFragment extends Fragment implements
-        View.OnClickListener,ITasksView,IOnItemGroupWorkTasksListener, DBNguoiDungServer.userListener  {
+        View.OnClickListener,ITasksView,IOnItemGroupWorkTasksListener, DBNguoiDungServer.userListener ,
+        SwipeRefreshLayout.OnRefreshListener{
 
     TextView txtDayCurrent;
     TextView txtInboxCountCompleted,txtInboxCountAll, txtInboxCountOverDue;
@@ -94,13 +97,17 @@ public class TasksFragment extends Fragment implements
     @Bind(R.id.progressBar_Loadmore)
     ProgressBar pbLoading;
 
-    TasksPresenter mTasksPresenter;
+    @Bind(R.id.swiperefresh)
+    SwipeRefreshLayout mSwipeLayout;
+
+    static TasksPresenter mTasksPresenter;
 
     GroupWorkServerAdapter mGroupWorkServerAdapter;
     DBGroupWorkServer dbGroupWorkServer;
     NhomCVModel currentGroupWorkLongClick;
 
-    PreferManager mPreferManager;
+    static PreferManager mPreferManager;
+    static Context mContext;
     DBNguoiDungServer dbNguoiDungServer;
     public static NguoiDungModel userCurrent=null;
 
@@ -127,6 +134,15 @@ public class TasksFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         View headerTasksView = view.findViewById(R.id.header_tasks);
         ButterKnife.bind(this,view);
+
+        mContext = getContext();
+
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
 
         txtDayCurrent = headerTasksView.findViewById(R.id.day_current);
         txtNameUser=view.findViewById(R.id.name_user);
@@ -156,6 +172,7 @@ public class TasksFragment extends Fragment implements
         ivRenameGroupWork.setOnClickListener(this);
         ivDeleteGroupWork.setOnClickListener(this);
 
+        pbLoading.setVisibility(View.GONE);
         lnlLongClickGroupWork.setVisibility(View.GONE);
 
         setupHeaderTask(headerTasksView);
@@ -164,6 +181,8 @@ public class TasksFragment extends Fragment implements
 
         return view;
     }
+
+
 
     public void setTxtDayCurrent(){
         Calendar calendar = Calendar.getInstance();
@@ -186,10 +205,8 @@ public class TasksFragment extends Fragment implements
         ButterKnife.unbind(this);
     }
 
-
-
-    protected void initData() {
-        if(isNetWorkConnected(getContext())){
+    public static void initData() {
+        if(isNetWorkConnected(mContext)){
             mTasksPresenter.getAllGroupWorkOnline(mPreferManager.getID());
             mTasksPresenter.getAllWorkOnline(mPreferManager.getID());
         }
@@ -242,12 +259,21 @@ public class TasksFragment extends Fragment implements
                         Toast.LENGTH_LONG).show();
                 break;
             case  R.id.iv_delete_groupwork:
-                Toast.makeText(getActivity(), "Delete-----"+currentGroupWorkLongClick.getTenNhom(),
-                        Toast.LENGTH_LONG).show();
-                Log.e("TaskFragment:: idNhom", currentGroupWorkLongClick.getIdNhom()+"");
-                Log.e("TaskFragment:: idnd", mPreferManager.getID()+"");
-
                 mTasksPresenter.deleteGroupWork(currentGroupWorkLongClick.getIdNhom(),mPreferManager.getID());
+                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                isLongClicking = false;
+                lnlCurrentItemLongClick = null;
+                currentGroupWorkLongClick = null;
+                lnlLongClickGroupWork.setVisibility(View.GONE);
+                lnlTopBar.setVisibility(View.VISIBLE);
+                tvNameItemSelected.setText("");
+                mSwipeLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        initData();
+                        mSwipeLayout.setRefreshing(false);
+                    }
+                }, 2000);
                 break;
 
             case  R.id.iv_back_longclick_groupwork:
@@ -309,12 +335,18 @@ public class TasksFragment extends Fragment implements
 
     @Override
     public void showLoading() {
-        pbLoading.setVisibility(View.VISIBLE);
+       // pbLoading.setVisibility(View.VISIBLE);
+                mSwipeLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
+       // pbLoading.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 
     @Override
@@ -514,8 +546,6 @@ public class TasksFragment extends Fragment implements
     public void onItemLongClick(NhomCVModel nhomCVModel, LinearLayout view) {
         isLongClicking = true;
         setupLongClick(nhomCVModel,view);
-        Toast.makeText(getActivity(), "On Long Click!-----"+nhomCVModel.getTenNhom(),
-                Toast.LENGTH_LONG).show();
     }
 
     public void setupLongClick(NhomCVModel nhomCVModel,LinearLayout view){
@@ -558,8 +588,18 @@ public class TasksFragment extends Fragment implements
                     .into(imgUser);
         }
         txtNameUser.setText(userCurrent.getTenNguoiDung());
-        Log.e("","Anh avatar: "+url_imgitem+userCurrent.getAnhDaiDien()+".png");
 
+
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                initData();
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 500);
 
     }
 }

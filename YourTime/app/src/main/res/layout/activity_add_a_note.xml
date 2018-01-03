@@ -17,12 +17,23 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:layout_weight="1"
+                android:id="@+id/iv_img_back"
+                app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+                />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:layout_marginStart="10dp"
                 android:text="Work name"
+                android:id="@+id/tv_name_work"
                 android:layout_weight="5"
                 android:textColor="@color/black"
                 android:textSize="@dimen/txtsize_header_20sp"/>
@@ -30,6 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:id="@+id/img_tick"
                 android:src="@drawable/ic_tick_black"
                 android:layout_margin="10dp"
                 />
@@ -38,6 +50,7 @@
 
     <EditText
         android:layout_width="wrap_content"
+        android:id="@+id/etxt_note"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:hint="@string/add_a_note"/>

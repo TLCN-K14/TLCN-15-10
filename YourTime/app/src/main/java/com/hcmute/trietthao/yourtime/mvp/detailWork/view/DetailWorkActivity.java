@@ -6,11 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,41 +17,53 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBWorkServer;
 import com.hcmute.trietthao.yourtime.database.PostWorkListener;
 import com.hcmute.trietthao.yourtime.imageProcessing.ConvertBitmap;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.model.LoaiNhacNhoModel;
+import com.hcmute.trietthao.yourtime.mvp.addANote.view.AddANoteActivity;
+import com.hcmute.trietthao.yourtime.mvp.detailWork.presenter.DetailWorkPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 import com.hcmute.trietthao.yourtime.profile.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
+import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.converStringToDateTime;
+import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
+
 /**
  * Created by lxtri on 24/10/2017.
  */
 
-public class DetailWorkActivity extends AppCompatActivity implements View.OnClickListener,PostWorkListener{
+public class DetailWorkActivity extends AppCompatActivity implements View.OnClickListener,IDetailWorkView,
+        PostWorkListener{
 
     @Bind(R.id.tv_name_work)
-    TextView tvNameWork;
+    EditText tvNameWork;
 
     @Bind(R.id.tv_name_assignto)
     TextView tvNameAssignTo;
@@ -63,8 +74,8 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
     @Bind(R.id.tv_time_reminder_end)
     TextView tvTimeReminderEnd;
 
-    @Bind(R.id.tv_repeat)
-    TextView tvRepeat;
+    @Bind(R.id.spinner_repeat)
+    Spinner spinnerRepeat;
 
     @Bind(R.id.tv_note)
     TextView tvNote;
@@ -145,11 +156,12 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
     String encodedString="null";
     private int REQUEST_IMAGE_GALLERY = 8888;
     private int REQUEST_IMAGE_CAPTURE = 9999;
+    private int REQUEST_ADD_NOTE = 7777;
     private String userChoosenTask;
 
     PreferManager mPreferManager;
-    CongViecModel mCongViec;
-    DBWorkServer dbWorkServer;
+    CongViecModel currentWork;
+    ArrayList<LoaiNhacNhoModel> loaiNhacNhoModelArrayList;
 
     AlertDialog.Builder dialogReminder;
     LayoutInflater layoutInflaterRemider;
@@ -157,22 +169,38 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
     AlertDialog alertDialogRemider;
     TextView tvSaveRemider, tvRemoveRemider, tvReminder, tvTitleRemider;
     LinearLayout lnlTimeReminder;
+    CalendarView calendarViewReminder;
 
     Calendar timeReminderStart;
     Calendar timeReminderEnd;
+    boolean isTimeStartChange = false,isTimeEndChange = false,isChangeName = false;
+
+    DetailWorkPresenter mDetailWorkPresenter;
+
+    DBWorkServer dbWorkServer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work_detail);
         ButterKnife.bind(this);
+        currentWork = new CongViecModel();
 
         mPreferManager = new PreferManager(getApplicationContext());
-        dbWorkServer = new DBWorkServer(this);
 
 
         EXTRA_WORK_ID = getIntent().getStringExtra("EXTRA_WORK_ID");
         EXTRA_GROUPWORK_ID = getIntent().getStringExtra("EXTRA_GROUPWORK_ID");
+
+        // Get detail work
+        mDetailWorkPresenter = new DetailWorkPresenter(this);
+        dbWorkServer = new DBWorkServer(this);
+        mDetailWorkPresenter.getDetailWork(Integer.parseInt(EXTRA_WORK_ID));
+
+        timeReminderStart = Calendar.getInstance();
+        timeReminderEnd = Calendar.getInstance();
+
+        tvNameWork.setFocusable(false);
 
         ivDeleteAssignTo.setVisibility(View.INVISIBLE);
         ivDeleteTimeReminderStart.setVisibility(View.INVISIBLE);
@@ -195,7 +223,154 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         ivDeleteRepeat.setOnClickListener(this);
         ivDeleteFile.setOnClickListener(this);
         ivBack.setOnClickListener(this);
+        tvNameWork.setOnClickListener(this);
 
+        spinnerRepeat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==0){
+                    ivImgRepeat.setImageResource(R.drawable.ic_repeat_off);
+                    ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorGray500));
+                }else{
+                    ivImgRepeat.setImageResource(R.drawable.ic_repeat_on);
+                    ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorBlue));
+                }
+                currentWork.setIdNhacNho(i);
+                try {
+                    currentWork.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                    currentWork.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                dbWorkServer.updateWork(currentWork);
+                try {
+                    createWorkNotification(i);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public void createWorkNotification(int idrepeat) throws ParseException {
+        dbWorkServer.deleteWorkNotification(currentWork.getIdCongViec());
+        if(idrepeat==0){
+            dbWorkServer.insertWorkNotification(currentWork.getIdCongViec(),
+                    getDateTimeToInsertUpdate(timeReminderStart),
+                    getDateTimeToInsertUpdate(timeReminderEnd),
+                    mPreferManager.getID(),"waiting");
+        }else{
+            Calendar tempStart,tempEnd;
+            tempStart = timeReminderStart; tempEnd = timeReminderEnd;
+            for(int i=0;i<5;i++){
+                dbWorkServer.insertWorkNotification(currentWork.getIdCongViec(),
+                        getDateTimeToInsertUpdate(tempStart),
+                        getDateTimeToInsertUpdate(tempEnd),
+                        mPreferManager.getID(),"waiting");
+                switch (idrepeat){
+                    case 1:
+                        tempStart.set(Calendar.DATE,tempStart.get(Calendar.DATE)+1);
+                        tempEnd.set(Calendar.DATE,tempStart.get(Calendar.DATE)+1);
+                        break;
+                    case 2:
+                        tempStart.set(Calendar.WEEK_OF_YEAR,tempStart.get(Calendar.WEEK_OF_YEAR)+1);
+                        tempEnd.set(Calendar.WEEK_OF_YEAR,tempStart.get(Calendar.WEEK_OF_YEAR)+1);
+                        break;
+                    case 3:
+                        tempStart.set(Calendar.MONTH,tempStart.get(Calendar.MONTH)+1);
+                        tempEnd.set(Calendar.MONTH,tempStart.get(Calendar.MONTH)+1);
+                        break;
+                    case 4:
+                        tempStart.set(Calendar.YEAR,tempStart.get(Calendar.MONTH)+1);
+                        tempEnd.set(Calendar.YEAR,tempStart.get(Calendar.MONTH)+1);
+                        break;
+                }
+            }
+            tempStart=null; tempEnd=null;
+        }
+
+    }
+
+    public void setupDetailWork() throws ParseException {
+        tvNameWork.setText(currentWork.getTenCongViec());
+        if(currentWork.getThoiGianBatDau()!=null){
+            tvTimeReminderStart.setText(getDateTimeToInsertUpdate(currentWork.getThoiGianBatDau()));
+            tvTimeReminderEnd.setText(getDateTimeToInsertUpdate(currentWork.getThoiGianKetThuc()));
+            timeReminderStart.setTime(converStringToDateTime(currentWork.getThoiGianBatDau()));
+            timeReminderEnd.setTime(converStringToDateTime(currentWork.getThoiGianKetThuc()));
+            setupTimeReminderOn();
+        }else
+            spinnerRepeat.setEnabled(false);
+        if(currentWork.getCoUuTien()==1){
+            ivImgPriority.setImageResource(R.drawable.ic_priority_selected);
+        }else{
+            ivImgPriority.setImageResource(R.drawable.ic_priority_unselected);
+        }
+        if(currentWork.getIdNhacNho()!=0){
+            spinnerRepeat.setSelection(currentWork.getIdNhacNho());
+        }
+        if(currentWork.getGhiChu()!=null){
+            tvNote.setText(currentWork.getGhiChu());
+            tvNote.setTextColor(getResources().getColor(R.color.colorBlue));
+            ivImgAddNote.setImageResource(R.drawable.ic_note_on);
+        }
+        if(currentWork.getFileDinhKem()!=null){
+            ivImgPicute.setVisibility(View.VISIBLE);
+            ivDeleteFile.setVisibility(View.VISIBLE);
+            ivImgAddFile.setImageResource(R.drawable.ic_camera_on);
+            String linkImg = "https://tlcn-yourtime.herokuapp.com/getimg?nameimg="+currentWork.getFileDinhKem()+".png";
+            Log.e("Link:",""+linkImg);
+            Picasso.with(getApplicationContext())
+                    .load(linkImg)
+                    .error(R.drawable.ava2)
+                    .into(ivImgPicute);
+        }
+    }
+
+    public void setupTimeReminderOn(){
+        tvTimeReminderStart.setTextColor(getResources().getColor(R.color.colorBlue));
+        tvTimeReminderEnd.setTextColor(getResources().getColor(R.color.colorBlue));
+
+        ivDeleteTimeReminderStart.setVisibility(View.VISIBLE);
+        ivDeleteTimeReminderEnd.setVisibility(View.VISIBLE);
+
+        ivImgTimeReminderStart.setImageResource(R.drawable.ic_reminder_on);
+        ivImgTimeReminderEnd.setImageResource(R.drawable.ic_reminder_end_on);
+    }
+
+    public void onClickDeleteTimeReminder(){
+        tvTimeReminderStart.setText(getResources().getString(R.string.set_date_reminder_start));
+        tvTimeReminderEnd.setText(getResources().getString(R.string.set_date_reminder_end));
+
+        tvTimeReminderStart.setTextColor(getResources().getColor(R.color.colorGray500));
+        tvTimeReminderEnd.setTextColor(getResources().getColor(R.color.colorGray500));
+
+
+        ivDeleteTimeReminderStart.setVisibility(View.INVISIBLE);
+        ivDeleteTimeReminderEnd.setVisibility(View.INVISIBLE);
+        ivDeleteRepeat.setVisibility(View.INVISIBLE);
+
+        ivImgTimeReminderStart.setImageResource(R.drawable.ic_reminder_off);
+        ivImgTimeReminderEnd.setImageResource(R.drawable.ic_reminder_end_off);
+        ivImgRepeat.setImageResource(R.drawable.ic_repeat_off);
+
+        timeReminderStart = Calendar.getInstance();
+        timeReminderEnd = Calendar.getInstance();
+
+        currentWork.setThoiGianKetThuc(null);
+        currentWork.setThoiGianBatDau(null);
+        currentWork.setIdNhacNho(0);
+        // delete time cong viec. delete cvthongbao
+        dbWorkServer.deleteWorkNotification(currentWork.getIdCongViec());
+        dbWorkServer.updateWork(currentWork);
+        spinnerRepeat.setSelection(0);
+        spinnerRepeat.setEnabled(false);
+        ((TextView) spinnerRepeat.getChildAt(0)).setTextColor(getResources().getColor(R.color.colorGray500));
     }
 
     @SuppressLint("SetTextI18n")
@@ -206,7 +381,26 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
             case R.id.lnl_assignto: break;
             case R.id.lnl_time_reminder_start:
                 setupDialog();
-                timeReminderStart = Calendar.getInstance();
+                if(currentWork.getThoiGianBatDau()!=null){
+                    try {
+                        if(!isTimeStartChange){
+                            calendarViewReminder.setDate(DateUtils.converStringToCalendar(currentWork.getThoiGianBatDau()).getTimeInMillis());
+                            timeReminderStart.setTime(converStringToDateTime(currentWork.getThoiGianBatDau()));
+                        }else{
+                            calendarViewReminder.setDate(timeReminderStart.getTimeInMillis());
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                    @Override
+                    public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
+                        timeReminderStart.set(year,month,dayOfMonth);
+                    }
+                });
 
                 tvTitleRemider.setText("Set Date & Time Start");
                 tvReminder.setText("Reminder at "+timeReminderStart.getTime().getHours()+":"
@@ -215,7 +409,26 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                 tvSaveRemider.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // save data
+                        try {
+                            spinnerRepeat.setEnabled(true);
+                            isTimeStartChange = true;
+                            tvTimeReminderStart.setText(getDateTimeToInsertUpdate(timeReminderStart));
+                            if(currentWork.getThoiGianKetThuc()!=null) {
+                            }else{
+                                timeReminderEnd.set(Calendar.HOUR, timeReminderStart.get(Calendar.HOUR) + 1);
+                                tvTimeReminderEnd.setText(getDateTimeToInsertUpdate(timeReminderEnd));
+                            }
+                            setupTimeReminderOn();
+
+                            currentWork.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                            currentWork.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+
+                            dbWorkServer.updateWork(currentWork);
+                            createWorkNotification(currentWork.getIdNhacNho());
+                            // update time work. delete all cvthongbao and insert again
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         alertDialogRemider.dismiss();
 
                     }
@@ -253,16 +466,54 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.lnl_time_reminder_end:
                 setupDialog();
-                timeReminderEnd = Calendar.getInstance();
+
+                if(currentWork.getThoiGianBatDau()!=null){
+                    try {
+                        if(!isTimeEndChange){
+                            calendarViewReminder.setDate(DateUtils.converStringToCalendar(currentWork.getThoiGianBatDau()).getTimeInMillis());
+                            timeReminderEnd.setTime(converStringToDateTime(currentWork.getThoiGianKetThuc()));
+                        }else{
+                            calendarViewReminder.setDate(timeReminderEnd.getTimeInMillis());
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
 
                 tvTitleRemider.setText("Set Date & Time End");
                 tvReminder.setText("Reminder at "+timeReminderEnd.getTime().getHours()+":"
                         +timeReminderEnd.getTime().getMinutes());
 
+                calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                    @Override
+                    public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
+                        timeReminderEnd.set(year,month,dayOfMonth);
+                    }
+                });
+
                 tvSaveRemider.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // save data
+                        try {
+                            spinnerRepeat.setEnabled(true);
+                            isTimeEndChange = true;
+                            tvTimeReminderEnd.setText(getDateTimeToInsertUpdate(timeReminderEnd));
+                            if(currentWork.getThoiGianBatDau()!=null) {
+                            }else{
+                                timeReminderStart.set(Calendar.HOUR,timeReminderEnd.get(Calendar.HOUR)-1);
+                                tvTimeReminderStart.setText(getDateTimeToInsertUpdate(timeReminderEnd));
+                            }
+                            setupTimeReminderOn();
+
+                            currentWork.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                            currentWork.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+
+                            dbWorkServer.updateWork(currentWork);
+                            createWorkNotification(currentWork.getIdNhacNho());
+                            // update time work. delete all cvthongbao and insert again
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         alertDialogRemider.dismiss();
 
                     }
@@ -298,21 +549,49 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                 alertDialogRemider.show();
 
                 break;
-            case R.id.lnl_repeat: break;
-            case R.id.lnl_add_note: break;
+            case R.id.lnl_repeat:
+
+                break;
+            case R.id.lnl_add_note:
+                Intent intent = new Intent(getApplicationContext(), AddANoteActivity.class);
+                intent.putExtra("EXTRA_WORK_ID", currentWork.getIdCongViec().toString());
+                intent.putExtra("EXTRA_GROUPWORK_ID", EXTRA_GROUPWORK_ID);
+                intent.putExtra("EXTRA_WORK_NAME", currentWork.getTenCongViec());
+                if(currentWork.getGhiChu()!=null)
+                    intent.putExtra("EXTRA_NOTE", currentWork.getGhiChu());
+                startActivityForResult(intent,REQUEST_ADD_NOTE);
+                break;
             case R.id.lnl_add_picture:
                 ivImgPicute.setVisibility(View.VISIBLE);
                 ivDeleteFile.setVisibility(View.VISIBLE);
+                ivImgAddFile.setImageResource(R.drawable.ic_camera_on);
                 selectImage();
+
                 break;
             case R.id.lnl_add_a_comment: break;
 
             case R.id.iv_delete_assignto: break;
-            case R.id.iv_delete_time_reminder_start: break;
-            case R.id.iv_delete_time_reminder_end: break;
-            case R.id.iv_delete_repeat: break;
+            case R.id.iv_delete_time_reminder_start:
+                onClickDeleteTimeReminder();
+                currentWork.setIdNhacNho(0);
+                ivDeleteRepeat.setVisibility(View.INVISIBLE);
+                ivImgRepeat.setImageResource(R.drawable.ic_repeat_off);
+                break;
+            case R.id.iv_delete_time_reminder_end:
+                onClickDeleteTimeReminder();
+                currentWork.setIdNhacNho(0);
+                ivDeleteRepeat.setVisibility(View.INVISIBLE);
+                ivImgRepeat.setImageResource(R.drawable.ic_repeat_off);
+                break;
+            case R.id.iv_delete_repeat:
+                currentWork.setIdNhacNho(0);
+                ivDeleteRepeat.setVisibility(View.INVISIBLE);
+                ivImgRepeat.setImageResource(R.drawable.ic_repeat_off);
+                // update work
+                break;
             case R.id.iv_delete_picture:
                 encodedString = "null";
+                ivImgAddFile.setImageResource(R.drawable.ic_camera_off);
                 ivImgPicute.setImageDrawable(null);
                 ivImgPicute.setVisibility(View.GONE);
                 lnlAddFile.setVisibility(View.VISIBLE);
@@ -320,27 +599,66 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.iv_img_priority:
-                if(mCongViec.getCoUuTien()==1){
-                    mCongViec.setCoUuTien(0);
+                if(currentWork.getCoUuTien()==1){
+                    currentWork.setCoUuTien(0);
                     ivImgPriority.setImageResource(R.drawable.ic_priority_unselected);
-                    dbWorkServer.updatePriorityWork(0,mCongViec.getIdCongViec());
+                    dbWorkServer.updatePriorityWork(0,currentWork.getIdCongViec());
                 }else{
-                    mCongViec.setCoUuTien(1);
+                    currentWork.setCoUuTien(1);
                     ivImgPriority.setImageResource(R.drawable.ic_priority_selected);
-                    dbWorkServer.updatePriorityWork(1,mCongViec.getIdCongViec());
+                    dbWorkServer.updatePriorityWork(1,currentWork.getIdCongViec());
                 }
-
                 break;
             case R.id.iv_img_back:
-                Intent data = new Intent();
-                data.putExtra("EXTRA_GROUPWORK_ID",EXTRA_GROUPWORK_ID);
-                data.putExtra("EXTRA_GROUPWORK_NAME",EXTRA_GROUPWORK_NAME);
-                setResult(RESULT_OK,data);
-                finish();
+                if(isChangeName){
+                    tvNameWork.setFocusable(false);
+                    // update work
+                    currentWork.setTenCongViec(tvNameWork.getText().toString());
+                    if(currentWork.getThoiGianBatDau()!=null){
+                        try {
+                            currentWork.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                            currentWork.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    dbWorkServer.updateWork(currentWork);
+                    isChangeName = false;
+                }else{
+                    Intent data = new Intent();
+                    data.putExtra("EXTRA_GROUPWORK_ID",EXTRA_GROUPWORK_ID);
+                    data.putExtra("EXTRA_GROUPWORK_NAME",EXTRA_GROUPWORK_NAME);
+                    setResult(RESULT_OK,data);
+                    finish();
+                }
+                break;
+
+            case R.id.tv_name_work:
+                isChangeName = true;
+                tvNameWork.setFocusableInTouchMode(true);
                 break;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(isChangeName){
+            tvNameWork.setFocusable(false);
+            // update work
+            currentWork.setTenCongViec(tvNameWork.getText().toString());
+            if(currentWork.getThoiGianBatDau()!=null){
+                try {
+                    currentWork.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                    currentWork.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            dbWorkServer.updateWork(currentWork);
+            isChangeName = false;
+        }else
+            super.onBackPressed();
+    }
 
     public void setupDialog(){
         dialogReminder = new AlertDialog.Builder(this);
@@ -350,7 +668,8 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
 
         dialogReminder.setView(viewRemider);
         alertDialogRemider = dialogReminder.create();
-
+        calendarViewReminder = viewRemider.findViewById(R.id.calendar_reminder);
+        calendarViewReminder.setMinDate(System.currentTimeMillis() - 1000);
         tvSaveRemider = viewRemider.findViewById(R.id.tv_save);
         tvRemoveRemider =  viewRemider.findViewById(R.id.tv_remove);
         tvReminder = viewRemider.findViewById(R.id.tv_time_reminder);
@@ -359,61 +678,61 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void getResultPostWork(Boolean isSucess) {
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this,"vào on activity result:::",Toast.LENGTH_LONG).show();
         if (requestCode == REQUEST_IMAGE_GALLERY)
             onSelectFromGalleryResult(data);
         else if (requestCode == REQUEST_IMAGE_CAPTURE)
             onCaptureImageResult(data);
+        else if( requestCode == REQUEST_ADD_NOTE){
+            String text = data.getStringExtra("EXTRA_NOTE");
+            if(text.equals("")){
+                tvNote.setText(getResources().getString(R.string.add_a_note));
+                ivImgAddNote.setImageResource(R.drawable.ic_note_off);
+                tvNote.setTextColor(getResources().getColor(R.color.colorGray500));
+                currentWork.setGhiChu(null);
+            }
+            else{
+                tvNote.setText(text);
+                tvNote.setTextColor(getResources().getColor(R.color.black));
+                ivImgAddNote.setImageResource(R.drawable.ic_note_on);
+                currentWork.setGhiChu(text);
+            }
+            dbWorkServer.updateWork(currentWork);
+            // update work
+        }
         //Từ gg vào
     }
 
-    public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImage(ImageView bmImage){
-            this.bmImage = bmImage;
+    @Override
+    public void getDetailWorkSuccess() {
+        currentWork = mDetailWorkPresenter.getDetailWork();
+        loaiNhacNhoModelArrayList = mDetailWorkPresenter.getListRepeat();
+        try {
+            setupDetailWork();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+    }
 
-        protected Bitmap doInBackground(String... urls){
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try{
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            }catch (Exception e){
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result){
-            bmImage.setImageBitmap(result);
-        }
+    @Override
+    public void getDetailWorkFail() {
 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                } else {
+    public void updateDetailWorkSuccess() {
 
-                }
-                break;
-        }
+    }
+
+    @Override
+    public void updateDetailWorkFail() {
+
+    }
+
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+
     }
 
     private void selectImage() {
@@ -459,6 +778,22 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+
+        ConvertBitmap myBitMap = new ConvertBitmap(this);
+        Bitmap bitmap = null;
+        try {
+            bitmap = myBitMap.decodeUri(data.getData());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ivImgPicute.setImageBitmap(bitmap);
+        encodedString = myBitMap.getStringFromBitmap(bitmap);
+        Log.e("FILE",""+encodedString);
+        dbWorkServer.updateFileWork(encodedString,currentWork.getIdCongViec());
+
+    }
 
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
@@ -483,21 +818,25 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         Base64Utils myBitMap = new Base64Utils(this);
         ivImgPicute.setImageBitmap(thumbnail);
         encodedString = myBitMap.getStringFromBitmap(thumbnail);
+        Log.e("FILE",""+encodedString);
+        dbWorkServer.updateFileWork(encodedString,currentWork.getIdCongViec());
+
     }
 
-    @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(userChoosenTask.equals("Take Photo"))
+                        cameraIntent();
+                    else if(userChoosenTask.equals("Choose from Library"))
+                        galleryIntent();
+                } else {
 
-        ConvertBitmap myBitMap = new ConvertBitmap(this);
-        Bitmap bitmap = null;
-        try {
-            bitmap = myBitMap.decodeUri(data.getData());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+                }
+                break;
         }
-        ivImgPicute.setImageBitmap(bitmap);
-        encodedString = myBitMap.getStringFromBitmap(bitmap);
-
     }
 
 }

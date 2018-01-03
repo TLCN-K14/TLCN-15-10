@@ -28,7 +28,7 @@
             android:id="@+id/iv_img_back"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp"
             />
-            <TextView
+            <EditText
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="7"
@@ -163,7 +163,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ic_notifications_paused_gray_24dp"
+                        app:srcCompat="@drawable/ic_reminder_end_off"
                         android:id="@+id/iv_img_time_reminder_end"
                         android:layout_margin="5dp"
                         />
@@ -206,19 +206,18 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_repeat_completed"
+                        android:src="@drawable/ic_repeat_off"
                         android:layout_margin="5dp"
                         android:id="@+id/iv_img_repeat"
                         android:padding="7dp"
                         />
-                    <TextView
+                    <Spinner
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="5"
                         android:paddingLeft="10dp"
-                        android:id="@+id/tv_repeat"
-                        android:text="@string/repeat_every"
-                        android:textSize="@dimen/dimen_16sp"
+                        android:entries="@array/type_repeat"
+                        android:id="@+id/spinner_repeat"
                         android:textColor="@color/colorGray500"
                         android:background="@drawable/border_bottom_gray"
                         android:gravity="center_vertical"/>
@@ -249,6 +248,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
+                    android:padding="4dp"
                     android:id="@+id/iv_img_add_note"
                     android:src="@drawable/ic_note_off"
                     />

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,7 +42,7 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 
 public class DetailGroupWorkActivity extends AppCompatActivity implements View.OnClickListener,IDetailGroupWorkView
-        ,IOnItemWorkListener {
+        ,IOnItemWorkListener,SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -78,6 +79,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Bind(R.id.progressBar_Loadmore)
     ProgressBar pbLoading;
+
+    @Bind(R.id.swiperefresh)
+    SwipeRefreshLayout mSwipeLayout;
 
     String EXTRA_GROUPWORK_ID = "";
     String EXTRA_GROUPWORK_NAME = "";
@@ -116,13 +120,11 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
         tvNameGroupWork.setText(EXTRA_GROUPWORK_NAME);
 
-
-        Toast.makeText(getApplication(), "GROUPWORKID! "+EXTRA_GROUPWORK_ID,
-                Toast.LENGTH_LONG).show();
         mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
         initData();
 
         lnlLongClickMenu.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.GONE);
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
@@ -159,11 +161,16 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
             }
         });
+
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     public void initData(){
         if(isNetWorkConnected(getApplication())){
-            Log.e("INIT"," ------------GROUP ID: "+EXTRA_GROUPWORK_ID);
             if(EXTRA_GROUPWORK_ID!=null)
                 mDetailGroupWorkPresenter.getWorkByIdGroup(mPreferManager.getID(),Integer.parseInt(EXTRA_GROUPWORK_ID));
         }
@@ -214,10 +221,11 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 }
                 break;
             case R.id.iv_back_longclick_itemwork:
-                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                lnlCurrentItemLongClick.setBackground(getResources().getDrawable(R.drawable.borderwork_white));
                 lnlCurrentItemLongClick = null;
                 currentItemWork = null;
                 isLongClicking = false;
+
                 lnlLongClickMenu.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.VISIBLE);
                 break;
@@ -232,14 +240,34 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                     congViecModel.setIdNhom(Integer.parseInt(EXTRA_GROUPWORK_ID));
                     congViecModel.setIdNhacNho(0);
                     mDetailGroupWorkPresenter.insertWork(congViecModel);
+                    Toast.makeText(getApplication(), "Insert successfull",
+                            Toast.LENGTH_LONG).show();
+                    mSwipeLayout.setRefreshing(true);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override public void run() {
+                            initData();
+                            mSwipeLayout.setRefreshing(false);
+                        }
+                    }, 1000);
                 }
                 break;
             case R.id.iv_delete_item_work:
-                Toast.makeText(getApplication(), "Delete-----"+currentItemWork.getTenCongViec(),
+                mDetailGroupWorkPresenter.deleteWork(currentItemWork.getIdCongViec());
+                currentItemWork = null;
+                lnlCurrentItemLongClick = null;
+                isLongClicking = false;
+                lnlLongClickMenu.setVisibility(View.GONE);
+                mToolbar.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplication(), "Delete successfull",
                         Toast.LENGTH_LONG).show();
+                mSwipeLayout.setRefreshing(true);
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        initData();
+                        mSwipeLayout.setRefreshing(false);
+                    }
+                }, 1000);
                 break;
-
-
         }
     }
 
@@ -247,9 +275,6 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     public void getWorkByIDGroupSuccess() {
         mListWork = mDetailGroupWorkPresenter.getListWorkNormal();
         mListWorkCompleted = mDetailGroupWorkPresenter.getListWorkCompleted();
-
-        Toast.makeText(getApplication(), "Size Normal: "+mListWork.size()+" Size Completed: "+mListWorkCompleted.size(),
-                Toast.LENGTH_LONG).show();
 
         itemWorkServerAdapter = new ItemWorkServerAdapter(getApplicationContext(),mListWork,
                 mListWorkCompleted,1,this,this);
@@ -274,12 +299,18 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Override
     public void showLoading() {
-        pbLoading.setVisibility(View.VISIBLE);
+        // pbLoading.setVisibility(View.VISIBLE);
+        mSwipeLayout.setRefreshing(true);
     }
 
     @Override
     public void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
+        // pbLoading.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 
     @Override
@@ -335,7 +366,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
             ivBackFromLongClick.performClick();
         }else{
             if(lnlCurrentItemLongClick!=null){
-                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                lnlCurrentItemLongClick.setBackground(getResources().getDrawable(R.drawable.borderwork_white));
             }
             else{
                 mToolbar.setVisibility(View.GONE);
@@ -347,5 +378,17 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
             tvNameItemWork.setText(currentItemWork.getTenCongViec()+" seleted");
             lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#0099CC"));
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                initData();
+                Toast.makeText(getApplicationContext(), "on Refresh ",
+                        Toast.LENGTH_LONG).show();
+                mSwipeLayout.setRefreshing(false);
+            }
+        }, 500);
     }
 }

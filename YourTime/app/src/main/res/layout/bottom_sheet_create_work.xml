@@ -56,7 +56,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/ic_notifications_paused_gray_24dp"
+            app:srcCompat="@drawable/ic_reminder_end_off"
             android:layout_toEndOf="@+id/img_bottomsheet_reminder_start"
             android:id="@+id/img_bottomsheet_reminder_end"
             android:padding="13dp"/>

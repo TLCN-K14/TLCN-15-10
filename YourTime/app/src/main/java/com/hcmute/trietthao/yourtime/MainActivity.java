@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     int idGroupWorkCurrent = 0;
     String nameGroupCurrent = "Inbox";
     boolean isTimeEndChoose = false;
+    boolean isChooseTime = false;
     int isPriority = 0;
 
     DBWorkServer dbWorkServer;
@@ -300,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             break;
             case R.id.img_bottomsheet_reminder_start:
                 setupDialog();
+                isChooseTime = true;
                 ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate_on);
                 timeReminderStart = Calendar.getInstance();
                 timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+1);
@@ -365,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             case R.id.img_bottomsheet_reminder_end:
                 isTimeEndChoose = true;
                 setupDialog();
-                ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_blue_24dp);
+                ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_reminder_end_on);
                 timeReminderEnd = Calendar.getInstance();
                 timeReminderEnd.set(Calendar.HOUR,timeReminderEnd.get(Calendar.HOUR)+2);
 
@@ -429,40 +431,52 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
             break;
             case R.id.txt_bottomsheet_add:
                 if(!etBottomSheetNameWork.getText().toString().equals("")){
-                    if(!isTimeEndChoose)
-                        Toast.makeText(getApplicationContext(), "Please choose Reminder finish!",
-                                Toast.LENGTH_LONG).show();
-                    else{
-                        if(timeReminderStart.getTime().compareTo(timeReminderEnd.getTime())>0
-                                ){
-                            Toast.makeText(getApplicationContext(), "Reminder finish must greater Reminder begin!",
-                                    Toast.LENGTH_LONG).show();
-                        }else{
-                            CongViecModel congViecModel = new CongViecModel();
-                            congViecModel.setIdCongViec(getIntCurrentDateTime());
-                            congViecModel.setIdNhom(idGroupWorkCurrent);
-                            congViecModel.setTenCongViec(etBottomSheetNameWork.getText().toString());
-                            try {
-                                congViecModel.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
-                                congViecModel.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            congViecModel.setCoUuTien(isPriority);
-                            congViecModel.setIdNhacNho(0);
-                            congViecModel.setIdNguoiTaoCV(preferManager.getID());
-                            if(timeReminderStart.getTime().compareTo(Calendar.getInstance().getTime())<0)
-                                congViecModel.setTrangThai("overdue");
-                            else
-                                congViecModel.setTrangThai("waiting");
-                            dbWorkServer.insertWork(congViecModel);
-                            dbWorkServer.insertWorkNotification(congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau(),
-                                    congViecModel.getThoiGianKetThuc(),congViecModel.getIdNguoiTaoCV(),congViecModel.getTrangThai());
+                    CongViecModel congViecModel = new CongViecModel();
+                    congViecModel.setIdCongViec(getIntCurrentDateTime());
+                    congViecModel.setIdNhom(idGroupWorkCurrent);
+                    congViecModel.setTenCongViec(etBottomSheetNameWork.getText().toString());
+                    congViecModel.setCoUuTien(isPriority);
+                    congViecModel.setIdNhacNho(0);
+                    congViecModel.setIdNguoiTaoCV(preferManager.getID());
 
-                            isTimeEndChoose = false;
-                            bottomSheetDialog.cancel();
+
+                    if(isChooseTime){
+                        if(!isTimeEndChoose)
+                            Toast.makeText(getApplicationContext(), "Please choose Reminder finish!",
+                                    Toast.LENGTH_LONG).show();
+                        else{
+                            if(timeReminderStart.getTime().compareTo(timeReminderEnd.getTime())>0
+                                    ){
+                                Toast.makeText(getApplicationContext(), "Reminder finish must greater Reminder begin!",
+                                        Toast.LENGTH_LONG).show();
+                            }else{
+                                try {
+                                    congViecModel.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
+                                    congViecModel.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                if(timeReminderStart.getTime().compareTo(Calendar.getInstance().getTime())<0)
+                                    congViecModel.setTrangThai("overdue");
+                                else
+                                    congViecModel.setTrangThai("waiting");
+                            }
                         }
+                    }else{
+                        congViecModel.setThoiGianBatDau(null);
+                        congViecModel.setThoiGianKetThuc(null);
+                        congViecModel.setTrangThai("waiting");
                     }
+
+                    dbWorkServer.insertWork(congViecModel);
+                    dbWorkServer.insertWorkNotification(congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau(),
+                            congViecModel.getThoiGianKetThuc(),congViecModel.getIdNguoiTaoCV(),congViecModel.getTrangThai());
+
+                    isChooseTime = false;
+                    isTimeEndChoose = false;
+                    bottomSheetDialog.cancel();
+                    TasksFragment.initData();
+
                 }else{
                     Toast.makeText(getApplicationContext(), "Enter name work!",
                             Toast.LENGTH_LONG).show();
@@ -485,6 +499,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         alertDialogRemider = dialogReminder.create();
 
         calendarViewReminder = viewRemider.findViewById(R.id.calendar_reminder);
+        calendarViewReminder.setMinDate(System.currentTimeMillis() - 1000);
         tvSaveRemider = viewRemider.findViewById(R.id.tv_save);
         tvRemoveRemider =  viewRemider.findViewById(R.id.tv_remove);
         tvReminder = viewRemider.findViewById(R.id.tv_time_reminder);
@@ -551,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         isTimeEndChoose = false;
         isPriority = 0;
         ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate);
-        ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_notifications_paused_gray_24dp);
+        ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_reminder_end_off);
         ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
         etBottomSheetNameWork.setText("Add to-do in '"+nameGroupCurrent+"'...");
         if(isSucess){

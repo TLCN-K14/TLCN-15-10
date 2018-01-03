@@ -111,7 +111,7 @@
             <!--</intent-filter>-->
         <!--</activity>-->
 
-        <activity android:name=".AddANoteActivity"
+        <activity android:name=".mvp.addANote.view.AddANoteActivity"
             android:parentActivityName=".mvp.detailWork.view.DetailWorkActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

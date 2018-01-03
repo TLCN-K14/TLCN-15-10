@@ -93,7 +93,7 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:id="@+id/item_work_repeat"
-                        android:src="@drawable/ic_repeat"
+                        android:src="@drawable/ic_repeat_on"
                         android:layout_marginBottom="@dimen/padding_5dp"/>
                 </LinearLayout>
             </LinearLayout>

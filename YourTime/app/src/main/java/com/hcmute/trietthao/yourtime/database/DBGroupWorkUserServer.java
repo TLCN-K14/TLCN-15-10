@@ -45,15 +45,15 @@ public class DBGroupWorkUserServer {
         });
     }
     // Hàm lấy list group work
-    public void deleteGroupWorkUser(Integer idNhom, Integer idNguoiDung){
+    public void deleteGroupWorkUser(Integer idNhom){
         mService = ApiUtils.getService();
-        Call<NhomCVNguoiDungModel> deleteRequest = mService.deleteGroupWorkUser(idNhom,idNguoiDung);
+        Call<NhomCVNguoiDungModel> deleteRequest = mService.deleteGroupWorkUser(idNhom);
         deleteRequest.enqueue(new Callback<NhomCVNguoiDungModel>() {
             @Override
             public void onResponse(Call<NhomCVNguoiDungModel> call, Response<NhomCVNguoiDungModel> response) {
                 if(response.isSuccessful()) {
                     postGroupWorkUserListener.getResultPostGroupWorkUser(true);
-                    Log.e("Response",""+response.message());
+                    Log.e("Response","deleteGroupWorkUser Thanh cong"+response.message());
                 }
                 else
                 {

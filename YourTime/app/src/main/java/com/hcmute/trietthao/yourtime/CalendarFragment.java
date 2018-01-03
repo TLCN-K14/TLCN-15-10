@@ -1,7 +1,5 @@
 package com.hcmute.trietthao.yourtime;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.util.Log;
 
 import com.hcmute.trietthao.yourtime.base.BaseFragment;
@@ -12,6 +10,7 @@ import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -29,11 +28,10 @@ public class CalendarFragment extends BaseFragment  {
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         mListWork = TasksFragment.mListCV;
+        Calendar temp = Calendar.getInstance();
 
-        Log.e("calenderFragment::","Vao onMonthChange");
+        Log.e("calenderFragment::","Vao onMonthChange------");
         events = new ArrayList<WeekViewEvent>();
-
-
 
         for (int i=0; i<mListWork.size();i++){
             CongViecModel congViecModel = mListWork.get(i);
@@ -42,9 +40,7 @@ public class CalendarFragment extends BaseFragment  {
             if(mListWork.get(i).getThoiGianBatDau()!=null) {
 
                 try {
-                    if (DateUtils.converStringToDateTime(congViecModel.getThoiGianBatDau()).getMonth() ==
-                            newMonth) {
-
+                    if (newYear==temp.get(Calendar.YEAR)-1) {
                         event = new WeekViewEvent(mListWork.get(i).getIdCongViec(), congViecModel.getTenCongViec(),
                                 DateUtils.converStringToCalendar(congViecModel.getThoiGianBatDau()),
                                 DateUtils.converStringToCalendar(congViecModel.getThoiGianKetThuc()));

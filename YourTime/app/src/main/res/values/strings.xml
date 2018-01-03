@@ -92,4 +92,11 @@
     <string name="remind_me">Remind me</string>
     <string name="repeat_every">Repeat every ...</string>
     <string name="remove">Remove</string>
+    <string-array name="type_repeat">
+        <item>Never repeat</item>
+        <item>Every 1 days</item>
+        <item>Every 1 weeks</item>
+        <item>Every 1 months</item>
+        <item>Every 1 years</item>
+    </string-array>
 </resources>
