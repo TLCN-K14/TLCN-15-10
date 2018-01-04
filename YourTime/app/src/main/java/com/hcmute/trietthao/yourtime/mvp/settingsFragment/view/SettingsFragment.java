@@ -123,7 +123,7 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
                                 preferManager.logoutUser();
-                                LoginManager.getInstance().logOut();
+//                                LoginManager.getInstance().logOut();
                             }
                         });
 
