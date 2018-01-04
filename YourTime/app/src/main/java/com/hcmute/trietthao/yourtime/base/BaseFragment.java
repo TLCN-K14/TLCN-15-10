@@ -3,7 +3,6 @@ package com.hcmute.trietthao.yourtime.base;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -13,23 +12,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.calendar.DateTimeInterpreter;
-import com.hcmute.trietthao.yourtime.calendar.MonthLoader;
-import com.hcmute.trietthao.yourtime.calendar.WeekView;
-import com.hcmute.trietthao.yourtime.calendar.WeekViewEvent;
-import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
-import com.hcmute.trietthao.yourtime.database.DBWorkServer;
-import com.hcmute.trietthao.yourtime.database.GetWorkListener;
-import com.hcmute.trietthao.yourtime.model.CongViecModel;
-import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
-import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.DateTimeInterpreter;
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.MonthLoader;
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekView;
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekViewEvent;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 

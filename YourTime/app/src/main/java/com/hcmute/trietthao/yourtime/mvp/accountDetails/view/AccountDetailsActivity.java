@@ -1,7 +1,6 @@
 package com.hcmute.trietthao.yourtime.mvp.accountDetails.view;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +27,7 @@ import com.hcmute.trietthao.yourtime.imageProcessing.ConvertBitmap;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.accountDetails.presenter.AccounDetailsPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.squareup.picasso.Picasso;
 

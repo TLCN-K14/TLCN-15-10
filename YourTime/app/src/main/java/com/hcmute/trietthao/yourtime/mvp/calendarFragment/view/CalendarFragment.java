@@ -1,9 +1,9 @@
-package com.hcmute.trietthao.yourtime;
+package com.hcmute.trietthao.yourtime.mvp.calendarFragment.view;
 
 import android.util.Log;
 
+import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.base.BaseFragment;
-import com.hcmute.trietthao.yourtime.calendar.WeekViewEvent;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.view.TasksFragment;
 import com.hcmute.trietthao.yourtime.service.utils.DateUtils;

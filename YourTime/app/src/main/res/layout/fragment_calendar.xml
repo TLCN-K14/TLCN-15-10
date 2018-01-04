@@ -17,7 +17,7 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <com.hcmute.trietthao.yourtime.calendar.WeekView
+    <com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekView
         android:id="@+id/weekView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

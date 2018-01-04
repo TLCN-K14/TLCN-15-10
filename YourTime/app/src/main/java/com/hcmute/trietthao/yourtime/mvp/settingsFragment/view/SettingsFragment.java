@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime;
+package com.hcmute.trietthao.yourtime.mvp.settingsFragment.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 
 import com.facebook.login.LoginManager;
+import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.accountDetails.view.AccountDetailsActivity;

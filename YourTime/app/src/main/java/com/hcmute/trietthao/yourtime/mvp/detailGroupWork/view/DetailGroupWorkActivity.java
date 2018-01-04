@@ -1,5 +1,6 @@
 package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +33,7 @@ import com.hcmute.trietthao.yourtime.mvp.detailWork.view.DetailWorkActivity;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +46,7 @@ import static com.hcmute.trietthao.yourtime.service.utils.NetworkUtils.isNetWork
 
 public class DetailGroupWorkActivity extends AppCompatActivity implements View.OnClickListener,IDetailGroupWorkView
         ,IOnItemWorkListener,SwipeRefreshLayout.OnRefreshListener {
+
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,6 +68,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Bind(R.id.iv_img_add_work)
     ImageView ivAddWork;
+
+    @Bind(R.id.iv_img_sort)
+    ImageView ivSort;
 
     @Bind(R.id.etxt_add_work)
     EditText etAddWork;
@@ -101,6 +108,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     PreferManager mPreferManager;
     Integer REQUEST_WORK_DETAIL = 000;
     boolean isAddWorkEnable = false;
+    boolean isSortAscName;
+    boolean isSortAscPriority;
+    boolean isSortAscDate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +130,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
         tvNameGroupWork.setText(EXTRA_GROUPWORK_NAME);
 
+
+        Toast.makeText(getApplication(), "GROUPWORKID! " + EXTRA_GROUPWORK_ID,
+                Toast.LENGTH_LONG).show();
         mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
         initData();
 
@@ -128,8 +141,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
-        if(ab!=null)
-        {
+        if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -137,16 +149,16 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         ivBackFromLongClick.setOnClickListener(this);
         ivDeleteItemWork.setOnClickListener(this);
         ivAddWork.setOnClickListener(this);
+        ivSort.setOnClickListener(this);
 
         etAddWork.addTextChangedListener(new TextWatcher() {
 
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
-                if (s.length() > 0)
-                { //do your work here }
+                if (s.length() > 0) { //do your work here }
                     ivAddWork.setImageResource(R.drawable.ic_add_active);
                     isAddWorkEnable = true;
-                }else{
+                } else {
                     ivAddWork.setImageResource(R.drawable.ic_add_non_active);
                     isAddWorkEnable = false;
                 }
@@ -169,12 +181,14 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 android.R.color.holo_red_light);
     }
 
-    public void initData(){
-        if(isNetWorkConnected(getApplication())){
-            if(EXTRA_GROUPWORK_ID!=null)
-                mDetailGroupWorkPresenter.getWorkByIdGroup(mPreferManager.getID(),Integer.parseInt(EXTRA_GROUPWORK_ID));
+    public void initData() {
+        if (isNetWorkConnected(getApplication())) {
+            Log.e("INIT", " ------------GROUP ID: " + EXTRA_GROUPWORK_ID);
+            if (EXTRA_GROUPWORK_ID != null)
+                mDetailGroupWorkPresenter.getWorkByIdGroup(mPreferManager.getID(), Integer.parseInt(EXTRA_GROUPWORK_ID));
         }
     }
+
     @Override
     protected void onResume() {
 //        rvListWork.setAdapter((RecyclerView.Adapter)null);
@@ -193,12 +207,12 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         int i = view.getId();
-        switch (i){
+        switch (i) {
             case R.id.txt_show_hide_completed_works:
-                if(isShowCompletedWorks){
+                if (isShowCompletedWorks) {
                     mTxtShowHideCompletedWorks.setText(R.string.show_completed_works);
-                    isShowCompletedWorks=false;
-                    setFadeOutTime(rvListWorkCompleted,500);
+                    isShowCompletedWorks = false;
+                    setFadeOutTime(rvListWorkCompleted, 500);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -206,10 +220,10 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                             rvListWorkCompleted.setVisibility(View.INVISIBLE);
                         }
                     }, 500);
-                }else{
+                } else {
                     mTxtShowHideCompletedWorks.setText(R.string.hide_completed_works);
-                    isShowCompletedWorks=true;
-                    setFadeInTime(rvListWorkCompleted,500);
+                    isShowCompletedWorks = true;
+                    setFadeInTime(rvListWorkCompleted, 500);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -230,7 +244,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 mToolbar.setVisibility(View.VISIBLE);
                 break;
             case R.id.iv_img_add_work:
-                if(!etAddWork.getText().toString().equals("")){
+                if (!etAddWork.getText().toString().equals("")) {
                     CongViecModel congViecModel = new CongViecModel();
                     congViecModel.setIdCongViec(getIntCurrentDateTime());
                     congViecModel.setCoUuTien(0);
@@ -258,7 +272,9 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 isLongClicking = false;
                 lnlLongClickMenu.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplication(), "Delete successfull",
+                Toast.makeText(getApplication(), "Delete successfull"+ currentItemWork.getThoiGianBatDau(),
+                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplication(), "Delete-----" + currentItemWork.getThoiGianBatDau(),
                         Toast.LENGTH_LONG).show();
                 mSwipeLayout.setRefreshing(true);
                 new Handler().postDelayed(new Runnable() {
@@ -268,7 +284,74 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                     }
                 }, 1000);
                 break;
+
+            case R.id.iv_img_sort:
+                final CharSequence[] items = { "Sort by Apha", "Sort by Priority",
+                        "Sort by Date" };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailGroupWorkActivity.this);
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (items[item].equals("Sort by Apha")) {
+                            if (!isSortAscName)
+                            {
+                                sortAccesdingNameWork();
+                            }else
+                                sortDescName();
+
+
+                        } else if (items[item].equals("Sort by Priority")) {
+                            if(!isSortAscPriority){
+                                sortAscPriority();
+                            }else
+                                sortDescPriority();
+
+                        } else if (items[item].equals("Sort by Date")) {
+                            if(!isSortAscDate){
+                                sortAscDate();
+                            }else
+                                sortDescDate();
+                        }
+                    }
+                });
+                builder.show();
+                break;
         }
+    }
+
+    public void sortAccesdingNameWork(){
+        isSortAscName=true;
+        Toast.makeText(getApplication(), "Vao sortAsc",
+                Toast.LENGTH_LONG).show();
+        Collections.sort(mListWork, CongViecModel.SortAscendingNameWork);
+        itemWorkServerAdapter.notifyDataSetChanged();
+    }
+    public void sortDescName(){
+        isSortAscName=false;
+//        Collections.sort(mListWork, Collections.reverseOrder());
+        Collections.sort(mListWork, CongViecModel.SortDescNameWork);
+        itemWorkServerAdapter.notifyDataSetChanged();
+    }
+    public void sortAscDate(){
+        isSortAscDate=true;
+        Collections.sort(mListWork,CongViecModel.SortAscDate);
+        itemWorkServerAdapter.notifyDataSetChanged();
+    }
+    public void sortDescDate(){
+        isSortAscDate=false;
+        Collections.sort(mListWork,CongViecModel.SortDescDate);
+        itemWorkServerAdapter.notifyDataSetChanged();
+    }
+    public void sortAscPriority(){
+        isSortAscPriority=true;
+        Collections.sort(mListWork,CongViecModel.SortAscPriority);
+        itemWorkServerAdapter.notifyDataSetChanged();
+    }
+    public void sortDescPriority(){
+        isSortAscPriority=false;
+        Collections.sort(mListWork,CongViecModel.SortByPriority);
+        itemWorkServerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -278,8 +361,13 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
         itemWorkServerAdapter = new ItemWorkServerAdapter(getApplicationContext(),mListWork,
                 mListWorkCompleted,1,this,this);
+        Toast.makeText(getApplication(), "Size Normal: " + mListWork.size() + " Size Completed: " + mListWorkCompleted.size(),
+                Toast.LENGTH_LONG).show();
+
+        itemWorkServerAdapter = new ItemWorkServerAdapter(getApplicationContext(), mListWork,
+                mListWorkCompleted, 1, this, this);
         itemWorkServerAdapterCompleted = new ItemWorkServerAdapter(getApplicationContext(),
-                mListWork,mListWorkCompleted,2,this,this);
+                mListWork, mListWorkCompleted, 2, this, this);
         rvListWork.setAdapter(itemWorkServerAdapter);
         rvListWorkCompleted.setAdapter(itemWorkServerAdapterCompleted);
         rvListWorkCompleted.setVisibility(View.INVISIBLE);
@@ -330,25 +418,24 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Override
     public void onItemClick(CongViecModel congViecModel, LinearLayout view) {
-        if(!isLongClicking){
+        if (!isLongClicking) {
             Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
             intent.putExtra("EXTRA_WORK_ID", congViecModel.getIdCongViec().toString());
             intent.putExtra("EXTRA_GROUPWORK_ID", EXTRA_GROUPWORK_ID);
             intent.putExtra("EXTRA_GROUPWORK_NAME", EXTRA_GROUPWORK_NAME);
-            startActivityForResult(intent,REQUEST_WORK_DETAIL);
-        }
-        else{
-            setupLongClick(congViecModel,view);
+            startActivityForResult(intent, REQUEST_WORK_DETAIL);
+        } else {
+            setupLongClick(congViecModel, view);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_WORK_DETAIL){
-            if(resultCode==RESULT_OK){
+        if (requestCode == REQUEST_WORK_DETAIL) {
+            if (resultCode == RESULT_OK) {
                 EXTRA_GROUPWORK_ID = data.getStringExtra("EXTRA_GROUPWORK_ID");
                 EXTRA_GROUPWORK_NAME = data.getStringExtra("EXTRA_GROUPWORK_NAME");
-                Log.e("OnResult",""+EXTRA_GROUPWORK_NAME);
+                Log.e("OnResult", "" + EXTRA_GROUPWORK_NAME);
                 initData();
             }
         }
@@ -358,37 +445,43 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     @Override
     public void onItemLongClick(CongViecModel congViecModel, LinearLayout view) {
         isLongClicking = true;
-        setupLongClick(congViecModel,view);
+        setupLongClick(congViecModel, view);
     }
 
-    public void setupLongClick(CongViecModel congViecModel,LinearLayout view){
-        if(currentItemWork!=null && currentItemWork.getIdCongViec()==congViecModel.getIdCongViec()){
+    public void setupLongClick(CongViecModel congViecModel, LinearLayout view) {
+        if (currentItemWork != null && currentItemWork.getIdCongViec() == congViecModel.getIdCongViec()) {
             ivBackFromLongClick.performClick();
-        }else{
-            if(lnlCurrentItemLongClick!=null){
+        } else {
+            if (lnlCurrentItemLongClick != null) {
                 lnlCurrentItemLongClick.setBackground(getResources().getDrawable(R.drawable.borderwork_white));
+            } else{
+                if (lnlCurrentItemLongClick != null) {
+                    lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#FAFAFA"));
+                } else {
+                    mToolbar.setVisibility(View.GONE);
+                    lnlLongClickMenu.setVisibility(View.VISIBLE);
+                }
+                currentItemWork = new CongViecModel();
+                lnlCurrentItemLongClick = view;
+                currentItemWork = congViecModel;
+                tvNameItemWork.setText(currentItemWork.getTenCongViec() + " seleted");
+                lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#0099CC"));
             }
-            else{
-                mToolbar.setVisibility(View.GONE);
-                lnlLongClickMenu.setVisibility(View.VISIBLE);
-            }
-            currentItemWork = new CongViecModel();
-            lnlCurrentItemLongClick = view;
-            currentItemWork = congViecModel;
-            tvNameItemWork.setText(currentItemWork.getTenCongViec()+" seleted");
-            lnlCurrentItemLongClick.setBackgroundColor(Color.parseColor("#0099CC"));
         }
+
     }
 
     @Override
     public void onRefresh() {
         new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 initData();
                 Toast.makeText(getApplicationContext(), "on Refresh ",
                         Toast.LENGTH_LONG).show();
                 mSwipeLayout.setRefreshing(false);
             }
         }, 500);
+
     }
 }

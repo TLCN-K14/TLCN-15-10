@@ -1,10 +1,16 @@
 package com.hcmute.trietthao.yourtime.model;
 
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 
 public class CongViecModel {
     @SerializedName("idCongViec")
@@ -76,6 +82,87 @@ public class CongViecModel {
     public CongViecModel() {
 
     }
+
+    public static Comparator<CongViecModel> SortByPriority = new Comparator<CongViecModel>() {
+
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            if (s1.getCoUuTien() > s2.getCoUuTien())
+            {
+                return -1;
+            }
+            else if (s1.getCoUuTien() < s2.getCoUuTien())
+            {
+                return 1;
+            }
+            return 0;
+
+        }};
+    public static Comparator<CongViecModel> SortAscPriority = new Comparator<CongViecModel>() {
+
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            if (s1.getCoUuTien() > s2.getCoUuTien())
+            {
+                return 1;
+            }
+            else if (s1.getCoUuTien() < s2.getCoUuTien())
+            {
+                return -1;
+            }
+            return 0;
+
+        }};
+    public static Comparator<CongViecModel> SortAscendingNameWork = new Comparator<CongViecModel>() {
+
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            String nameWork1 = s1.getTenCongViec().toUpperCase();
+            String nameWork2 = s2.getTenCongViec().toUpperCase();
+            //ascending order
+            return nameWork1.compareTo(nameWork2);
+
+        }};
+    public static Comparator<CongViecModel> SortDescNameWork = new Comparator<CongViecModel>() {
+
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            String nameWork1 = s1.getTenCongViec().toUpperCase();
+            String nameWork2 = s2.getTenCongViec().toUpperCase();
+            //ascending order
+            return nameWork2.compareTo(nameWork1);
+
+        }};
+    public static Comparator<CongViecModel> SortAscDate = new Comparator<CongViecModel>() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        int compareResult = 0;
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            try {
+                Date arg0Date = dateFormat.parse(s1.getThoiGianBatDau());
+                Date arg1Date = dateFormat.parse(s2.getThoiGianBatDau());
+                compareResult = arg0Date.compareTo(arg1Date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                compareResult = s1.getThoiGianBatDau().compareTo(s2.getThoiGianBatDau());
+            }
+            return compareResult;
+        }
+
+    };
+    public static Comparator<CongViecModel> SortDescDate = new Comparator<CongViecModel>() {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        int compareResult = 0;
+        public int compare(CongViecModel s1, CongViecModel s2) {
+            try {
+                Date arg0Date = dateFormat.parse(s1.getThoiGianBatDau());
+                Date arg1Date = dateFormat.parse(s2.getThoiGianBatDau());
+                compareResult = arg1Date.compareTo(arg0Date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                compareResult = s2.getThoiGianBatDau().compareTo(s1.getThoiGianBatDau());
+            }
+            return compareResult;
+        }
+
+    };
 
     public CongViecModel(Integer idCongViec, String tenCongViec, String thoiGianBatDau,
                          String thoiGianKetThuc, String ghiChu, String fileDinhKem, Integer coUuTien,

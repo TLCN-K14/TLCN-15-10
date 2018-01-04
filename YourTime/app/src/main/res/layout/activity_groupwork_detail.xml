@@ -44,6 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:id="@+id/iv_img_sort"
                     android:src="@drawable/ic_sort"
                     android:layout_margin="5sp"
                     />

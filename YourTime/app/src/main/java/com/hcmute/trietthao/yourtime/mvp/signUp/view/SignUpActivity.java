@@ -32,7 +32,7 @@ import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 
@@ -42,7 +42,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;

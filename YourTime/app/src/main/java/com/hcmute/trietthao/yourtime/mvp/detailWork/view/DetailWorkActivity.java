@@ -35,7 +35,7 @@ import com.hcmute.trietthao.yourtime.model.LoaiNhacNhoModel;
 import com.hcmute.trietthao.yourtime.mvp.addANote.view.AddANoteActivity;
 import com.hcmute.trietthao.yourtime.mvp.detailWork.presenter.DetailWorkPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.hcmute.trietthao.yourtime.profile.Utility;
+import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
 import com.squareup.picasso.Picasso;
