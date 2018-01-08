@@ -268,6 +268,9 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
             Calendar tempStart,tempEnd;
             tempStart = timeReminderStart; tempEnd = timeReminderEnd;
             for(int i=0;i<5;i++){
+                Log.e("TimeStart"+i+":"," "+getDateTimeToInsertUpdate(tempStart));
+                Log.e("TimeStart"+i+":"," "+getDateTimeToInsertUpdate(tempEnd));
+                Log.e("---------","-------------------------------------------");
                 dbWorkServer.insertWorkNotification(currentWork.getIdCongViec(),
                         getDateTimeToInsertUpdate(tempStart),
                         getDateTimeToInsertUpdate(tempEnd),
@@ -415,7 +418,7 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                             tvTimeReminderStart.setText(getDateTimeToInsertUpdate(timeReminderStart));
                             if(currentWork.getThoiGianKetThuc()!=null) {
                             }else{
-                                timeReminderEnd.set(Calendar.HOUR, timeReminderStart.get(Calendar.HOUR) + 1);
+                                timeReminderEnd.set(Calendar.MINUTE, timeReminderStart.get(Calendar.MINUTE) + 10);
                                 tvTimeReminderEnd.setText(getDateTimeToInsertUpdate(timeReminderEnd));
                             }
                             setupTimeReminderOn();
@@ -500,7 +503,7 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                             tvTimeReminderEnd.setText(getDateTimeToInsertUpdate(timeReminderEnd));
                             if(currentWork.getThoiGianBatDau()!=null) {
                             }else{
-                                timeReminderStart.set(Calendar.HOUR,timeReminderEnd.get(Calendar.HOUR)-1);
+                                timeReminderStart.set(Calendar.MINUTE,timeReminderEnd.get(Calendar.MINUTE)-10);
                                 tvTimeReminderStart.setText(getDateTimeToInsertUpdate(timeReminderEnd));
                             }
                             setupTimeReminderOn();
@@ -627,7 +630,6 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
                 }else{
                     Intent data = new Intent();
                     data.putExtra("EXTRA_GROUPWORK_ID",EXTRA_GROUPWORK_ID);
-                    data.putExtra("EXTRA_GROUPWORK_NAME",EXTRA_GROUPWORK_NAME);
                     setResult(RESULT_OK,data);
                     finish();
                 }
@@ -656,8 +658,12 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
             }
             dbWorkServer.updateWork(currentWork);
             isChangeName = false;
-        }else
-            super.onBackPressed();
+        }else{
+            Intent data = new Intent();
+            data.putExtra("EXTRA_GROUPWORK_ID",EXTRA_GROUPWORK_ID);
+            setResult(RESULT_OK,data);
+            finish();
+        }
     }
 
     public void setupDialog(){
@@ -790,7 +796,6 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         }
         ivImgPicute.setImageBitmap(bitmap);
         encodedString = myBitMap.getStringFromBitmap(bitmap);
-        Log.e("FILE",""+encodedString);
         dbWorkServer.updateFileWork(encodedString,currentWork.getIdCongViec());
 
     }
@@ -818,7 +823,6 @@ public class DetailWorkActivity extends AppCompatActivity implements View.OnClic
         Base64Utils myBitMap = new Base64Utils(this);
         ivImgPicute.setImageBitmap(thumbnail);
         encodedString = myBitMap.getStringFromBitmap(thumbnail);
-        Log.e("FILE",""+encodedString);
         dbWorkServer.updateFileWork(encodedString,currentWork.getIdCongViec());
 
     }

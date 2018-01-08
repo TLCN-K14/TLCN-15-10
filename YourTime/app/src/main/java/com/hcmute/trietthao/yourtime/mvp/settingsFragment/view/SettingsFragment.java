@@ -15,23 +15,32 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-
-import com.facebook.login.LoginManager;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
+import com.hcmute.trietthao.yourtime.database.DBWorkServer;
+import com.hcmute.trietthao.yourtime.database.GetWorkListener;
+import com.hcmute.trietthao.yourtime.database.GetWorkNotificationListener;
+import com.hcmute.trietthao.yourtime.database.PostWorkListener;
+import com.hcmute.trietthao.yourtime.model.CVThongBaoModel;
+import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.mvp.accountDetails.view.AccountDetailsActivity;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
+import com.hcmute.trietthao.yourtime.service.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.hcmute.trietthao.yourtime.notification.NotificationService.cancelNotification;
 
 
-public class SettingsFragment extends Fragment implements DBNguoiDungServer.userListener {
+public class SettingsFragment extends Fragment implements DBNguoiDungServer.userListener,
+        GetWorkListener,
+        PostWorkListener,GetWorkNotificationListener {
 
 
     CircleImageView mImgVAvatar;
@@ -46,6 +55,8 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
     PreferManager preferManager;
 
     DBNguoiDungServer dbNguoiDungServer;
+    DBWorkServer dbWorkServer;
+    ArrayList<CVThongBaoModel> mListWorkNotification;
     public static NguoiDungModel userCurrent=null;
 
 
@@ -70,6 +81,7 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
         preferManager=new PreferManager(getActivity().getApplicationContext());
         dbNguoiDungServer=new DBNguoiDungServer(this);
+        dbWorkServer = new DBWorkServer(this,this,this);
 
 
         // get user data from session
@@ -122,7 +134,7 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
 
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
-                                preferManager.logoutUser();
+                                dbWorkServer.getListAllWorkNotification(preferManager.getID());
 //                                LoginManager.getInstance().logOut();
                             }
                         });
@@ -215,4 +227,33 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
         }
     }
 
+    @Override
+    public void getResultPostWork(Boolean isSucess) {
+
+    }
+
+    @Override
+    public void getListAllWork(ArrayList<CongViecModel> congViecModelArrayList) {
+
+    }
+
+    @Override
+    public void getAllWorkNotification(ArrayList<CVThongBaoModel> congViecModelArrayList) {
+        mListWorkNotification = congViecModelArrayList;
+        CVThongBaoModel cvtb;
+        for(int i=0; i <mListWorkNotification.size(); i++){
+            cvtb = mListWorkNotification.get(i);
+            if(cvtb.getTrangThai().equals("waiting")){
+                int idNotification = 0;
+                try {
+                    idNotification = DateUtils.getIdNotification(cvtb.getThoiGianBatDau(),cvtb.getIdCongViec());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                cancelNotification(idNotification,getContext());
+                Log.e("DELETED","--deleted notification--"+cvtb.getIdCongViec()+"--time--"+cvtb.getThoiGianBatDau());
+            }
+        }
+        preferManager.logoutUser();
+    }
 }

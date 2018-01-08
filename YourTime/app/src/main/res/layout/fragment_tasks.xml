@@ -51,15 +51,15 @@
                         android:src="@drawable/ic_notification_none"
                         android:id="@+id/btn_notification"
                         />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2"
-                        android:layout_marginStart="20dp"
-                        android:background="@drawable/circle_red"
-                        android:textStyle="bold"
-                        android:paddingStart="@dimen/padding_5dp"
-                        android:textColor="@color/colorWhite"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="2"-->
+                        <!--android:layout_marginStart="20dp"-->
+                        <!--android:background="@drawable/circle_red"-->
+                        <!--android:textStyle="bold"-->
+                        <!--android:paddingStart="@dimen/padding_5dp"-->
+                        <!--android:textColor="@color/colorWhite"/>-->
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="@dimen/height_groupwork_50dp"
@@ -74,15 +74,15 @@
                         android:src="@drawable/ic_conversation_none"
                         android:id="@+id/btn_conversation"
                         />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1"
-                        android:layout_marginStart="20dp"
-                        android:background="@drawable/circle_red"
-                        android:textStyle="bold"
-                        android:paddingStart="@dimen/padding_5dp"
-                        android:textColor="@color/colorWhite"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="1"-->
+                        <!--android:layout_marginStart="20dp"-->
+                        <!--android:background="@drawable/circle_red"-->
+                        <!--android:textStyle="bold"-->
+                        <!--android:paddingStart="@dimen/padding_5dp"-->
+                        <!--android:textColor="@color/colorWhite"/>-->
                 </RelativeLayout>
 
                 <ImageView

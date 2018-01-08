@@ -2,9 +2,6 @@ package com.hcmute.trietthao.yourtime.mvp.calendarFragment.view;
 
 import java.util.Calendar;
 
-/**
- * Created by jesse on 6/02/2016.
- */
 public class WeekViewUtil {
 
 

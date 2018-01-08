@@ -80,7 +80,6 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/image_user1"
                 android:padding="@dimen/padding_5dp"
                 android:id="@+id/civ_image_user"/>
             <TextView

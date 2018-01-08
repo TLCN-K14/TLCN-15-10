@@ -43,6 +43,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.converStringToDateTime;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isDateInCurrentWeek;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.isToday;
@@ -106,6 +107,8 @@ public class TasksFragment extends Fragment implements
     DBGroupWorkServer dbGroupWorkServer;
     NhomCVModel currentGroupWorkLongClick;
 
+    private int REQUEST_CREATE_GROUPWORK = 999;
+
     static PreferManager mPreferManager;
     static Context mContext;
     DBNguoiDungServer dbNguoiDungServer;
@@ -161,8 +164,6 @@ public class TasksFragment extends Fragment implements
         dbNguoiDungServer.getListUser();
 
 
-        Toast.makeText(getActivity(), "ID USER: "+mPreferManager.getID(),
-                Toast.LENGTH_LONG).show();
         mTasksPresenter = new TasksPresenter(this);
         initData();
 
@@ -248,7 +249,7 @@ public class TasksFragment extends Fragment implements
                 break;
             case R.id.lnl_create_groupwork:
                 intent = new Intent(getContext(), CreateGroupWorkActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CREATE_GROUPWORK);
                 break;
             case  R.id.btn_search:
                 intent = new Intent(getContext(), SearchWorkViewActivity.class);
@@ -534,7 +535,6 @@ public class TasksFragment extends Fragment implements
         if(!isLongClicking){
             Intent intent = new Intent(getContext(), DetailGroupWorkActivity.class);
             intent.putExtra("EXTRA_GROUPWORK_ID", nhomCVModel.getIdNhom().toString());
-            intent.putExtra("EXTRA_GROUPWORK_NAME", nhomCVModel.getTenNhom());
             startActivity(intent);
         }
         else{
@@ -601,5 +601,14 @@ public class TasksFragment extends Fragment implements
             }
         }, 500);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==REQUEST_CREATE_GROUPWORK){
+            if(resultCode == RESULT_OK)
+                initData();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

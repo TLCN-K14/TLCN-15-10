@@ -7,6 +7,8 @@ package com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view;
 public interface IDetailGroupWorkView {
     void getWorkByIDGroupSuccess();
 
+    void getGroupWorkDetailSucess();
+
     void getWorkByIDGroupFail();
 
     void notifyDataSetChanged();

@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +35,7 @@ import com.hcmute.trietthao.yourtime.model.CongViecModel;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
 import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.CalendarFragment;
+import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.SettingsFragment;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAdapter;
@@ -53,6 +53,8 @@ import java.util.HashMap;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.hcmute.trietthao.yourtime.notification.NotificationService.createNotificationEnd;
+import static com.hcmute.trietthao.yourtime.notification.NotificationService.createNotificationStart;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getDateTimeToInsertUpdate;
 import static com.hcmute.trietthao.yourtime.service.utils.DateUtils.getIntCurrentDateTime;
 
@@ -99,9 +101,10 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
     DBWorkServer dbWorkServer;
 
-
     TasksPresenter mTasksPresenter;
     ArrayList<NhomCVModel> mListNhomCV;
+    String EXTRA_GROUPWORK_ID ="",EXTRA_WORK_ID="",  REQUEST_SCREEN="";
+
 
 
 
@@ -113,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         ButterKnife.bind(this);
 
         setupBottomSheetView();
@@ -123,8 +125,15 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
 
         mTasksPresenter = new TasksPresenter(this);
         mTasksPresenter.getAllGroupWorkOnline(preferManager.getID());
-
-        Log.e("email:::::::::",preferManager.KEY_EMAIL);
+        REQUEST_SCREEN = getIntent().getStringExtra("REQUEST_SCREEN");
+        if(getIntent().getStringExtra("REQUEST_SCREEN")!=null){
+            String[] parts = REQUEST_SCREEN.split("-");
+            Intent intent = new Intent(getApplicationContext(), DetailGroupWorkActivity.class);
+            intent.putExtra("EXTRA_GROUPWORK_ID",parts[1] );
+            intent.putExtra("REQUEST_SCREEN",parts[0] );
+            intent.putExtra("EXTRA_WORK_ID",parts[2]);
+            startActivity(intent);
+        }
 
         if(preferManager.isLoggedIn()) {
             HashMap<String, String> user = preferManager.getUserDetails();
@@ -212,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         mFabCreateWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mTasksPresenter.getAllGroupWorkOnline(preferManager.getID());
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 bottomSheetDialog.show();
             }
@@ -261,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         String url = "http://192.168.43.219:8000/getimg?nameimg=";
         String url_imgitem="https://foody-trietv2.herokuapp.com/getimg?nameimg=";
         userCurrent = listUser.get(0);
+
     }
 
     @Override
@@ -278,8 +289,6 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.lnl_bottomsheet_choooselist:
-
-                Log.e("MainActivity","Size: "+mListNhomCV.size());
                 dialogReminder = new AlertDialog.Builder(MainActivity.this);
                 dialogReminder.setCancelable(true);
                 layoutInflaterRemider = LayoutInflater.from((getBaseContext()));
@@ -306,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                 isChooseTime = true;
                 ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate_on);
                 timeReminderStart = Calendar.getInstance();
-                timeReminderStart.set(Calendar.HOUR,timeReminderStart.get(Calendar.HOUR)+1);
+                timeReminderStart.set(Calendar.MINUTE,timeReminderStart.get(Calendar.MINUTE)+5);
 
 
                 tvTitleRemider.setText("Set Date & Time Start");
@@ -324,12 +333,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                     @Override
                     public void onClick(View view) {
                         // save data
-                        try {
 
-                            Log.e("TEST__","-------"+getDateTimeToInsertUpdate(timeReminderStart));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
                         alertDialogRemider.dismiss();
 
                     }
@@ -371,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                 setupDialog();
                 ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_reminder_end_on);
                 timeReminderEnd = Calendar.getInstance();
-                timeReminderEnd.set(Calendar.HOUR,timeReminderEnd.get(Calendar.HOUR)+2);
+                timeReminderEnd.set(Calendar.MINUTE,timeReminderEnd.get(Calendar.MINUTE)+10);
 
                 calendarViewReminder.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                     @Override
@@ -432,6 +436,7 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                 }
             break;
             case R.id.txt_bottomsheet_add:
+                boolean canInsert = false;
                 if(!etBottomSheetNameWork.getText().toString().equals("")){
                     CongViecModel congViecModel = new CongViecModel();
                     congViecModel.setIdCongViec(getIntCurrentDateTime());
@@ -452,32 +457,40 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
                                 Toast.makeText(getApplicationContext(), "Reminder finish must greater Reminder begin!",
                                         Toast.LENGTH_LONG).show();
                             }else{
+                                canInsert = true;
                                 try {
                                     congViecModel.setThoiGianBatDau(getDateTimeToInsertUpdate(timeReminderStart));
                                     congViecModel.setThoiGianKetThuc(getDateTimeToInsertUpdate(timeReminderEnd));
+                                    createNotificationStart(congViecModel,timeReminderStart,timeReminderEnd,getApplicationContext());
+                                    createNotificationEnd(congViecModel,timeReminderStart,timeReminderEnd,getApplicationContext());
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-                                if(timeReminderStart.getTime().compareTo(Calendar.getInstance().getTime())<0)
+                                if(timeReminderEnd.getTime().compareTo(Calendar.getInstance().getTime())<0)
                                     congViecModel.setTrangThai("overdue");
                                 else
                                     congViecModel.setTrangThai("waiting");
                             }
                         }
                     }else{
+                        canInsert = true;
                         congViecModel.setThoiGianBatDau(null);
                         congViecModel.setThoiGianKetThuc(null);
                         congViecModel.setTrangThai("waiting");
                     }
 
-                    dbWorkServer.insertWork(congViecModel);
-                    dbWorkServer.insertWorkNotification(congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau(),
-                            congViecModel.getThoiGianKetThuc(),congViecModel.getIdNguoiTaoCV(),congViecModel.getTrangThai());
+                    if(canInsert){
+                        dbWorkServer.insertWork(congViecModel);
+                        dbWorkServer.insertWorkNotification(congViecModel.getIdCongViec(),congViecModel.getThoiGianBatDau(),
+                                congViecModel.getThoiGianKetThuc(),congViecModel.getIdNguoiTaoCV(),congViecModel.getTrangThai());
 
-                    isChooseTime = false;
-                    isTimeEndChoose = false;
-                    bottomSheetDialog.cancel();
-                    TasksFragment.initData();
+                        isChooseTime = false;
+                        isTimeEndChoose = false;
+                        canInsert = false;
+                        bottomSheetDialog.cancel();
+                        TasksFragment.initData();
+                    }
+
 
                 }else{
                     Toast.makeText(getApplicationContext(), "Enter name work!",
@@ -570,10 +583,11 @@ public class MainActivity extends AppCompatActivity implements DBNguoiDungServer
         ivBottomSheetSetReminderStart.setImageResource(R.drawable.ic_setdate);
         ivBottomSheetSetReminderEnd.setImageResource(R.drawable.ic_reminder_end_off);
         ivBottomSheetSetPriority.setImageResource(R.drawable.ic_priority_off);
-        etBottomSheetNameWork.setText("Add to-do in '"+nameGroupCurrent+"'...");
+        etBottomSheetNameWork.setHint("Add to-do in '"+nameGroupCurrent+"'...");
         if(isSucess){
             Toast.makeText(getApplicationContext(), "Add work success!",
                     Toast.LENGTH_LONG).show();
+
         }else{
             Toast.makeText(getApplicationContext(), "Add work fail!",
                     Toast.LENGTH_LONG).show();

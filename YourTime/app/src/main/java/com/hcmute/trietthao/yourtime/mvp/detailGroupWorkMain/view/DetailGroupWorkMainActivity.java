@@ -103,7 +103,6 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
 
         ivDeleteItemWork.setOnClickListener(this);
         ivBackFromLongClick.setOnClickListener(this);
-
         lnlLongClickMenu.setVisibility(View.GONE);
 
     }
@@ -162,8 +161,6 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
     public void getDetailGroupWorkSuccess() {
         mListNhomCV = formatList(mdetailGroupWorkMainPresenter.getListNhomCV());
         if(mListNhomCV.size()!=0){
-            Toast.makeText(getApplication(), "Size nhom "+mdetailGroupWorkMainPresenter.getListNhomCV().size(),
-                    Toast.LENGTH_LONG).show();
             mLnlGroupEmpty.setVisibility(View.GONE);
             itemDetailGroupWorkAdapter = new ItemDetailGroupWorkAdapter(getApplication(),mListNhomCV,this,
                     this);
@@ -215,6 +212,7 @@ public class DetailGroupWorkMainActivity extends AppCompatActivity implements Vi
             if(nhomCVModelArrayList.get(i).getCongViecModels().size()!=0)
                 temp.add(nhomCVModelArrayList.get(i));
         }
+        Log.e("DetailGroupWorkMain:", "size "+temp.size());
         return temp;
     }
 

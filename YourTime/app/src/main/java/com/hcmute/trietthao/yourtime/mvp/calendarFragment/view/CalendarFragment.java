@@ -33,29 +33,44 @@ public class CalendarFragment extends BaseFragment  {
         Log.e("calenderFragment::","Vao onMonthChange------");
         events = new ArrayList<WeekViewEvent>();
 
-        for (int i=0; i<mListWork.size();i++){
-            CongViecModel congViecModel = mListWork.get(i);
+        try{
+            for (int i=0; i<mListWork.size();i++){
+                CongViecModel congViecModel = mListWork.get(i);
 
-            WeekViewEvent event = new WeekViewEvent();
-            if(mListWork.get(i).getThoiGianBatDau()!=null) {
+                WeekViewEvent event = new WeekViewEvent();
+                if(mListWork.get(i).getThoiGianBatDau()!=null) {
 
-                try {
-                    if (newYear==temp.get(Calendar.YEAR)-1) {
-                        event = new WeekViewEvent(mListWork.get(i).getIdCongViec(), congViecModel.getTenCongViec(),
-                                DateUtils.converStringToCalendar(congViecModel.getThoiGianBatDau()),
-                                DateUtils.converStringToCalendar(congViecModel.getThoiGianKetThuc()));
-                        if (mListWork.get(i).getCoUuTien() == 1)
-                            event.setColor(getResources().getColor(R.color.event_color_04));
-                        else
-                            event.setColor(getResources().getColor(R.color.event_color_01));
-                        events.add(event);
+                    try {
+                        if (newYear==temp.get(Calendar.YEAR)-1) {
+                            event = new WeekViewEvent(mListWork.get(i).getIdCongViec(), congViecModel.getTenCongViec(),
+                                    DateUtils.converStringToCalendar(congViecModel.getThoiGianBatDau()),
+                                    DateUtils.converStringToCalendar(congViecModel.getThoiGianKetThuc()));
+                            if (mListWork.get(i).getCoUuTien() == 1)
+                                event.setColor(getResources().getColor(R.color.colorRed));
+                            else{
+                                if(mListWork.get(i).getIdCongViec()%5 == 0)
+                                    event.setColor(getResources().getColor(R.color.event_color_01));
+                                if(mListWork.get(i).getIdCongViec()%5 == 1)
+                                    event.setColor(getResources().getColor(R.color.colorBlue));
+                                if(mListWork.get(i).getIdCongViec()%5 == 2)
+                                    event.setColor(getResources().getColor(R.color.event_color_04));
+                                if(mListWork.get(i).getIdCongViec()%5 == 3)
+                                    event.setColor(getResources().getColor(R.color.colorYellow100));
+                                if(mListWork.get(i).getIdCongViec()%5 == 4)
+                                    event.setColor(getResources().getColor(R.color.colorGray600));
 
+                            }
+                            events.add(event);
+
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
-            }
 
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
         }
 
         return events;

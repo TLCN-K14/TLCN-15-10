@@ -35,6 +35,7 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     DBWorkServer dbWorkServer;
     DBGroupWorkUserServer dbGroupWorkUserServer;
     boolean isDeletedWork = false;
+    int idUser;
 
     public TasksPresenter(ITasksView iTasksView){
         this.iTasksView = iTasksView;
@@ -52,6 +53,7 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
 
     @Override
     public void getAllWorkOnline(int idUser) {
+        this.idUser = idUser;
         Log.e("TaskPresenter","Vaoo get all workonline");
         dbWorkServer = new DBWorkServer(this,this,this);
         dbWorkServer.getListAllWork(idUser);
@@ -104,10 +106,10 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
             isDeletedWork = false;
         }else{
             for(int i=0;i<congViecModelArrayList.size();i++){
-                if(congViecModelArrayList.get(i).getThoiGianBatDau()!=null){
+                if(congViecModelArrayList.get(i).getThoiGianKetThuc()!=null){
                     try {
                         if(congViecModelArrayList.get(i).getTrangThai().equals("waiting")){
-                            if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())){
+                            if(isOverDueDate(congViecModelArrayList.get(i).getThoiGianKetThuc())){
                                 congViecModelArrayList.get(i).setTrangThai("overdue");
                                 dbWorkServer.updateStatusWork("overdue",congViecModelArrayList.get(i).getIdCongViec());
                             }
@@ -130,10 +132,10 @@ public class TasksPresenter  implements ITasksPresenter,GetGroupWorkListener,Get
     @Override
     public void getAllWorkNotification(ArrayList<CVThongBaoModel> congViecModelArrayList) {
         for (int i = 0; i < congViecModelArrayList.size(); i++) {
-            if (congViecModelArrayList.get(i).getThoiGianBatDau() != null) {
+            if (congViecModelArrayList.get(i).getThoiGianKetThuc() != null) {
                 try {
                     if (congViecModelArrayList.get(i).getTrangThai().equals("waiting")) {
-                        if (isOverDueDate(congViecModelArrayList.get(i).getThoiGianBatDau())) {
+                        if (isOverDueDate(congViecModelArrayList.get(i).getThoiGianKetThuc())) {
                             dbWorkServer.updateStatusWorkTimeNotNull("overdue",
                                     congViecModelArrayList.get(i).getIdCongViec(),
                                     getDateTimeToInsertUpdate(congViecModelArrayList.get(i).getThoiGianBatDau()));

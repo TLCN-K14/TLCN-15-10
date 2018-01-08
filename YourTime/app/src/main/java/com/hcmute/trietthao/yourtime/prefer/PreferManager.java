@@ -4,7 +4,6 @@ package com.hcmute.trietthao.yourtime.prefer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
@@ -74,7 +73,6 @@ public class PreferManager implements DBNguoiDungServer.userListener {
     }
     public NguoiDungModel getUserPrefer(){
         return nguoiDungModel;
-
     }
 
 

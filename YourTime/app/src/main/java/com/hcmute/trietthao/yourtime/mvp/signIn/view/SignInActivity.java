@@ -1,6 +1,5 @@
 package com.hcmute.trietthao.yourtime.mvp.signIn.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.database.DBNguoiDungServer;
 import com.hcmute.trietthao.yourtime.model.NguoiDungModel;
@@ -49,7 +47,7 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
         ButterKnife.bind(this);
 
         preferManager = new PreferManager(getApplicationContext());
-        signInPresenter=new SignInPresenter(this);
+        signInPresenter=new SignInPresenter(this,this);
         dbNguoiDungServer= new DBNguoiDungServer(this);
 
         mBtnSignIn.setOnClickListener(this);
@@ -117,10 +115,11 @@ public class SignInActivity extends AppCompatActivity implements ISignInView, Vi
             public void run() {
                 Log.e("email prefer::::",email);
                 preferManager.createUserSignInSession(currentUser.getIdNguoiDung(),currentUser.getTenNguoiDung(),currentUser.getUserName());
+                signInPresenter.createNotification(currentUser.getIdNguoiDung());
                 finish();
 
             }
-        }, 1000);
+        }, 3000);
     }
 
 }

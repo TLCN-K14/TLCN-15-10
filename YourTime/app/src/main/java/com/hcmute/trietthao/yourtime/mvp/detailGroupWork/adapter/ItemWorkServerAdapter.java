@@ -95,7 +95,6 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
         final CongViecModel congViecModel;
         if(flag==1){
             congViecModel = mListCV1.get(position);
-            Log.e("ITEM"," ------ "+congViecModel.getTenCongViec());
             holder.tvNameWork.setText(congViecModel.getTenCongViec());
 
             if(congViecModel.getThoiGianBatDau()!=null)
@@ -233,7 +232,7 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
                             public void run() {
                                 try {
                                     if(congViecModel.getThoiGianBatDau()!=null){
-                                        if(isOverDueDate((congViecModel.getThoiGianBatDau()))){
+                                        if(isOverDueDate((congViecModel.getThoiGianKetThuc()))){
                                             dbWorkServer.updateStatusWorkTimeNotNull("overdue",congViecModel.getIdCongViec(),
                                                     getDateTimeToInsertUpdate(congViecModel.getThoiGianBatDau()));
                                             dbWorkServer.updateStatusWork("overdue",congViecModel.getIdCongViec());
@@ -293,7 +292,6 @@ public class ItemWorkServerAdapter extends RecyclerView.Adapter<ItemWorkServerAd
         });
 
         setFadeInTime(holder.itemView,1000);
-
     }
 
     @Override

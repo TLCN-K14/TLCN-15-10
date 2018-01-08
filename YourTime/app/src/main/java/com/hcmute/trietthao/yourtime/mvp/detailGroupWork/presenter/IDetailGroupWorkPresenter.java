@@ -9,6 +9,8 @@ import com.hcmute.trietthao.yourtime.model.CongViecModel;
 public interface IDetailGroupWorkPresenter {
     void getWorkByIdGroup(Integer idnguoidung,Integer idgroup);
 
+    void getDetailGroupWork(Integer idnguoidung,int idgroup);
+
     void insertWork(CongViecModel congViecModel);
 
     void deleteWork(int idcongviec);

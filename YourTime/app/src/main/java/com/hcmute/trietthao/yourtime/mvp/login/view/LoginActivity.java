@@ -3,7 +3,6 @@ package com.hcmute.trietthao.yourtime.mvp.login.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -28,21 +27,17 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Task;
-import com.hcmute.trietthao.yourtime.MainActivity;
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.mvp.login.adapter.*;
+import com.hcmute.trietthao.yourtime.mvp.login.adapter.CustomPagerAdapter;
 import com.hcmute.trietthao.yourtime.mvp.signIn.view.SignInActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.view.SignUpActivity;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
@@ -252,7 +247,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             if( preferManager.isLoggedIn())
                 finish();
         }else {
-            callbackManager.onActivityResult(requestCode, responseCode, intent);
+                callbackManager.onActivityResult(requestCode, responseCode, intent);
+                finish();
         }
     }
 
@@ -331,6 +327,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 break;
             case R.id.btn_login_fb:
+                FROM_FB=true;
                 if(!NetworkUtils.isNetWorkConnected(this))
                 {
                     Toast.makeText(this, R.string.fail_connect,Toast.LENGTH_LONG).show();

@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.hcmute.trietthao.yourtime.R;
 import com.hcmute.trietthao.yourtime.model.CongViecModel;
+import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.IOnItemWorkListener;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.adapter.ItemWorkServerAdapter;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.presenter.DetailGroupWorkPresenter;
@@ -92,6 +93,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     String EXTRA_GROUPWORK_ID = "";
     String EXTRA_GROUPWORK_NAME = "";
+    String EXTRA_WORK_ID = "";
 
     DetailGroupWorkPresenter mDetailGroupWorkPresenter;
 
@@ -124,17 +126,23 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         rvListWork.setHasFixedSize(true);
         rvListWorkCompleted.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         rvListWorkCompleted.setHasFixedSize(true);
+        mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
 
         EXTRA_GROUPWORK_ID = getIntent().getStringExtra("EXTRA_GROUPWORK_ID");
-        EXTRA_GROUPWORK_NAME = getIntent().getStringExtra("EXTRA_GROUPWORK_NAME");
+        EXTRA_WORK_ID = getIntent().getStringExtra("EXTRA_WORK_ID");
+        if(getIntent().getStringExtra("REQUEST_SCREEN")!=null){
+            Toast.makeText(getApplication(), EXTRA_GROUPWORK_ID+ "-" +EXTRA_WORK_ID,
+                    Toast.LENGTH_LONG).show();
+            if(getIntent().getStringExtra("REQUEST_SCREEN").equals("NOTIFICATION")){
+                Intent intent = new Intent(getApplicationContext(), DetailWorkActivity.class);
+                intent.putExtra("EXTRA_GROUPWORK_ID", EXTRA_GROUPWORK_ID);
+                intent.putExtra("EXTRA_WORK_ID", EXTRA_WORK_ID);
+                startActivity(intent);
+            }
+        }
+        else
+            initData();
 
-        tvNameGroupWork.setText(EXTRA_GROUPWORK_NAME);
-
-
-        Toast.makeText(getApplication(), "GROUPWORKID! " + EXTRA_GROUPWORK_ID,
-                Toast.LENGTH_LONG).show();
-        mDetailGroupWorkPresenter = new DetailGroupWorkPresenter(this);
-        initData();
 
         lnlLongClickMenu.setVisibility(View.GONE);
         pbLoading.setVisibility(View.GONE);
@@ -185,7 +193,10 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         if (isNetWorkConnected(getApplication())) {
             Log.e("INIT", " ------------GROUP ID: " + EXTRA_GROUPWORK_ID);
             if (EXTRA_GROUPWORK_ID != null)
+            {
+                mDetailGroupWorkPresenter.getDetailGroupWork(mPreferManager.getID(), Integer.parseInt(EXTRA_GROUPWORK_ID));
                 mDetailGroupWorkPresenter.getWorkByIdGroup(mPreferManager.getID(), Integer.parseInt(EXTRA_GROUPWORK_ID));
+            }
         }
     }
 
@@ -272,9 +283,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
                 isLongClicking = false;
                 lnlLongClickMenu.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplication(), "Delete successfull"+ currentItemWork.getThoiGianBatDau(),
-                        Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplication(), "Delete-----" + currentItemWork.getThoiGianBatDau(),
+                Toast.makeText(getApplication(), "Delete successfull",
                         Toast.LENGTH_LONG).show();
                 mSwipeLayout.setRefreshing(true);
                 new Handler().postDelayed(new Runnable() {
@@ -335,12 +344,36 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
     }
     public void sortAscDate(){
         isSortAscDate=true;
-        Collections.sort(mListWork,CongViecModel.SortAscDate);
+
+        ArrayList<CongViecModel> mListWorkNoDate = new ArrayList<>();
+        ArrayList<CongViecModel> mListWorkHaveDate = new ArrayList<>();
+        for(int i=0;i<mListWork.size();i++)
+            if(mListWork.get(i).getThoiGianBatDau()!=null)
+                mListWorkHaveDate.add(mListWork.get(i));
+            else
+                mListWorkNoDate.add(mListWork.get(i));
+        mListWork.clear();
+        mListWork.addAll(mListWorkNoDate);
+        Collections.sort(mListWorkHaveDate,CongViecModel.SortAscDate);
+        mListWork.addAll(mListWorkHaveDate);
+
         itemWorkServerAdapter.notifyDataSetChanged();
     }
     public void sortDescDate(){
         isSortAscDate=false;
-        Collections.sort(mListWork,CongViecModel.SortDescDate);
+
+        ArrayList<CongViecModel> mListWorkNoDate = new ArrayList<>();
+        ArrayList<CongViecModel> mListWorkHaveDate = new ArrayList<>();
+        for(int i=0;i<mListWork.size();i++)
+            if(mListWork.get(i).getThoiGianBatDau()!=null)
+                mListWorkHaveDate.add(mListWork.get(i));
+            else
+                mListWorkNoDate.add(mListWork.get(i));
+        mListWork.clear();
+        Collections.sort(mListWorkHaveDate,CongViecModel.SortAscDate);
+        mListWork.addAll(mListWorkHaveDate);
+        mListWork.addAll(mListWorkNoDate);
+
         itemWorkServerAdapter.notifyDataSetChanged();
     }
     public void sortAscPriority(){
@@ -356,6 +389,7 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
 
     @Override
     public void getWorkByIDGroupSuccess() {
+
         mListWork = mDetailGroupWorkPresenter.getListWorkNormal();
         mListWorkCompleted = mDetailGroupWorkPresenter.getListWorkCompleted();
 
@@ -371,6 +405,18 @@ public class DetailGroupWorkActivity extends AppCompatActivity implements View.O
         rvListWork.setAdapter(itemWorkServerAdapter);
         rvListWorkCompleted.setAdapter(itemWorkServerAdapterCompleted);
         rvListWorkCompleted.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void getGroupWorkDetailSucess() {
+        NhomCVModel nhomCVModel = new NhomCVModel();
+        nhomCVModel = mDetailGroupWorkPresenter.getGroupWorkDetail();
+        try{
+            tvNameGroupWork.setText(nhomCVModel.getTenNhom());
+
+        }catch (NullPointerException e){
+            tvNameGroupWork.setText("GroupWork");
+        }
     }
 
     @Override

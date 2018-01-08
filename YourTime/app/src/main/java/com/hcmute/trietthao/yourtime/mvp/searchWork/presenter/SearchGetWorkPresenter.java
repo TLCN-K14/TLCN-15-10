@@ -70,7 +70,7 @@ public class SearchGetWorkPresenter implements ISearchWorkPresenter,GetWorkListe
         for(int i=0;i<mListNhomCV.size();i++){
             ArrayList<CongViecModel> listCVTemp = new ArrayList<>();
             for(int j=0;j<mListCV.size();j++){
-                if(mListNhomCV.get(i).getIdNhom()==mListCV.get(j).getIdNhom()){
+                if(mListNhomCV.get(i).getIdNhom().equals(mListCV.get(j).getIdNhom())){
                     listCVTemp.add(mListCV.get(j));
                     flag = false;
                 }

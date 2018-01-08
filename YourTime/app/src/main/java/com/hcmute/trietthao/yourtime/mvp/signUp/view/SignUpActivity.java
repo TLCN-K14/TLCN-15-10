@@ -71,6 +71,7 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
 
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private int REQUEST_SIGNUP = 999;
     private String userChoosenTask;
     final Context c = this;
 
@@ -137,12 +138,14 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this,"vào on activity result:::",Toast.LENGTH_LONG).show();
         if (requestCode == SELECT_FILE)
             onSelectFromGalleryResult(data);
         else if (requestCode == REQUEST_CAMERA)
             onCaptureImageResult(data);
-        //Từ gg vào
+        else if (requestCode == REQUEST_SIGNUP){
+            if(resultCode == RESULT_OK)
+                finish();
+        }
     }
 
     @Override
@@ -190,9 +193,7 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
                 preferManager.createUserSignInSession(id,name,email);
 
                 Intent chooseList= new Intent(SignUpActivity.this, ChooseListActivity.class);
-                startActivity(chooseList);
-                finish();
-
+                startActivityForResult(chooseList,REQUEST_SIGNUP);
             }
         }, 1000);
 
@@ -211,9 +212,13 @@ public class SignUpActivity extends AppCompatActivity implements  View.OnClickLi
                     name = mEditName.getText().toString();
                     id = getIntCurrentDateTime();
 
-                    if (pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0 && isEmailValid(email)) {
-                        signUpPresenter.insertUser(id, name, encodedString, email, pass);
-                        Log.e("Code:",""+encodedString);
+                    if (pass.trim().length() > 0 && email.trim().length() > 0 && name.trim().length() > 0) {
+                        if(isEmailValid(email)){
+                            signUpPresenter.insertUser(id, name, encodedString, email, pass);
+                            Log.e("Code:",""+encodedString);
+                        }else
+                            Toast.makeText(getApplication(), "Email không hợp lệ!!!", Toast.LENGTH_LONG).show();
+
 
                     } else
                         Toast.makeText(getApplication(), "Nhập đầy đủ thông tin!!!", Toast.LENGTH_LONG).show();

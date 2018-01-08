@@ -23,6 +23,7 @@ public class DateUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR,cal.get(Calendar.HOUR)-7);
+//        cal.set(Calendar.HOUR,cal.get(Calendar.HOUR));
         return cal.getTime();
     }
 
@@ -54,6 +55,18 @@ public class DateUtils {
         Date date = converStringToDateTime(input);
         String dateFormat = "dd";
         return formatDate(date, dateFormat);
+    }
+
+    public static int getIdNotification(String input, int idwork) throws ParseException {
+        String timeStamp = new SimpleDateFormat("MMddHHmmss")
+                .format(converStringToCalendar(input).getTime());
+        return Integer.parseInt(timeStamp)+idwork;
+    }
+
+    public static int getIdNotification(Calendar input, int idwork) throws ParseException {
+        String timeStamp = new SimpleDateFormat("MMddHHmmss")
+                .format((input).getTime());
+        return Integer.parseInt(timeStamp)+idwork;
     }
 
     public static String getDisplayDate(String input){
