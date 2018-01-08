@@ -1,4 +1,6 @@
-package com.hcmute.trietthao.yourtime.mvp.calendarFragment.view;
+package com.hcmute.trietthao.yourtime.mvp.calendarFragment;
+
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekViewEvent;
 
 import java.util.Calendar;
 import java.util.List;

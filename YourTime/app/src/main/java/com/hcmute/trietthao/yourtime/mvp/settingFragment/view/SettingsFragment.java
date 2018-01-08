@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.mvp.settingsFragment.view;
+package com.hcmute.trietthao.yourtime.mvp.settingFragment.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -244,13 +244,16 @@ public class SettingsFragment extends Fragment implements DBNguoiDungServer.user
         for(int i=0; i <mListWorkNotification.size(); i++){
             cvtb = mListWorkNotification.get(i);
             if(cvtb.getTrangThai().equals("waiting")){
-                int idNotification = 0;
+                int idNotificationStart = 0;
+                int idNotificationEnd = 0;
                 try {
-                    idNotification = DateUtils.getIdNotification(cvtb.getThoiGianBatDau(),cvtb.getIdCongViec());
+                    idNotificationStart = DateUtils.getIdNotification(cvtb.getThoiGianBatDau(),cvtb.getIdCongViec());
+                    idNotificationEnd = DateUtils.getIdNotification(cvtb.getThoiGianKetThuc(),cvtb.getIdCongViec());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                cancelNotification(idNotification,getContext());
+                cancelNotification(idNotificationStart,getContext());
+                cancelNotification(idNotificationEnd,getContext());
                 Log.e("DELETED","--deleted notification--"+cvtb.getIdCongViec()+"--time--"+cvtb.getThoiGianBatDau());
             }
         }

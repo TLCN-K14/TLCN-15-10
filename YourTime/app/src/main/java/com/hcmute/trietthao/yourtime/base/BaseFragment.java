@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 
 import com.hcmute.trietthao.yourtime.R;
-import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.DateTimeInterpreter;
+import com.hcmute.trietthao.yourtime.mvp.calendarFragment.DateTimeInterpreter;
 import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.MonthLoader;
 import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekView;
 import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekViewEvent;

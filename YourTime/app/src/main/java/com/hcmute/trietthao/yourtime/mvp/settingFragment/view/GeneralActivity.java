@@ -1,4 +1,4 @@
-package com.hcmute.trietthao.yourtime.mvp.settingsFragment.view;
+package com.hcmute.trietthao.yourtime.mvp.settingFragment.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

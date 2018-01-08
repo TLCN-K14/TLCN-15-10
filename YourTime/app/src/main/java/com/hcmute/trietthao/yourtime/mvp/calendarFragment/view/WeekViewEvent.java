@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.WeekViewUtil.*;
-
-
 
 public class WeekViewEvent {
     private long mId;
@@ -176,7 +173,7 @@ public class WeekViewEvent {
         // The first millisecond of the next day is still the same day. (no need to split events for this).
         Calendar endTime = (Calendar) this.getEndTime().clone();
         endTime.add(Calendar.MILLISECOND, -1);
-        if (!isSameDay(this.getStartTime(), endTime)) {
+        if (!WeekViewUtil.isSameDay(this.getStartTime(), endTime)) {
             endTime = (Calendar) this.getStartTime().clone();
             endTime.set(Calendar.HOUR_OF_DAY, 23);
             endTime.set(Calendar.MINUTE, 59);
@@ -187,7 +184,7 @@ public class WeekViewEvent {
             // Add other days.
             Calendar otherDay = (Calendar) this.getStartTime().clone();
             otherDay.add(Calendar.DATE, 1);
-            while (!isSameDay(otherDay, this.getEndTime())) {
+            while (!WeekViewUtil.isSameDay(otherDay, this.getEndTime())) {
                 Calendar overDay = (Calendar) otherDay.clone();
                 overDay.set(Calendar.HOUR_OF_DAY, 0);
                 overDay.set(Calendar.MINUTE, 0);

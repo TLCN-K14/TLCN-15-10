@@ -32,7 +32,7 @@ import com.hcmute.trietthao.yourtime.mvp.chooseList.view.ChooseListActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
 import com.hcmute.trietthao.yourtime.mvp.signUp.presenter.SignUpPresenter;
 import com.hcmute.trietthao.yourtime.prefer.PreferManager;
-import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.Utility;
+import com.hcmute.trietthao.yourtime.mvp.settingFragment.view.Utility;
 import com.hcmute.trietthao.yourtime.service.utils.Base64Utils;
 import com.hcmute.trietthao.yourtime.service.utils.NetworkUtils;
 

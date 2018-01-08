@@ -37,7 +37,7 @@ import com.hcmute.trietthao.yourtime.model.NhomCVModel;
 import com.hcmute.trietthao.yourtime.mvp.calendarFragment.view.CalendarFragment;
 import com.hcmute.trietthao.yourtime.mvp.detailGroupWork.view.DetailGroupWorkActivity;
 import com.hcmute.trietthao.yourtime.mvp.login.view.LoginActivity;
-import com.hcmute.trietthao.yourtime.mvp.settingsFragment.view.SettingsFragment;
+import com.hcmute.trietthao.yourtime.mvp.settingFragment.view.SettingsFragment;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.GroupWorkServerAdapter;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.adapter.IOnItemGroupWorkTasksListener;
 import com.hcmute.trietthao.yourtime.mvp.tasksFragment.presenter.TasksPresenter;
